@@ -6,3 +6,5 @@ Things that are not yet implemented:
 * --server and --client
 * support %JAVA_HOME%?
 * Do we need separate x86 and x64 binaries?
+* Better handling of bootclasspath vs classpath,
+  currently they are identical, I was lazy.
