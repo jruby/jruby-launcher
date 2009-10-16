@@ -125,7 +125,6 @@ private:
     std::string jdkhome;
     std::string cpBefore;
     std::string cpAfter;
-    std::string auClusters;
     std::string nextAction;
     std::string parentProcID;
 

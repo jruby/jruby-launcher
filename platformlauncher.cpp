@@ -66,7 +66,6 @@ const char *PlatformLauncher::REQ_JAVA_VERSION = "1.5";
 
 const char *PlatformLauncher::OPT_JDK_HOME = "-Djdk.home=";
 const char *PlatformLauncher::OPT_NB_PLATFORM_HOME = "-Djruby.home=";
-const char *PlatformLauncher::OPT_NB_CLUSTERS = "-Dnetbeans.dirs=";
 const char *PlatformLauncher::OPT_NB_USERDIR = "-Dnetbeans.user=";
 const char *PlatformLauncher::OPT_HTTP_PROXY = "-Dnetbeans.system_http_proxy=";
 const char *PlatformLauncher::OPT_HTTP_NONPROXY = "-Dnetbeans.system_http_non_proxy_hosts=";
@@ -122,39 +121,17 @@ bool PlatformLauncher::start(char* argv[], int argc, DWORD *retCode) {
     prepareOptions();
 
     if (nextAction.empty()) {
-        if (shouldAutoUpdateClusters(true)) {
-            // run updater
-            if (!run(true, retCode)) {
-                return false;
-            }
-        }
-
         while (true) {
             // run app
             if (!run(false, retCode)) {
                 return false;
             }
 
-            if (shouldAutoUpdateClusters(false)) {
-                // run updater
-                if (!run(true, retCode)) {
-                    return false;
-                }
-            } else if (!restartRequested()) {
-                break;
-            }
+            break;
         }
     } else {
-        if (nextAction == ARG_NAME_LA_START_APP) {
-            return run(false, retCode);
-        } else if (nextAction == ARG_NAME_LA_START_AU) {
-            if (shouldAutoUpdateClusters(false)) {
-                return run(true, retCode);
-            }
-        } else {
-            logErr(false, true, "We should not get here.");
-            return false;
-        }
+        logErr(false, true, "We should not get here.");
+        return false;
     }
 
     return true;
@@ -173,11 +150,7 @@ bool PlatformLauncher::run(bool updater, DWORD *retCode) {
         nextAction = ARG_NAME_LA_START_AU;
     }
 
-    string option = OPT_NB_CLUSTERS;
-    option += auClusters.empty() ? clusters : auClusters;
-    javaOptions.push_back(option);
-
-    option = OPT_CLASS_PATH;
+    string option = OPT_CLASS_PATH;
     option += classPath;
     javaOptions.push_back(option);
 
@@ -195,8 +168,6 @@ bool PlatformLauncher::run(bool updater, DWORD *retCode) {
     javaOptions.pop_back();
     return rc;
 }
-
-
 
 bool PlatformLauncher::initPlatformDir() {
     char path[MAX_PATH] = "";
@@ -304,174 +275,6 @@ bool PlatformLauncher::parseArgs(int argc, char *argv[]) {
         }
     }
     return true;
-}
-
-bool PlatformLauncher::processAutoUpdateCL() {
-    logMsg("processAutoUpdateCL()...");
-    if (userDir.empty()) {
-        logMsg("\tuserdir empty, quiting");
-        return false;
-    }
-    string listPath = userDir;
-    listPath += "\\update\\download\\netbeans.dirs";
-
-    WIN32_FIND_DATA fd = {0};
-    HANDLE hFind = 0;
-    hFind = FindFirstFile(listPath.c_str(), &fd);
-    if (hFind == INVALID_HANDLE_VALUE) {
-        logMsg("File \"%s\" does not exist", listPath.c_str());
-        return false;
-    }
-    FindClose(hFind);
-
-    FILE *file = fopen(listPath.c_str(), "r");
-    if (!file) {
-        logErr(true, false, "Cannot open file %s", listPath.c_str());
-        return false;
-    }
-
-    int len = fd.nFileSizeLow + 1;
-    char *str = new char[len];
-    if (!fgets(str, len, file)) {
-        fclose(file);
-        delete[] str;
-        logErr(true, false, "Cannot read from file %s", listPath.c_str());
-        return false;
-    }
-    len = strlen(str) - 1;
-    if (str[len] == '\n') {
-        str[len] = '\0';
-    }
-
-    auClusters = str;
-    fclose(file);
-    delete[] str;
-    return true;
-}
-
-// check if new updater exists, if exists install it (replace old one) and remove ...\new_updater directory
-bool PlatformLauncher::checkForNewUpdater(const char *basePath) {
-    logMsg("checkForNewUpdater() at %s", basePath);
-    string srcPath = basePath;
-    srcPath += "\\update\\new_updater\\updater.jar";
-    WIN32_FIND_DATA fd = {0};
-    HANDLE hFind = FindFirstFile(srcPath.c_str(), &fd);
-    if (hFind != INVALID_HANDLE_VALUE) {
-        logMsg("New updater found: %s", srcPath.c_str());
-        FindClose(hFind);
-        string destPath = basePath;
-        destPath += "\\modules\\ext\\updater.jar";
-        createPath(destPath.c_str());
-
-        int i = 0;
-        while (true) {
-            if (MoveFileEx(srcPath.c_str(), destPath.c_str(), MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH)) {
-                break;
-            }
-            if (exiting || ++i > 10) {
-                logErr(true, false, "Failed to move \"%s\" to \"%s\"", srcPath.c_str(), destPath.c_str());
-                return false;
-            }
-            logErr(true, false, "Failed to move \"%s\" to \"%s\", trying to wait", srcPath.c_str(), destPath.c_str());
-            Sleep(100);
-        }
-        logMsg("New updater successfully moved from \"%s\" to \"%s\"", srcPath.c_str(), destPath.c_str());
-
-        srcPath.erase(srcPath.rfind('\\'));
-        logMsg("Removing directory \"%s\"", srcPath.c_str());
-        if (!RemoveDirectory(srcPath.c_str())) {
-            logErr(true, false, "Failed to remove directory \"%s\"", srcPath.c_str());
-        }
-    } else {
-        logMsg("No new updater at %s", srcPath.c_str());
-    }
-    return true;
-}
-
-bool PlatformLauncher::shouldAutoUpdate(bool firstStart, const char *basePath) {
-    // The logic is following:
-    // if there is an NBM for installation then run updater
-    // unless it is not a first start and we asked to install later (on next start)
-
-    // then also check if last run left list of modules to disable/uninstall and
-    // did not mark them to be deactivated later (on next start)
-    string path = basePath;
-    path += "\\update\\download\\*.nbm";
-    logMsg("Checking for updates: %s", path.c_str());
-    WIN32_FIND_DATA fd;
-    HANDLE hFindNbms = FindFirstFile(path.c_str(), &fd);
-    if (hFindNbms != INVALID_HANDLE_VALUE) {
-        logMsg("Some updates found at %s", path.c_str());
-        FindClose(hFindNbms);
-    }
-
-    path = basePath;
-    path += "\\update\\download\\install_later.xml";
-    HANDLE hFind = FindFirstFile(path.c_str(), &fd);
-    if (hFind != INVALID_HANDLE_VALUE) {
-        logMsg("install_later.xml found: %s", path.c_str());
-        FindClose(hFind);
-    }
-
-    if (hFindNbms != INVALID_HANDLE_VALUE && (firstStart || hFind == INVALID_HANDLE_VALUE)) {
-        return true;
-    }
-
-    path = basePath;
-    path += "\\update\\deactivate\\deactivate_later.txt";
-    hFind = FindFirstFile(path.c_str(), &fd);
-    if (hFind != INVALID_HANDLE_VALUE) {
-        logMsg("deactivate_later.txt found: %s", path.c_str());
-        FindClose(hFind);
-    }
-
-    if (firstStart || hFind == INVALID_HANDLE_VALUE) {
-        path = basePath;
-        path += "\\update\\deactivate\\to_disable.txt";
-        hFind = FindFirstFile(path.c_str(), &fd);
-        if (hFind != INVALID_HANDLE_VALUE) {
-            logMsg("to_disable.txt found: %s", path.c_str());
-            FindClose(hFind);
-            return true;
-        }
-
-        path = basePath;
-        path += "\\update\\deactivate\\to_uninstall.txt";
-        hFind = FindFirstFile(path.c_str(), &fd);
-        if (hFind != INVALID_HANDLE_VALUE) {
-            logMsg("to_uninstall.txt found: %s", path.c_str());
-            FindClose(hFind);
-            return true;
-        }
-    }
-
-    return false;
-}
-
-bool PlatformLauncher::shouldAutoUpdateClusters(bool firstStart) {
-    bool runUpdater = false;
-    string cl = processAutoUpdateCL() ? auClusters : clusters;
-    checkForNewUpdater(platformDir.c_str());
-    runUpdater = shouldAutoUpdate(firstStart, platformDir.c_str());
-
-    const char delim = ';';
-    string::size_type start = cl.find_first_not_of(delim, 0);
-    string::size_type end = cl.find_first_of(delim, start);
-    while (string::npos != end || string::npos != start) {
-        string cluster = cl.substr(start, end - start);
-        checkForNewUpdater(cluster.c_str());
-        if (!runUpdater) {
-            runUpdater = shouldAutoUpdate(firstStart, cluster.c_str());
-        }
-        start = cl.find_first_not_of(delim, end);
-        end = cl.find_first_of(delim, start);
-    }
-
-    checkForNewUpdater(userDir.c_str());
-    if (!runUpdater) {
-        runUpdater = shouldAutoUpdate(firstStart, userDir.c_str());
-    }
-    return runUpdater;
 }
 
 void PlatformLauncher::prepareOptions() {
@@ -598,23 +401,6 @@ string & PlatformLauncher::constructClassPath(bool runUpdater) {
     
     addJarsToClassPathFrom(platformDir.c_str());
 
-//    if (runUpdater) {
-//        const char *baseUpdaterPath = userDir.c_str();
-//        string updaterPath = userDir + "\\modules\\ext\\updater.jar";
-//
-//        // if user updater does not exist, use updater from platform
-//        if (!fileExists(updaterPath.c_str())) {
-//            baseUpdaterPath = platformDir.c_str();
-//            updaterPath = platformDir + "\\modules\\ext\\updater.jar";
-//        }
-//
-//        addToClassPath(updaterPath.c_str(), false);
-//        addFilesToClassPath(baseUpdaterPath, "\\modules\\ext\\locale", "updater_*.jar");
-//    }
-
-    // addToClassPath((jdkhome + "\\lib\\dt.jar").c_str(), true);
-    // addToClassPath((jdkhome + "\\lib\\tools.jar").c_str(), true);
-
     classPath += cpAfter;
     logMsg("ClassPath: %s", classPath.c_str());
     return classPath;
@@ -692,52 +478,5 @@ void PlatformLauncher::onExit() {
     if (separateProcess) {
         logMsg("JVM in separate process, no need to restart");
         return;
-    }
-
-    bool restart = (nextAction == ARG_NAME_LA_START_APP || (nextAction == ARG_NAME_LA_START_AU && shouldAutoUpdateClusters(false)));
-    if (!restart && restartRequested()) {
-        restart = true;
-        nextAction = ARG_NAME_LA_START_APP;
-    }
-
-    if (restart) {
-        string cmdLine = GetCommandLine();
-        logMsg("Old command line: %s", cmdLine.c_str());
-        string::size_type bslashPos = cmdLine.find_last_of('\\');
-        string::size_type pos = cmdLine.find(ARG_NAME_LA_START_APP);
-        if (bslashPos < pos && pos != string::npos) {
-            cmdLine.erase(pos, strlen(ARG_NAME_LA_START_APP));
-        }
-        pos = cmdLine.find(ARG_NAME_LA_START_AU);
-        if (bslashPos < pos && pos != string::npos) {
-            cmdLine.erase(pos, strlen(ARG_NAME_LA_START_AU));
-        }
-
-        if (*cmdLine.rbegin() != ' ') {
-            cmdLine += ' ';
-        }
-        if (!parentProcID.empty() && cmdLine.find(ARG_NAME_LA_PPID) == string::npos) {
-            cmdLine += ARG_NAME_LA_PPID;
-            cmdLine += ' ';
-            cmdLine += parentProcID;
-        }
-
-        if (*cmdLine.rbegin() != ' ') {
-            cmdLine += ' ';
-        }
-        cmdLine += nextAction;
-
-        logMsg("New command line: %s", cmdLine.c_str());
-        char cmdLineStr[32 * 1024] = "";
-        strcpy(cmdLineStr, cmdLine.c_str());
-        STARTUPINFO si = {0};
-        PROCESS_INFORMATION pi = {0};
-        si.cb = sizeof(STARTUPINFO);
-        if (!CreateProcess(NULL, cmdLineStr, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
-            logErr(true, true, "Failed to create process.");
-            return;
-        }
-        CloseHandle(pi.hThread);
-        CloseHandle(pi.hProcess);
     }
 }

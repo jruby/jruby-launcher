@@ -55,7 +55,7 @@ clean: .clean-post
 
 .clean-pre:
 # Add your pre 'clean' code here...
-#	-rm -r build/*
+	-rm -r build/*
 
 .clean-post: .clean-impl
 # Add your post 'clean' code here...
