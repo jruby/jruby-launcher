@@ -48,8 +48,7 @@
 using namespace std;
 
 const char *PlatformLauncher::HELP_MSG =
-"\nUsage: launcher {options} arguments\n\
-\n\
+"\nJRuby Launcher usage: jruby.exe {options} arguments\n\
 General options:\n\
   --help                show this help\n\
   --jdkhome <path>      path to JDK\n\
@@ -60,7 +59,8 @@ General options:\n\
 \n\
   --fork-java           run java in separate process\n\
   --trace <path>        path for launcher log (for trouble shooting)\n\
-\n";
+--------------------------------------------------------------------\
+\n\n";
 
 const char *PlatformLauncher::REQ_JAVA_VERSION = "1.5";
 

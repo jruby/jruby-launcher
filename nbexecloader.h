@@ -1,20 +1,9 @@
-/* 
- * File:   nbexecloader.h
- * Author: Holy
- *
- * Created on 19. prosinec 2008, 15:14
- */
-
 #ifndef _NBEXECLOADER_H
 #define	_NBEXECLOADER_H
 
 #include "utilsfuncs.h"
 
-#define HELP_MSG \
-"\
-  --console suppress    supppress console output\n\
-  --console new         open new console for output\n\
-\n"
+#define HELP_MSG ""
 
 class NBExecLoader {
     typedef int (*StartPlatform)(int argc, char *argv[], const char *help);
