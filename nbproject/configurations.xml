@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="62">
+  <logicalFolder name="root" displayName="root" projectFiles="true">
+    <logicalFolder name="HeaderFiles"
+                   displayName="Header Files"
+                   projectFiles="true">
+      <itemPath>argnames.h</itemPath>
+      <itemPath>jvmlauncher.h</itemPath>
+      <itemPath>nbexecloader.h</itemPath>
+      <itemPath>platformlauncher.h</itemPath>
+      <itemPath>utilsfuncs.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="ResourceFiles"
+                   displayName="Resource Files"
+                   projectFiles="true">
+    </logicalFolder>
+    <logicalFolder name="SourceFiles"
+                   displayName="Source Files"
+                   projectFiles="true">
+      <itemPath>jruby.cpp</itemPath>
+      <itemPath>jrubyexe.cpp</itemPath>
+      <itemPath>jvmlauncher.cpp</itemPath>
+      <itemPath>platformlauncher.cpp</itemPath>
+      <itemPath>utilsfuncs.cpp</itemPath>
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false">
+      <itemPath>Makefile</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="nbexec" type="2">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <compilerSet>Cygwin|Cygwin</compilerSet>
+        <platform>3</platform>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <developmentMode>5</developmentMode>
+          <architecture>1</architecture>
+          <commandlineTool>gcc</commandlineTool>
+          <warningLevel>2</warningLevel>
+        </cTool>
+        <ccTool>
+          <developmentMode>5</developmentMode>
+          <stripSymbols>true</stripSymbols>
+          <architecture>1</architecture>
+          <commandlineTool>g++</commandlineTool>
+          <incDir>
+            <pElem>c:/cygwin/usr/include/mingw</pElem>
+            <pElem>D:/re/java6/include</pElem>
+            <pElem>D:/re/java6/include/win32</pElem>
+          </incDir>
+          <commandLine>-s -mno-cygwin</commandLine>
+          <warningLevel>2</warningLevel>
+        </ccTool>
+        <linkerTool>
+          <output>jruby.dll</output>
+          <linkerLibItems>
+          </linkerLibItems>
+        </linkerTool>
+      </compileType>
+    </conf>
+  </confs>
+</configurationDescriptor>

@@ -1,0 +1,6 @@
+Things that are not yet implemented:
+
+* --sample
+* --1.8 and --1.9
+* --server and --client
+* support %JAVA_HOME%?
