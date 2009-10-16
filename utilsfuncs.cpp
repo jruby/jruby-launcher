@@ -255,15 +255,6 @@ void logMsg(const char *format, ...) {
     logV(false, false, format, args);
 }
 
-bool restarting(int argc, char *argv[]) {
-    for (int i = 0; i < argc; i++) {
-        if (strcmp(ARG_NAME_LA_START_APP, argv[i]) == 0 || strcmp(ARG_NAME_LA_START_AU, argv[i]) == 0) {
-            return true;
-        }
-    }
-    return false;
-}
-
 bool checkLoggingArg(int argc, char *argv[], bool delFile) {
     for (int i = 0; i < argc; i++) {
         if (strcmp(ARG_NAME_LAUNCHER_LOG, argv[i]) == 0) {
@@ -272,8 +263,7 @@ bool checkLoggingArg(int argc, char *argv[], bool delFile) {
                 return false;
             }
             gLogFileName = argv[++i];
-            // if we are restarting, keep log file
-            if (delFile && !restarting(argc, argv)) {
+            if (delFile) {
                 DeleteFile(gLogFileName.c_str());
             }
             break;
@@ -308,16 +298,6 @@ bool setupProcess(int &argc, char *argv[], DWORD &parentProcID, const char *atta
             }
             argc -= 2;
             return true;
-        } else if (strcmp(ARG_NAME_LA_PPID, argv[i]) == 0) {
-            CHECK_ARG;
-            char *end = 0;
-            cmdLineArgPPID = strtoul(argv[++i], &end, 10);
-            if (cmdLineArgPPID == 0 && *end != '\0') {
-                logErr(false, true, "Invalid parameter for option %s", ARG_NAME_LA_PPID);
-                return false;
-            }
-            logMsg("Command line arg PPID: %u", cmdLineArgPPID);
-            break;
         }
     }
 #undef CHECK_ARG

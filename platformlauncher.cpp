@@ -138,13 +138,7 @@ bool PlatformLauncher::run(bool updater, DWORD *retCode) {
     logMsg(updater ? "Starting updater..." : "Starting application...");
     constructClassPath(updater);
     const char *mainClass;
-    if (updater) {
-        mainClass = UPDATER_MAIN_CLASS;
-        nextAction = ARG_NAME_LA_START_APP;
-    } else {
-        mainClass = bootclass.empty() ? IDE_MAIN_CLASS : bootclass.c_str();
-        nextAction = ARG_NAME_LA_START_AU;
-    }
+    mainClass = bootclass.empty() ? IDE_MAIN_CLASS : bootclass.c_str();
 
     string option = OPT_CLASS_PATH;
     option += classPath;
@@ -204,18 +198,6 @@ bool PlatformLauncher::parseArgs(int argc, char *argv[]) {
         } else if (strcmp(ARG_NAME_LAUNCHER_LOG, argv[i]) == 0) {
             CHECK_ARG;
             i++;
-        } else if (strcmp(ARG_NAME_LA_START_APP, argv[i]) == 0
-                || strcmp(ARG_NAME_LA_START_AU, argv[i]) == 0) {
-            nextAction = argv[i++];
-            logMsg("Next launcher action: %s", nextAction.c_str());
-        } else if (strcmp(ARG_NAME_LA_PPID, argv[i]) == 0) {
-            CHECK_ARG;
-            suppressConsole = false;
-            parentProcID = argv[++i];
-            logMsg("Parent process ID found: %s", parentProcID.c_str());
-        } else if (strcmp(ARG_NAME_CLUSTERS, argv[i]) == 0) {
-            CHECK_ARG;
-            clusters = argv[++i];
         } else if (strcmp(ARG_NAME_BOOTCLASS, argv[i]) == 0) {
             CHECK_ARG;
             bootclass = argv[++i];

@@ -63,14 +63,11 @@ class PlatformLauncher {
 
     static const char *OPT_JDK_HOME;
     static const char *OPT_NB_PLATFORM_HOME;
-    static const char *OPT_NB_CLUSTERS;
-    static const char *OPT_NB_USERDIR;
-    static const char *OPT_HTTP_PROXY;
-    static const char *OPT_HTTP_NONPROXY;
-    static const char *OPT_SOCKS_PROXY;
+
     static const char *OPT_HEAP_DUMP;
     static const char *OPT_HEAP_DUMP_PATH;
     static const char *OPT_KEEP_WORKING_SET_ON_MINIMIZE;
+    
     static const char *OPT_CLASS_PATH;
     static const char *OPT_BOOT_CLASS_PATH;
 
@@ -98,13 +95,7 @@ private:
     PlatformLauncher(const PlatformLauncher& orig);
     bool parseArgs(int argc, char *argv[]);
     bool initPlatformDir();
-    bool processAutoUpdateCL();
-    bool checkForNewUpdater(const char *basePath);
-    bool shouldAutoUpdate(bool firstStart, const char *basePath);
-    bool shouldAutoUpdateClusters(bool firstStart);
     void prepareOptions();
-    bool findHttpProxyFromEnv(std::string &proxy);
-    bool findProxiesFromRegistry(std::string &proxy, std::string &nonProxy, std::string &socksProxy);
     std::string & constructClassPath(bool runUpdater);
     void addFilesToClassPath(const char *dir, const char *subdir, const char *pattern);
     void addToClassPath(const char *path, bool onlyIfExists = false);
