@@ -66,7 +66,6 @@ const char *PlatformLauncher::REQ_JAVA_VERSION = "1.5";
 
 const char *PlatformLauncher::OPT_JDK_HOME = "-Djdk.home=";
 const char *PlatformLauncher::OPT_NB_PLATFORM_HOME = "-Djruby.home=";
-const char *PlatformLauncher::OPT_NB_USERDIR = "-Dnetbeans.user=";
 const char *PlatformLauncher::OPT_HTTP_PROXY = "-Dnetbeans.system_http_proxy=";
 const char *PlatformLauncher::OPT_HTTP_NONPROXY = "-Dnetbeans.system_http_non_proxy_hosts=";
 const char *PlatformLauncher::OPT_SOCKS_PROXY = "-Dnetbeans.system_socks_proxy=";
@@ -145,7 +144,6 @@ bool PlatformLauncher::run(bool updater, DWORD *retCode) {
         mainClass = UPDATER_MAIN_CLASS;
         nextAction = ARG_NAME_LA_START_APP;
     } else {
-        DeleteFile((userDir + RESTART_FILE_PATH).c_str());
         mainClass = bootclass.empty() ? IDE_MAIN_CLASS : bootclass.c_str();
         nextAction = ARG_NAME_LA_START_AU;
     }
@@ -217,16 +215,6 @@ bool PlatformLauncher::parseArgs(int argc, char *argv[]) {
             suppressConsole = false;
             parentProcID = argv[++i];
             logMsg("Parent process ID found: %s", parentProcID.c_str());
-        } else if (strcmp(ARG_NAME_USER_DIR, argv[i]) == 0) {
-            CHECK_ARG;
-            char tmp[MAX_PATH + 1] = {0};
-            strncpy(tmp, argv[++i], MAX_PATH);
-            if (strcmp(tmp, "memory") != 0 && !normalizePath(tmp, MAX_PATH)) {
-                logErr(false, true, "User directory path \"%s\" is not valid.", argv[i]);
-                return false;
-            }
-            userDir = tmp;
-            logMsg("User dir: %s", userDir.c_str());
         } else if (strcmp(ARG_NAME_CLUSTERS, argv[i]) == 0) {
             CHECK_ARG;
             clusters = argv[++i];
@@ -294,19 +282,8 @@ void PlatformLauncher::prepareOptions() {
     option += "cmd.exe";
     javaOptions.push_back(option);
 
-    option = OPT_NB_USERDIR;
-    option += userDir;
-    javaOptions.push_back(option);
-
     option = OPT_HEAP_DUMP;
     javaOptions.push_back(option);
-
-    if (!heapDumpPathOptFound) {
-        option = OPT_HEAP_DUMP_PATH;
-        option += userDir;
-        option += HEAP_DUMP_PATH;
-        javaOptions.push_back(option);
-    }
 
     string proxy, nonProxy, socksProxy;
     if (!findHttpProxyFromEnv(proxy)) {
@@ -466,10 +443,6 @@ void PlatformLauncher::appendToHelp(const char *msg) {
     if (msg) {
         appendHelp = msg;
     }
-}
-
-bool PlatformLauncher::restartRequested() {
-    return fileExists((userDir + RESTART_FILE_PATH).c_str());
 }
 
 void PlatformLauncher::onExit() {

@@ -14,7 +14,6 @@
 #define ARG_NAME_LA_START_APP "--la_start_app"
 #define ARG_NAME_LA_START_AU "--la_start_au"
 #define ARG_NAME_LA_PPID "--la_ppid"
-#define ARG_NAME_USER_DIR "--userdir"
 #define ARG_NAME_CLUSTERS "--clusters"
 #define ARG_NAME_BOOTCLASS "--bootclass"
 #define ARG_NAME_JDKHOME "--jdkhome"

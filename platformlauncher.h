@@ -111,7 +111,6 @@ private:
     void addToBootClassPath(const char *path, bool onlyIfExists = false);
     void addJarsToClassPathFrom(const char *dir);
     bool run(bool updater, DWORD *retCode);
-    bool restartRequested();
 
 private:
     bool exiting;
@@ -119,7 +118,6 @@ private:
     bool suppressConsole;
     bool heapDumpPathOptFound;
     std::string platformDir;
-    std::string userDir;
     std::string clusters;
     std::string bootclass;
     std::string jdkhome;
