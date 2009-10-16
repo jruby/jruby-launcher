@@ -74,12 +74,6 @@ const char *PlatformLauncher::OPT_JRUBY_LIB = "-Djruby.lib=";
 const char *PlatformLauncher::OPT_JRUBY_SHELL = "-Djruby.shell=";
 const char *PlatformLauncher::OPT_JRUBY_SCRIPT = "-Djruby.script=";
 
-const char *PlatformLauncher::REG_PROXY_KEY = "Software\\Microsoft\\Windows\\CurrentVersion\\Internet settings";
-const char *PlatformLauncher::REG_PROXY_ENABLED_NAME = "ProxyEnable";
-const char *PlatformLauncher::REG_PROXY_SERVER_NAME = "ProxyServer";
-const char *PlatformLauncher::REG_PROXY_OVERRIDE_NAME = "ProxyOverride";
-const char *PlatformLauncher::PROXY_DIRECT = "DIRECT";
-
 const char *PlatformLauncher::IDE_MAIN_CLASS = "org/jruby/Main";
 
 PlatformLauncher::PlatformLauncher()
@@ -256,9 +250,6 @@ string & PlatformLauncher::constructClassPath(bool runUpdater) {
     logMsg("constructClassPath()");
     addedToCP.clear();
     classPath = cpBefore;
-
-    // No need to load from the current dir!
-    // addJarsToClassPathFrom(userDir.c_str());
     
     addJarsToClassPathFrom(platformDir.c_str());
 

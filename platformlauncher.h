@@ -52,11 +52,6 @@
 class PlatformLauncher {
     static const char *REQ_JAVA_VERSION;
     static const char *HELP_MSG;
-    static const char *REG_PROXY_KEY;
-    static const char *REG_PROXY_ENABLED_NAME;
-    static const char *REG_PROXY_SERVER_NAME;
-    static const char *REG_PROXY_OVERRIDE_NAME;
-    static const char *PROXY_DIRECT;
 
     static const char *OPT_JDK_HOME;
     static const char *OPT_NB_PLATFORM_HOME;
