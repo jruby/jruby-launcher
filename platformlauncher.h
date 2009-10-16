@@ -56,17 +56,10 @@ class PlatformLauncher {
     static const char *REG_PROXY_ENABLED_NAME;
     static const char *REG_PROXY_SERVER_NAME;
     static const char *REG_PROXY_OVERRIDE_NAME;
-
     static const char *PROXY_DIRECT;
-    static const char *HEAP_DUMP_PATH;
-    static const char *RESTART_FILE_PATH;
 
     static const char *OPT_JDK_HOME;
     static const char *OPT_NB_PLATFORM_HOME;
-
-    static const char *OPT_HEAP_DUMP;
-    static const char *OPT_HEAP_DUMP_PATH;
-    static const char *OPT_KEEP_WORKING_SET_ON_MINIMIZE;
     
     static const char *OPT_CLASS_PATH;
     static const char *OPT_BOOT_CLASS_PATH;
@@ -75,9 +68,7 @@ class PlatformLauncher {
     static const char *OPT_JRUBY_SHELL;
     static const char *OPT_JRUBY_SCRIPT;
 
-    static const char *UPDATER_MAIN_CLASS;
     static const char *IDE_MAIN_CLASS;
-
 
 public:
     PlatformLauncher();
@@ -104,18 +95,14 @@ private:
     bool run(bool updater, DWORD *retCode);
 
 private:
-    bool exiting;
     bool separateProcess;
     bool suppressConsole;
-    bool heapDumpPathOptFound;
     std::string platformDir;
-    std::string clusters;
     std::string bootclass;
     std::string jdkhome;
     std::string cpBefore;
     std::string cpAfter;
     std::string nextAction;
-    std::string parentProcID;
 
     std::list<std::string> javaOptions;
     std::list<std::string> progArgs;

@@ -67,9 +67,6 @@ const char *PlatformLauncher::REQ_JAVA_VERSION = "1.5";
 const char *PlatformLauncher::OPT_JDK_HOME = "-Djdk.home=";
 const char *PlatformLauncher::OPT_NB_PLATFORM_HOME = "-Djruby.home=";
 
-const char *PlatformLauncher::OPT_HEAP_DUMP = "-XX:+HeapDumpOnOutOfMemoryError";
-const char *PlatformLauncher::OPT_HEAP_DUMP_PATH = "-XX:HeapDumpPath=";
-const char *PlatformLauncher::OPT_KEEP_WORKING_SET_ON_MINIMIZE = "-Dsun.awt.keepWorkingSetOnMinimize=true";
 const char *PlatformLauncher::OPT_CLASS_PATH = "-Djava.class.path=";
 const char *PlatformLauncher::OPT_BOOT_CLASS_PATH = "-Xbootclasspath/a:";
 
@@ -82,17 +79,12 @@ const char *PlatformLauncher::REG_PROXY_ENABLED_NAME = "ProxyEnable";
 const char *PlatformLauncher::REG_PROXY_SERVER_NAME = "ProxyServer";
 const char *PlatformLauncher::REG_PROXY_OVERRIDE_NAME = "ProxyOverride";
 const char *PlatformLauncher::PROXY_DIRECT = "DIRECT";
-const char *PlatformLauncher::HEAP_DUMP_PATH =  "\\var\\log\\heapdump.hprof";
-const char *PlatformLauncher::RESTART_FILE_PATH =  "\\var\\restart";
 
-const char *PlatformLauncher::UPDATER_MAIN_CLASS = "org/netbeans/updater/UpdaterFrame";
 const char *PlatformLauncher::IDE_MAIN_CLASS = "org/jruby/Main";
 
 PlatformLauncher::PlatformLauncher()
     : separateProcess(false)
-    , suppressConsole(false)
-    , heapDumpPathOptFound(false)
-    , exiting(false) {
+    , suppressConsole(false) {
 }
 
 PlatformLauncher::PlatformLauncher(const PlatformLauncher& orig) {
@@ -173,7 +165,7 @@ bool PlatformLauncher::initPlatformDir() {
         return false;
     }
     *bslash = '\0';
-    clusters = platformDir = path;
+    platformDir = path;
     logMsg("Platform dir: %s", platformDir.c_str());
     logMsg("classPath: %s", classPath.c_str());
     return true;
@@ -226,9 +218,6 @@ bool PlatformLauncher::parseArgs(int argc, char *argv[]) {
             cpAfter += argv[++i];
         } else if (strncmp("-J", argv[i], 2) == 0) {
             javaOptions.push_back(argv[i] + 2);
-            if (strncmp(argv[i] + 2, OPT_HEAP_DUMP_PATH, strlen(OPT_HEAP_DUMP_PATH)) == 0) {
-                heapDumpPathOptFound = true;
-            }
         } else {
             if (strcmp(argv[i], "-h") == 0
                     || strcmp(argv[i], "-help") == 0
@@ -260,9 +249,6 @@ void PlatformLauncher::prepareOptions() {
 
     option = OPT_JRUBY_SHELL;
     option += "cmd.exe";
-    javaOptions.push_back(option);
-
-    option = OPT_HEAP_DUMP;
     javaOptions.push_back(option);
 }
 
@@ -345,7 +331,6 @@ void PlatformLauncher::appendToHelp(const char *msg) {
 
 void PlatformLauncher::onExit() {
     logMsg("onExit()");
-    exiting = true;
     if (separateProcess) {
         logMsg("JVM in separate process, no need to restart");
         return;
