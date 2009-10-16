@@ -1,6 +1,8 @@
 Things that are not yet implemented:
 
+* Cleanup: eliminate NB-specific code, updaters, etc.
 * --sample
 * --1.8 and --1.9
 * --server and --client
 * support %JAVA_HOME%?
+* Do we need separate x86 and x64 binaries?
