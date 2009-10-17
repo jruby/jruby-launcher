@@ -6,14 +6,14 @@
 
 # Macros
 TOP=`pwd`
-CND_PLATFORM=Cygwin-Windows
-CND_CONF=nbexec
+CND_PLATFORM=MinGW-Windows
+CND_CONF=mingw
 CND_DISTDIR=dist
 TMPDIR=build/${CND_CONF}/${CND_PLATFORM}/tmp-packaging
 TMPDIRNAME=tmp-packaging
 OUTPUT_PATH=jruby.dll
 OUTPUT_BASENAME=jruby.dll
-PACKAGE_TOP_DIR=libwindows.dll/
+PACKAGE_TOP_DIR=libjruby-launcher.dll/
 
 # Functions
 function checkReturnCode
@@ -58,15 +58,15 @@ mkdir -p ${TMPDIR}
 
 # Copy files and create directories and links
 cd "${TOP}"
-makeDirectory ${TMPDIR}/libwindows.dll/lib
+makeDirectory ${TMPDIR}/libjruby-launcher.dll/lib
 copyFileToTmpDir "${OUTPUT_PATH}" "${TMPDIR}/${PACKAGE_TOP_DIR}lib/${OUTPUT_BASENAME}" 0644
 
 
 # Generate tar file
 cd "${TOP}"
-rm -f ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/package/libwindows.dll.tar
+rm -f ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/package/libjruby-launcher.dll.tar
 cd ${TMPDIR}
-tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/package/libwindows.dll.tar *
+tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/package/libjruby-launcher.dll.tar *
 checkReturnCode
 
 # Cleanup

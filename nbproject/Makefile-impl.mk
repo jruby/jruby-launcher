@@ -24,14 +24,14 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=windows
+PROJECTNAME=jruby-launcher
 
 # Active Configuration
-DEFAULTCONF=nbexec
+DEFAULTCONF=cygwin
 CONF=${DEFAULTCONF}
 
 # All Configurations
-ALLCONFS=nbexec 
+ALLCONFS=cygwin mingw 
 
 
 # build

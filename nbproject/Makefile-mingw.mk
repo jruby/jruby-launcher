@@ -16,11 +16,11 @@ CC=gcc
 CCC=g++
 CXX=g++
 FC=
-AS=as
+AS=as.exe
 
 # Macros
-CND_PLATFORM=Cygwin-Windows
-CND_CONF=nbexec
+CND_PLATFORM=MinGW-Windows
+CND_CONF=mingw
 CND_DISTDIR=dist
 
 # Include project Makefile
@@ -41,8 +41,8 @@ OBJECTFILES= \
 CFLAGS=-m32
 
 # CC Compiler Flags
-CCFLAGS=-m32 -s -mno-cygwin
-CXXFLAGS=-m32 -s -mno-cygwin
+CCFLAGS=-m32
+CXXFLAGS=-m32
 
 # Fortran Compiler Flags
 FFLAGS=
@@ -55,42 +55,42 @@ LDLIBSOPTIONS=
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	${MAKE}  -f nbproject/Makefile-nbexec.mk jruby.dll
+	${MAKE}  -f nbproject/Makefile-mingw.mk jruby.dll
 
 jruby.dll: ${OBJECTFILES}
-	${LINK.cc} -mno-cygwin -shared -o jruby.dll -fPIC ${OBJECTFILES} ${LDLIBSOPTIONS} 
+	${LINK.cc} -shared -o jruby.dll -fPIC ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
 ${OBJECTDIR}/jvmlauncher.o: nbproject/Makefile-${CND_CONF}.mk jvmlauncher.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Wall -s -I/cygdrive/c/cygwin/usr/include/mingw -I/cygdrive/D/re/java6/include -I/cygdrive/D/re/java6/include/win32 -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/jvmlauncher.o jvmlauncher.cpp
+	$(COMPILE.cc) -O2 -Wall -s -I${JAVA_HOME}/include -I${JAVA_HOME}/include/win32 -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/jvmlauncher.o jvmlauncher.cpp
 
 ${OBJECTDIR}/platformlauncher.o: nbproject/Makefile-${CND_CONF}.mk platformlauncher.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Wall -s -I/cygdrive/c/cygwin/usr/include/mingw -I/cygdrive/D/re/java6/include -I/cygdrive/D/re/java6/include/win32 -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/platformlauncher.o platformlauncher.cpp
+	$(COMPILE.cc) -O2 -Wall -s -I${JAVA_HOME}/include -I${JAVA_HOME}/include/win32 -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/platformlauncher.o platformlauncher.cpp
 
 ${OBJECTDIR}/utilsfuncs.o: nbproject/Makefile-${CND_CONF}.mk utilsfuncs.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Wall -s -I/cygdrive/c/cygwin/usr/include/mingw -I/cygdrive/D/re/java6/include -I/cygdrive/D/re/java6/include/win32 -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/utilsfuncs.o utilsfuncs.cpp
+	$(COMPILE.cc) -O2 -Wall -s -I${JAVA_HOME}/include -I${JAVA_HOME}/include/win32 -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/utilsfuncs.o utilsfuncs.cpp
 
 ${OBJECTDIR}/jruby.o: nbproject/Makefile-${CND_CONF}.mk jruby.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Wall -s -I/cygdrive/c/cygwin/usr/include/mingw -I/cygdrive/D/re/java6/include -I/cygdrive/D/re/java6/include/win32 -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/jruby.o jruby.cpp
+	$(COMPILE.cc) -O2 -Wall -s -I${JAVA_HOME}/include -I${JAVA_HOME}/include/win32 -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/jruby.o jruby.cpp
 
 ${OBJECTDIR}/jrubyexe.o: nbproject/Makefile-${CND_CONF}.mk jrubyexe.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Wall -s -I/cygdrive/c/cygwin/usr/include/mingw -I/cygdrive/D/re/java6/include -I/cygdrive/D/re/java6/include/win32 -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/jrubyexe.o jrubyexe.cpp
+	$(COMPILE.cc) -O2 -Wall -s -I${JAVA_HOME}/include -I${JAVA_HOME}/include/win32 -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/jrubyexe.o jrubyexe.cpp
 
 # Subprojects
 .build-subprojects:
 
 # Clean Targets
 .clean-conf:
-	${RM} -r build/nbexec
+	${RM} -r build/mingw
 	${RM} jruby.dll
 
 # Subprojects

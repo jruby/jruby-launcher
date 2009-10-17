@@ -31,10 +31,10 @@
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
-    <conf name="nbexec" type="2">
+    <conf name="cygwin" type="2">
       <toolsSet>
         <developmentServer>localhost</developmentServer>
-        <compilerSet>Cygwin|Cygwin</compilerSet>
+        <compilerSet>MinGW|MinGW</compilerSet>
         <platform>3</platform>
       </toolsSet>
       <compileType>
@@ -55,6 +55,37 @@
             <pElem>D:/re/java6/include/win32</pElem>
           </incDir>
           <commandLine>-s -mno-cygwin</commandLine>
+          <warningLevel>2</warningLevel>
+        </ccTool>
+        <linkerTool>
+          <output>jruby.dll</output>
+          <linkerLibItems>
+          </linkerLibItems>
+        </linkerTool>
+      </compileType>
+    </conf>
+    <conf name="mingw" type="2">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <compilerSet>MinGW|MinGW</compilerSet>
+        <platform>3</platform>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <developmentMode>5</developmentMode>
+          <architecture>1</architecture>
+          <commandlineTool>gcc</commandlineTool>
+          <warningLevel>2</warningLevel>
+        </cTool>
+        <ccTool>
+          <developmentMode>5</developmentMode>
+          <stripSymbols>true</stripSymbols>
+          <architecture>1</architecture>
+          <commandlineTool>g++</commandlineTool>
+          <incDir>
+            <pElem>${JAVA_HOME}/include</pElem>
+            <pElem>${JAVA_HOME}/include/win32</pElem>
+          </incDir>
           <warningLevel>2</warningLevel>
         </ccTool>
         <linkerTool>
