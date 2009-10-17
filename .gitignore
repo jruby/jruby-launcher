@@ -3,3 +3,4 @@
 *.exe
 *~
 build
+nbproject/private/private.xml
