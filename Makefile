@@ -42,13 +42,14 @@ build: .build-post
 .build-pre:
 # Add your pre 'build' code here...
 
-.build-post: .build-impl jruby.exe
+.build-post: .build-impl
 # Add your post 'build' code here...
-	cp jruby.exe D:/work/jruby-dev/jruby/bin/
-	cp jruby.dll D:/work/jruby-dev/jruby/bin/
+	${MAKE} -f nbproject/Makefile-${CONF}.mk SUBPROJECTS=${SUBPROJECTS} jruby.exe
+	if [ -d ../jruby ]; then cp jruby.exe jruby.dll ../jruby/bin/; fi
+	if [ -d D:/work/jruby-dev/jruby ]; then cp jruby.exe jruby.dll D:/work/jruby-dev/jruby/bin/; fi
 
 jruby.exe: jrubyexe.cpp nbexecloader.h utilsfuncs.cpp
-	g++ -s -mno-cygwin jrubyexe.cpp utilsfuncs.cpp -o jruby.exe
+	g++ $(CXXFLAGS) $^ -o $@
 
 # clean
 clean: .clean-post
