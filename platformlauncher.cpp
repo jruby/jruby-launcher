@@ -75,9 +75,14 @@ const char *PlatformLauncher::OPT_JRUBY_SHELL = "-Djruby.shell=";
 const char *PlatformLauncher::OPT_JRUBY_SCRIPT = "-Djruby.script=";
 const char *PlatformLauncher::MAIN_CLASS = "org/jruby/Main";
 
+extern "C" int nailgunClientMain(int argc, char *argv[], char *env[]);
+
 PlatformLauncher::PlatformLauncher()
     : separateProcess(false)
-    , suppressConsole(false) {
+    , suppressConsole(false)
+    , nailgunClient(false)
+    , nailgunServer(false)
+{
 }
 
 PlatformLauncher::PlatformLauncher(const PlatformLauncher& orig) {
@@ -86,11 +91,39 @@ PlatformLauncher::PlatformLauncher(const PlatformLauncher& orig) {
 PlatformLauncher::~PlatformLauncher() {
 }
 
+list<string>* GetEnvStringsAsList() {
+    char * env = GetEnvironmentStrings();
+    list<string> * envList = new list<string>();
+    while (*env) {
+        envList->push_back(env);
+        env = env + strlen(env) + 1;
+    }
+    return envList;
+}
+
+const char** convertToArgvArray(list<string> args) {
+    const char ** argv = (const char**) malloc(sizeof (char*) * args.size());
+    int i = 0;
+    for (list<string>::iterator it = args.begin(); it != args.end(); ++it, ++i) {
+        argv[i] = it->c_str();
+    }
+    return argv;
+}
+
 bool PlatformLauncher::start(char* argv[], int argc, DWORD *retCode) {
     if (!checkLoggingArg(argc, argv, false) || !initPlatformDir() || !parseArgs(argc, argv)) {
         return false;
     }
     disableFolderVirtualization(GetCurrentProcess());
+
+    if (nailgunClient) {
+        progArgs.push_front("org.jruby.util.NailMain");
+        const char ** nailArgv = convertToArgvArray(progArgs);
+        list<string>* envList = GetEnvStringsAsList();
+        const char ** nailEnv  = convertToArgvArray(*envList);
+        nailgunClientMain(progArgs.size(), (char**)nailArgv, (char**)nailEnv);
+        return true;
+    }
 
     if (jdkhome.empty()) {
         if (!jvmLauncher.initialize(REQ_JAVA_VERSION)) {
@@ -231,6 +264,12 @@ bool PlatformLauncher::parseArgs(int argc, char *argv[]) {
             javaOptions.push_front("-javaagent:" + platformDir + "/lib/profile.jar");
             progArgs.push_back("-X+C");
             printToConsole("Running with instrumented profiler\n");
+        } else if (strcmp(ARG_NAME_NG, argv[i]) == 0) {
+            nailgunClient = true;
+        } else if (strcmp(ARG_NAME_NG_SERVER, argv[i]) == 0) {
+            bootclass = "com/martiansoftware/nailgun/NGServer";
+            javaOptions.push_back("-server");
+            nailgunServer = true;
         } else if (strncmp("-J", argv[i], 2) == 0) {
             javaOptions.push_back(argv[i] + 2);
         } else {
@@ -303,7 +342,9 @@ void PlatformLauncher::addFilesToClassPath(const char *dir, const char *subdir, 
         string fullName = path + fd.cFileName;
         if (addedToCP.insert(name).second) {
             addToClassPath(fullName.c_str());
-            addToBootClassPath(fullName.c_str());
+            if (!nailgunServer) {
+                addToBootClassPath(fullName.c_str());
+            }
         } else {
             logMsg("\"%s\" already added, skipping \"%s\"", name.c_str(), fullName.c_str());
         }

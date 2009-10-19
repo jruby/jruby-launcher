@@ -92,6 +92,8 @@ private:
 private:
     bool separateProcess;
     bool suppressConsole;
+    bool nailgunClient;
+    bool nailgunServer;
     std::string platformDir;
     std::string bootclass;
     std::string jdkhome;

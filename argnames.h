@@ -21,6 +21,8 @@
 #define ARG_NAME_MANAGE "--manage"
 #define ARG_NAME_HEADLESS "--headless"
 #define ARG_NAME_PROFILE "--profile"
+#define ARG_NAME_NG_SERVER "--ng-server"
+#define ARG_NAME_NG "--ng"
 
 #endif	/* _ARGNAMES_H */
 

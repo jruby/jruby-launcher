@@ -33,6 +33,7 @@ OBJECTDIR=build/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/jvmlauncher.o \
 	${OBJECTDIR}/platformlauncher.o \
+	${OBJECTDIR}/ng.o \
 	${OBJECTDIR}/utilsfuncs.o \
 	${OBJECTDIR}/jruby.o \
 	${OBJECTDIR}/jrubyexe.o
@@ -51,7 +52,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=
+LDLIBSOPTIONS=-lws2_32
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
@@ -69,6 +70,11 @@ ${OBJECTDIR}/platformlauncher.o: nbproject/Makefile-${CND_CONF}.mk platformlaunc
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -Wall -s -I/c/cygwin/usr/include/mingw -I/D/re/java6/include -I/D/re/java6/include/win32 -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/platformlauncher.o platformlauncher.cpp
+
+${OBJECTDIR}/ng.o: nbproject/Makefile-${CND_CONF}.mk ng.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -O2 -Wall -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/ng.o ng.c
 
 ${OBJECTDIR}/utilsfuncs.o: nbproject/Makefile-${CND_CONF}.mk utilsfuncs.cpp 
 	${MKDIR} -p ${OBJECTDIR}

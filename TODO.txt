@@ -1,7 +1,6 @@
 Things that are not yet implemented:
 
 * --jdb
-* --ng and --ng-server
 * support %JAVA_HOME%?
 * Do we need separate x86 and x64 binaries?
 * Better handling of bootclasspath vs classpath,

@@ -20,6 +20,7 @@
       <itemPath>jruby.cpp</itemPath>
       <itemPath>jrubyexe.cpp</itemPath>
       <itemPath>jvmlauncher.cpp</itemPath>
+      <itemPath>ng.c</itemPath>
       <itemPath>platformlauncher.cpp</itemPath>
       <itemPath>utilsfuncs.cpp</itemPath>
     </logicalFolder>
@@ -60,6 +61,7 @@
         <linkerTool>
           <output>jruby.dll</output>
           <linkerLibItems>
+            <linkerOptionItem>-lws2_32</linkerOptionItem>
           </linkerLibItems>
         </linkerTool>
       </compileType>
@@ -91,6 +93,7 @@
         <linkerTool>
           <output>jruby.dll</output>
           <linkerLibItems>
+            <linkerOptionItem>-lws2_32</linkerOptionItem>
           </linkerLibItems>
         </linkerTool>
       </compileType>
