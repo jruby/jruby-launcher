@@ -20,6 +20,7 @@
 #define ARG_NAME_SAMPLE "--sample"
 #define ARG_NAME_MANAGE "--manage"
 #define ARG_NAME_HEADLESS "--headless"
+#define ARG_NAME_PROFILE "--profile"
 
 #endif	/* _ARGNAMES_H */
 

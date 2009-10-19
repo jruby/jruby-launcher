@@ -224,6 +224,13 @@ bool PlatformLauncher::parseArgs(int argc, char *argv[]) {
             javaOptions.push_back("-Dcom.sun.management.jmxremote");
         } else if (strcmp(ARG_NAME_HEADLESS, argv[i]) == 0) {
             javaOptions.push_back("-Djava.awt.headless=true");
+        } else if (strcmp(ARG_NAME_PROFILE, argv[i]) == 0 ||
+                strcmp(ARG_NAME_PROFILE "-all", argv[i]) == 0) {
+            std::string filterType = strlen(argv[i]) == strlen(ARG_NAME_PROFILE) ? "ruby" : "all";
+            javaOptions.push_front("-Dprofile.properties=" + platformDir + "/lib/profile-" + filterType + ".properties");
+            javaOptions.push_front("-javaagent:" + platformDir + "/lib/profile.jar");
+            progArgs.push_back("-X+C");
+            printToConsole("Running with instrumented profiler\n");
         } else if (strncmp("-J", argv[i], 2) == 0) {
             javaOptions.push_back(argv[i] + 2);
         } else {
