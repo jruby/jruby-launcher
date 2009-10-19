@@ -175,9 +175,15 @@ bool PlatformLauncher::parseArgs(int argc, char *argv[]) {
     for (int i = 0; i < argc; i++) {
         logMsg("\t%s", argv[i]);
     }
+    bool doneScanning = false;
 
     for (int i = 0; i < argc; i++) {
-        if (strcmp(ARG_NAME_SEPAR_PROC, argv[i]) == 0) {
+        if (doneScanning) {
+            progArgs.push_back(argv[i]);
+        } else if (strcmp("--", argv[i]) == 0) {
+            progArgs.push_back(argv[i]);
+            doneScanning = true;
+        } else if (strcmp(ARG_NAME_SEPAR_PROC, argv[i]) == 0) {
             separateProcess = true;
             logMsg("Run Java in separater process");
         } else if (strcmp(ARG_NAME_LAUNCHER_LOG, argv[i]) == 0) {

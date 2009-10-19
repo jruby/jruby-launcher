@@ -257,6 +257,9 @@ void logMsg(const char *format, ...) {
 
 bool checkLoggingArg(int argc, char *argv[], bool delFile) {
     for (int i = 0; i < argc; i++) {
+        if (strcmp("--", argv[i]) == 0) {
+            break;
+        }
         if (strcmp(ARG_NAME_LAUNCHER_LOG, argv[i]) == 0) {
             if (i + 1 == argc) {
                 logErr(false, true, "Argument is missing for \"%s\" option.", argv[i]);
