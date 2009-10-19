@@ -311,7 +311,11 @@ string & PlatformLauncher::constructClassPath() {
     
     addJarsToClassPathFrom(platformDir.c_str());
 
-    classPath += cpAfter;
+    if (!cpAfter.empty()) {
+        classPath += ";";
+        classPath += cpAfter;
+    }
+
     logMsg("ClassPath: %s", classPath.c_str());
     return classPath;
 }
