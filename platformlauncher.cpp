@@ -220,6 +220,10 @@ bool PlatformLauncher::parseArgs(int argc, char *argv[]) {
             javaOptions.push_back(argv[i] + 1); // to JVMLauncher, -server instead of --server
         } else if (strcmp(ARG_NAME_SAMPLE, argv[i]) == 0) {
             javaOptions.push_back("-Xprof");
+        } else if (strcmp(ARG_NAME_MANAGE, argv[i]) == 0) {
+            javaOptions.push_back("-Dcom.sun.management.jmxremote");
+        } else if (strcmp(ARG_NAME_HEADLESS, argv[i]) == 0) {
+            javaOptions.push_back("-Djava.awt.headless=true");
         } else if (strncmp("-J", argv[i], 2) == 0) {
             javaOptions.push_back(argv[i] + 2);
         } else {

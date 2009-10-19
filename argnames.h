@@ -18,6 +18,8 @@
 #define ARG_NAME_SERVER "--server"
 #define ARG_NAME_CLIENT "--client"
 #define ARG_NAME_SAMPLE "--sample"
+#define ARG_NAME_MANAGE "--manage"
+#define ARG_NAME_HEADLESS "--headless"
 
 #endif	/* _ARGNAMES_H */
 
