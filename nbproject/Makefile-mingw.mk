@@ -59,7 +59,7 @@ LDLIBSOPTIONS=-lws2_32
 	${MAKE}  -f nbproject/Makefile-mingw.mk jruby.dll
 
 jruby.dll: ${OBJECTFILES}
-	${LINK.cc} -shared -o jruby.dll -fPIC ${OBJECTFILES} ${LDLIBSOPTIONS} 
+	${LINK.cc} -shared -o jruby.dll -s -fPIC ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
 ${OBJECTDIR}/jvmlauncher.o: nbproject/Makefile-${CND_CONF}.mk jvmlauncher.cpp 
 	${MKDIR} -p ${OBJECTDIR}

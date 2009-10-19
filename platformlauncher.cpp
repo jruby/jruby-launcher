@@ -58,7 +58,8 @@ General options:\n\
   --cp:a <classpath>    append <classpath> to classpath\n\
 \n\
   --fork-java           run java in separate process\n\
-  --trace <path>        path for launcher log (for troubleshooting)\n\
+  --trace <path>        path for launcher log (for troubleshooting)\n\n\
+To see general JRuby options, type 'jruby -h' or 'jruby --help'.\n\
 --------------------------------------------------------------------\
 \n\n";
 
@@ -272,16 +273,13 @@ bool PlatformLauncher::parseArgs(int argc, char *argv[]) {
             nailgunServer = true;
         } else if (strncmp("-J", argv[i], 2) == 0) {
             javaOptions.push_back(argv[i] + 2);
-        } else {
-            if (strcmp(argv[i], "-h") == 0
-                    || strcmp(argv[i], "-help") == 0
-                    || strcmp(argv[i], "--help") == 0
-                    || strcmp(argv[i], "/?") == 0) {
-                printToConsole(HELP_MSG);
-                if (!appendHelp.empty()) {
-                    printToConsole(appendHelp.c_str());
-                }
+        } else if (strcmp(argv[i], "-help") == 0) {
+            printToConsole(HELP_MSG);
+            if (!appendHelp.empty()) {
+                printToConsole(appendHelp.c_str());
             }
+            return false;
+        } else {
             progArgs.push_back(argv[i]);
         }
     }

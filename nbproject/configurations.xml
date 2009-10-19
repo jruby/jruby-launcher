@@ -60,6 +60,7 @@
         </ccTool>
         <linkerTool>
           <output>jruby.dll</output>
+          <stripSymbols>true</stripSymbols>
           <linkerLibItems>
             <linkerOptionItem>-lws2_32</linkerOptionItem>
           </linkerLibItems>
@@ -92,6 +93,7 @@
         </ccTool>
         <linkerTool>
           <output>jruby.dll</output>
+          <stripSymbols>true</stripSymbols>
           <linkerLibItems>
             <linkerOptionItem>-lws2_32</linkerOptionItem>
           </linkerLibItems>

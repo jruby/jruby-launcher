@@ -49,7 +49,7 @@ build: .build-post
 	if [ -d D:/work/jruby-dev/jruby ]; then cp jruby.exe jruby.dll D:/work/jruby-dev/jruby/bin/; fi
 
 jruby.exe: jrubyexe.cpp nbexecloader.h utilsfuncs.cpp
-	g++ $(CXXFLAGS) $^ -o $@
+	g++ $(CXXFLAGS) $^ -s -o $@
 
 # clean
 clean: .clean-post
