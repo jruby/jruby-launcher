@@ -218,6 +218,8 @@ bool PlatformLauncher::parseArgs(int argc, char *argv[]) {
         } else if (strcmp(ARG_NAME_SERVER, argv[i]) == 0
                 || strcmp(ARG_NAME_CLIENT, argv[i]) == 0) {
             javaOptions.push_back(argv[i] + 1); // to JVMLauncher, -server instead of --server
+        } else if (strcmp(ARG_NAME_SAMPLE, argv[i]) == 0) {
+            javaOptions.push_back("-Xprof");
         } else if (strncmp("-J", argv[i], 2) == 0) {
             javaOptions.push_back(argv[i] + 2);
         } else {

@@ -1,10 +1,7 @@
 Things that are not yet implemented:
 
-* --sample
-* --1.8 and --1.9
 * --debug and --jdb
 * --ng and --ng-server
-* Scanning for launcher args should be aborted by '--'
 * support %JAVA_HOME%?
 * Do we need separate x86 and x64 binaries?
 * Better handling of bootclasspath vs classpath,

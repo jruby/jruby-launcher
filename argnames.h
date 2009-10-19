@@ -17,6 +17,7 @@
 #define ARG_NAME_CP_APPEND "--cp:a"
 #define ARG_NAME_SERVER "--server"
 #define ARG_NAME_CLIENT "--client"
+#define ARG_NAME_SAMPLE "--sample"
 
 #endif	/* _ARGNAMES_H */
 
