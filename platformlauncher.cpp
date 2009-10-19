@@ -73,8 +73,7 @@ const char *PlatformLauncher::OPT_BOOT_CLASS_PATH = "-Xbootclasspath/a:";
 const char *PlatformLauncher::OPT_JRUBY_LIB = "-Djruby.lib=";
 const char *PlatformLauncher::OPT_JRUBY_SHELL = "-Djruby.shell=";
 const char *PlatformLauncher::OPT_JRUBY_SCRIPT = "-Djruby.script=";
-
-const char *PlatformLauncher::IDE_MAIN_CLASS = "org/jruby/Main";
+const char *PlatformLauncher::MAIN_CLASS = "org/jruby/Main";
 
 PlatformLauncher::PlatformLauncher()
     : separateProcess(false)
@@ -124,7 +123,7 @@ bool PlatformLauncher::run(DWORD *retCode) {
     logMsg("Starting application...");
     constructClassPath();
     const char *mainClass;
-    mainClass = bootclass.empty() ? IDE_MAIN_CLASS : bootclass.c_str();
+    mainClass = bootclass.empty() ? MAIN_CLASS : bootclass.c_str();
 
     string option = OPT_CLASS_PATH;
     option += classPath;
@@ -210,6 +209,9 @@ bool PlatformLauncher::parseArgs(int argc, char *argv[]) {
                 || strncmp(ARG_NAME_CP_APPEND, argv[i], 4) == 0) {
             CHECK_ARG;
             cpAfter += argv[++i];
+        } else if (strcmp(ARG_NAME_SERVER, argv[i]) == 0
+                || strcmp(ARG_NAME_CLIENT, argv[i]) == 0) {
+            javaOptions.push_back(argv[i] + 1); // to JVMLauncher, -server instead of --server
         } else if (strncmp("-J", argv[i], 2) == 0) {
             javaOptions.push_back(argv[i] + 2);
         } else {

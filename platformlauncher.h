@@ -63,7 +63,7 @@ class PlatformLauncher {
     static const char *OPT_JRUBY_SHELL;
     static const char *OPT_JRUBY_SCRIPT;
 
-    static const char *IDE_MAIN_CLASS;
+    static const char *MAIN_CLASS;
 
 public:
     PlatformLauncher();
