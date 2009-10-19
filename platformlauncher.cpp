@@ -58,14 +58,14 @@ General options:\n\
   --cp:a <classpath>    append <classpath> to classpath\n\
 \n\
   --fork-java           run java in separate process\n\
-  --trace <path>        path for launcher log (for trouble shooting)\n\
+  --trace <path>        path for launcher log (for troubleshooting)\n\
 --------------------------------------------------------------------\
 \n\n";
 
 const char *PlatformLauncher::REQ_JAVA_VERSION = "1.5";
 
 const char *PlatformLauncher::OPT_JDK_HOME = "-Djdk.home=";
-const char *PlatformLauncher::OPT_NB_PLATFORM_HOME = "-Djruby.home=";
+const char *PlatformLauncher::OPT_JRUBY_HOME = "-Djruby.home=";
 
 const char *PlatformLauncher::OPT_CLASS_PATH = "-Djava.class.path=";
 const char *PlatformLauncher::OPT_BOOT_CLASS_PATH = "-Xbootclasspath/a:";
@@ -106,7 +106,7 @@ bool PlatformLauncher::start(char* argv[], int argc, DWORD *retCode) {
     if (nextAction.empty()) {
         while (true) {
             // run app
-            if (!run(false, retCode)) {
+            if (!run(retCode)) {
                 return false;
             }
 
@@ -120,9 +120,9 @@ bool PlatformLauncher::start(char* argv[], int argc, DWORD *retCode) {
     return true;
 }
 
-bool PlatformLauncher::run(bool updater, DWORD *retCode) {
-    logMsg(updater ? "Starting updater..." : "Starting application...");
-    constructClassPath(updater);
+bool PlatformLauncher::run(DWORD *retCode) {
+    logMsg("Starting application...");
+    constructClassPath();
     const char *mainClass;
     mainClass = bootclass.empty() ? IDE_MAIN_CLASS : bootclass.c_str();
 
@@ -233,7 +233,7 @@ void PlatformLauncher::prepareOptions() {
     option += jdkhome;
     javaOptions.push_back(option);
 
-    option = OPT_NB_PLATFORM_HOME;
+    option = OPT_JRUBY_HOME;
     option += platformDir;
     javaOptions.push_back(option);
 
@@ -246,7 +246,7 @@ void PlatformLauncher::prepareOptions() {
     javaOptions.push_back(option);
 }
 
-string & PlatformLauncher::constructClassPath(bool runUpdater) {
+string & PlatformLauncher::constructClassPath() {
     logMsg("constructClassPath()");
     addedToCP.clear();
     classPath = cpBefore;

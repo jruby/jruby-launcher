@@ -54,7 +54,7 @@ class PlatformLauncher {
     static const char *HELP_MSG;
 
     static const char *OPT_JDK_HOME;
-    static const char *OPT_NB_PLATFORM_HOME;
+    static const char *OPT_JRUBY_HOME;
     
     static const char *OPT_CLASS_PATH;
     static const char *OPT_BOOT_CLASS_PATH;
@@ -82,12 +82,12 @@ private:
     bool parseArgs(int argc, char *argv[]);
     bool initPlatformDir();
     void prepareOptions();
-    std::string & constructClassPath(bool runUpdater);
+    std::string & constructClassPath();
     void addFilesToClassPath(const char *dir, const char *subdir, const char *pattern);
     void addToClassPath(const char *path, bool onlyIfExists = false);
     void addToBootClassPath(const char *path, bool onlyIfExists = false);
     void addJarsToClassPathFrom(const char *dir);
-    bool run(bool updater, DWORD *retCode);
+    bool run(DWORD *retCode);
 
 private:
     bool separateProcess;
@@ -109,4 +109,3 @@ private:
 };
 
 #endif	/* _PLATFORMLAUNCHER_H */
-
