@@ -1,6 +1,6 @@
 Things that are not yet implemented:
 
-* --debug and --jdb
+* --jdb
 * --ng and --ng-server
 * support %JAVA_HOME%?
 * Do we need separate x86 and x64 binaries?
