@@ -283,6 +283,28 @@ bool PlatformLauncher::parseArgs(int argc, char *argv[]) {
             progArgs.push_back(argv[i]);
         }
     }
+
+    if (jdkhome.empty()) {
+        logMsg("--jdkhome is not set, checking for %%JAVA_HOME%%...");
+        char *javaHome = getenv("JAVA_HOME");
+        if (javaHome) {
+            logMsg("%%JAVA_HOME%% is set: %s", javaHome);
+            if (!jvmLauncher.initialize(javaHome)) {
+                logMsg("Cannot locate java installation, specified by JAVA_HOME: %s", javaHome);
+                string errMsg = "Cannot locate java installation, specified by JAVA_HOME:\n";
+                errMsg += javaHome;
+                errMsg += "\nDo you want to try to use default version?";
+                jdkhome = "";
+                if (::MessageBox(NULL, errMsg.c_str(),
+                        "Invalid jdkhome specified", MB_ICONQUESTION | MB_YESNO) == IDNO) {
+                    return false;
+                }
+            } else {
+                jdkhome = javaHome;
+            }
+        }
+    }
+
     return true;
 }
 
