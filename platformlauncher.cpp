@@ -296,7 +296,7 @@ void PlatformLauncher::prepareOptions() {
     javaOptions.push_back(option);
 
     option = OPT_JRUBY_SCRIPT;
-    option += "jruby.exe";
+    option += "jruby";
     javaOptions.push_back(option);
 
     option = OPT_JRUBY_SHELL;
