@@ -64,7 +64,7 @@ clean: .clean-post
 
 .clean-post: .clean-impl
 # Add your post 'clean' code here...
-	rm -f jruby.exe
+	rm -f jruby.exe jrubyw.exe
 
 
 # clobber
