@@ -67,6 +67,7 @@ const char *PlatformLauncher::REQ_JAVA_VERSION = "1.5";
 
 const char *PlatformLauncher::OPT_JDK_HOME = "-Djdk.home=";
 const char *PlatformLauncher::OPT_JRUBY_HOME = "-Djruby.home=";
+const char *PlatformLauncher::OPT_JRUBY_COMMAND_NAME = "-Dsun.java.command=";
 
 const char *PlatformLauncher::OPT_CLASS_PATH = "-Djava.class.path=";
 const char *PlatformLauncher::OPT_BOOT_CLASS_PATH = "-Xbootclasspath/a:";
@@ -159,7 +160,19 @@ bool PlatformLauncher::run(DWORD *retCode) {
     const char *mainClass;
     mainClass = bootclass.empty() ? MAIN_CLASS : bootclass.c_str();
 
-    string option = OPT_CLASS_PATH;
+    // replace '/' by '.' to report a better name to jps/jconsole
+    string cmdName = mainClass;
+    int position = cmdName.find("/");
+    while (position != string::npos) {
+      cmdName.replace(position, 1, ".");
+      position = cmdName.find("/", position + 1);
+    }
+
+    string option = OPT_JRUBY_COMMAND_NAME;
+    option += cmdName;
+    javaOptions.push_back(option);
+
+    option = OPT_CLASS_PATH;
     option += classPath;
     javaOptions.push_back(option);
 

@@ -55,6 +55,7 @@ class PlatformLauncher {
 
     static const char *OPT_JDK_HOME;
     static const char *OPT_JRUBY_HOME;
+    static const char *OPT_JRUBY_COMMAND_NAME;
     
     static const char *OPT_CLASS_PATH;
     static const char *OPT_BOOT_CLASS_PATH;
