@@ -77,6 +77,7 @@ const char *PlatformLauncher::OPT_JRUBY_SHELL = "-Djruby.shell=";
 const char *PlatformLauncher::OPT_JRUBY_SCRIPT = "-Djruby.script=";
 const char *PlatformLauncher::MAIN_CLASS = "org/jruby/Main";
 const char *PlatformLauncher::DEFAULT_EXECUTABLE = "jruby";
+const char *PlatformLauncher::DEFAULT_EXECUTABLE_W = "jrubyw";
 
 extern "C" int nailgunClientMain(int argc, char *argv[], char *env[]);
 
@@ -149,7 +150,8 @@ bool PlatformLauncher::start(char* argv[], int argc, DWORD *retCode, const char*
             logMsg("*** No need to clean the binary name: %s", binaryName);
         }
 
-        if (strcmp(binaryName, DEFAULT_EXECUTABLE) != 0) {
+        if (strcmp(binaryName, DEFAULT_EXECUTABLE) != 0
+                && strcmp(binaryName, DEFAULT_EXECUTABLE_W) != 0) {
             logMsg("PlatformLauncher:\n\tNon-default executable name: %s", binaryName);
             logMsg("\tHence, launching with extra parameters: -S %s", binaryName);
             progArgs.push_front(binaryName);

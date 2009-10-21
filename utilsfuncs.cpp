@@ -305,6 +305,7 @@ bool setupProcess(int &argc, char *argv[], DWORD &parentProcID, const char *atta
     }
 #undef CHECK_ARG
 
+#ifdef ATTACH_CONSOLE_BY_DEFAULT
     // default, attach to parent process console if exists
     // AttachConsole exists since WinXP, so be nice and do it dynamically
     typedef BOOL (WINAPI *LPFAC)(DWORD  dwProcessId);
@@ -330,6 +331,8 @@ bool setupProcess(int &argc, char *argv[], DWORD &parentProcID, const char *atta
             logErr(true, false, "GetProcAddress() for AttachConsole failed.");
         }
     }
+#endif
+
     return true;
 }
 

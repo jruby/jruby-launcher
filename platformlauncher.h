@@ -66,6 +66,7 @@ class PlatformLauncher {
 
     static const char *MAIN_CLASS;
     static const char *DEFAULT_EXECUTABLE;
+    static const char *DEFAULT_EXECUTABLE_W;
 
 public:
     PlatformLauncher();
