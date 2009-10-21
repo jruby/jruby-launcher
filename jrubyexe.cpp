@@ -44,8 +44,24 @@
 #include <windows.h>
 #include "nbexecloader.h"
 
-int main(int argc, char *argv[]) {
-    checkLoggingArg(argc, argv, true);
+#ifdef JRUBYW
+int WINAPI WinMain(HINSTANCE inst, HINSTANCE previnst, LPSTR cmdline, int cmdshow) {
+    int margc;
+    char** margv;
+    margc = __argc;
+    margv = __argv;
+
+#else /* not JRUBYW */
+int main(int argc, char ** argv) {
+    int margc;
+    char** margv;
+
+    margc = argc;
+    margv = argv;
+
+#endif
+
+    checkLoggingArg(margc, margv, true);
     NBExecLoader loader;
-    return loader.start("jruby.dll", argc - 1, argv + 1, argv[0]);
+    return loader.start("jruby.dll", margc - 1, margv + 1, margv[0]);
 }

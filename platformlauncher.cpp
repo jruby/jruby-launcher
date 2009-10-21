@@ -149,7 +149,7 @@ bool PlatformLauncher::start(char* argv[], int argc, DWORD *retCode, const char*
             logMsg("*** No need to clean the binary name: %s", binaryName);
         }
 
-        if (strcmp(binaryName, DEFAULT_EXECUTABLE) != 0) {
+        if (strncmp(binaryName, DEFAULT_EXECUTABLE, strlen(DEFAULT_EXECUTABLE)) != 0) {
             logMsg("PlatformLauncher:\n\tNon-default executable name: %s", binaryName);
             logMsg("\tHence, launching with extra parameters: -S %s", binaryName);
             progArgs.push_front(binaryName);

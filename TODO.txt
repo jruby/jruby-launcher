@@ -7,5 +7,3 @@ Things that are not yet implemented:
   currently they are identical, I was lazy.
 * Ability to detach the console, ability to launch with new console
   (these things are supported by Netbeans launchers, it seems)
-* Make the launcher behavior depend on the executable name:
-  jruby.exe - normal JRuby, jirb.exe - JRuby IRB, blah.exe --> jruby -S blah
