@@ -66,11 +66,11 @@ extern "C" BOOL APIENTRY DllMain(HANDLE hModule,
 
 #define NBEXEC_EXPORT extern "C" __declspec(dllexport)
 
-NBEXEC_EXPORT int startPlatform(int argc, char *argv[], const char *helpMsg) {
+NBEXEC_EXPORT int startPlatform(int argc, char *argv[], const char *helpMsg, const char *name) {
     DWORD retCode = 0;
     launcher.appendToHelp(helpMsg);
     launcher.setSuppressConsole(!isConsoleAttached());
-    if (!launcher.start(argv, argc, &retCode)) {
+    if (!launcher.start(argv, argc, &retCode, name)) {
         return -1;
     }
     return retCode;

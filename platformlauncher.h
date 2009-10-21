@@ -65,12 +65,13 @@ class PlatformLauncher {
     static const char *OPT_JRUBY_SCRIPT;
 
     static const char *MAIN_CLASS;
+    static const char *DEFAULT_EXECUTABLE;
 
 public:
     PlatformLauncher();
     virtual ~PlatformLauncher();
 
-    bool start(char* argv[], int argc, DWORD *retCode);
+    bool start(char* argv[], int argc, DWORD *retCode, const char *name);
     void appendToHelp(const char *msg);
     void onExit();
 

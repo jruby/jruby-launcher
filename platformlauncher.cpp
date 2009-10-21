@@ -76,6 +76,7 @@ const char *PlatformLauncher::OPT_JRUBY_LIB = "-Djruby.lib=";
 const char *PlatformLauncher::OPT_JRUBY_SHELL = "-Djruby.shell=";
 const char *PlatformLauncher::OPT_JRUBY_SCRIPT = "-Djruby.script=";
 const char *PlatformLauncher::MAIN_CLASS = "org/jruby/Main";
+const char *PlatformLauncher::DEFAULT_EXECUTABLE = "jruby";
 
 extern "C" int nailgunClientMain(int argc, char *argv[], char *env[]);
 
@@ -112,7 +113,7 @@ const char** convertToArgvArray(list<string> args) {
     return argv;
 }
 
-bool PlatformLauncher::start(char* argv[], int argc, DWORD *retCode) {
+bool PlatformLauncher::start(char* argv[], int argc, DWORD *retCode, const char* binaryName) {
     if (!checkLoggingArg(argc, argv, false) || !initPlatformDir() || !parseArgs(argc, argv)) {
         return false;
     }
@@ -125,6 +126,35 @@ bool PlatformLauncher::start(char* argv[], int argc, DWORD *retCode) {
         const char ** nailEnv  = convertToArgvArray(*envList);
         nailgunClientMain(progArgs.size(), (char**)nailArgv, (char**)nailEnv);
         return true;
+    }
+
+    if (binaryName) {
+        // clean up the binaryName first,
+		// remove '.exe' from the end, and the possible path.
+        string bn = binaryName;
+
+        int found = bn.find_last_of("/\\");
+        if (found != string::npos) {
+            logMsg("The binary name contains slashes, will remove: %s", binaryName);
+            bn = bn.substr(found + 1);
+            binaryName = bn.c_str();
+        }
+
+        found = bn.find(".exe", bn.length() - 4);
+        if (found != string::npos) {
+            bn.erase(found, 4);
+            binaryName = bn.c_str();
+            logMsg("*** Cleaned up the binary name: %s", binaryName);
+        } else {
+            logMsg("*** No need to clean the binary name: %s", binaryName);
+        }
+
+        if (strcmp(binaryName, DEFAULT_EXECUTABLE) != 0) {
+            logMsg("PlatformLauncher:\n\tNon-default executable name: %s", binaryName);
+            logMsg("\tHence, launching with extra parameters: -S %s", binaryName);
+            progArgs.push_front(binaryName);
+            progArgs.push_front("-S");
+        }
     }
 
     if (jdkhome.empty()) {

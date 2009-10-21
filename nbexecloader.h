@@ -6,7 +6,7 @@
 #define HELP_MSG ""
 
 class NBExecLoader {
-    typedef int (*StartPlatform)(int argc, char *argv[], const char *help);
+    typedef int (*StartPlatform)(int argc, char *argv[], const char *help, const char *name);
 
 public:
     NBExecLoader()
@@ -17,7 +17,7 @@ public:
             FreeLibrary(hLib);
         }
     }
-    int start(const char *path, int argc, char *argv[]) {
+    int start(const char *path, int argc, char *argv[], const char *name) {
         if (!hLib) {
             hLib = LoadLibrary(path);
             if (!hLib) {
@@ -31,8 +31,8 @@ public:
             logErr(true, true, "Cannot start platform, failed to find startPlatform() in %s", path);
             return -1;
         }
-        logMsg("Starting platform...\n");
-        return startPlatform(argc, argv, HELP_MSG);
+        logMsg("Starting platform... \n\tBinary name is: %s\n", name);
+        return startPlatform(argc, argv, HELP_MSG, name);
     }
 
 private:

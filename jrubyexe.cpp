@@ -47,5 +47,5 @@
 int main(int argc, char *argv[]) {
     checkLoggingArg(argc, argv, true);
     NBExecLoader loader;
-    return loader.start("jruby.dll", argc - 1, argv + 1);
+    return loader.start("jruby.dll", argc - 1, argv + 1, argv[0]);
 }
