@@ -456,8 +456,4 @@ void PlatformLauncher::appendToHelp(const char *msg) {
 
 void PlatformLauncher::onExit() {
     logMsg("onExit()");
-    if (separateProcess) {
-        logMsg("JVM in separate process, no need to restart");
-        return;
-    }
 }
