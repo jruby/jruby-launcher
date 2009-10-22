@@ -134,7 +134,8 @@ bool JvmLauncher::start(const char *mainClassName, list<string> args, list<strin
         logMsg("\t%s", it->c_str());
     }
 
-    if (javaExePath.empty() || (javaClientDllPath.empty() && javaServerDllPath.empty())) {
+    if (javaExePath.empty() && javaClientDllPath.empty() && javaServerDllPath.empty()) {
+        // try to find out any java installed (check the registry)
         if (!initialize("")) {
             return false;
         }
