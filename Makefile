@@ -52,7 +52,7 @@ jruby.exe: jrubyexe.cpp nbexecloader.h utilsfuncs.cpp
 	g++ $(CXXFLAGS) $^ -s -o $@
 
 jrubyw.exe: jrubyexe.cpp nbexecloader.h utilsfuncs.cpp
-	g++ $(CXXFLAGS) -mwindows $^ -s -o $@
+	g++ $(CXXFLAGS) -DJRUBYW -mwindows $^ -s -o $@
 
 # clean
 clean: .clean-post

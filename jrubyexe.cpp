@@ -44,19 +44,17 @@
 #include <windows.h>
 #include "nbexecloader.h"
 
-#ifdef ATTACH_CONSOLE_BY_DEFAULT
+#ifdef JRUBYW
 const char *CON_ATTACH_MSG =
-    "\n\nThe launcher has determined that the parent process has a console and will reuse it for its own console output. "
-    "Closing the console will result in termination of the running program.\n"
-    "Use '--console suppress' to suppress console output.\n"
-    "Use '--console new' to create a separate console window.\n";
-#else
-const char *CON_ATTACH_MSG = "";
+    "*WARNING*: The non-console JRubyW launcher is forced to attach to console.\n"
+    "This may cause unexpected behavior of CMD console. Use:\n"
+    "    start /wait jrubyw.exe --console attach [args]\n";
 #endif
 
 int main(int argc, char *argv[]) {
     checkLoggingArg(argc, argv, true);
 
+#ifdef JRUBYW
     if (!isConsoleAttached()) {
         logMsg("Console is not attached, assume WINDOW mode");
         DWORD parentProcID = 0;
@@ -66,6 +64,7 @@ int main(int argc, char *argv[]) {
     } else {
         logMsg("Console is not attached, assume CONSOLE mode");
     }
+#endif
 
     NBExecLoader loader;
     return loader.start("jruby.dll", argc - 1, argv + 1, argv[0]);

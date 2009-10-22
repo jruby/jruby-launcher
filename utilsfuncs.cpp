@@ -239,7 +239,7 @@ void logV(bool appendSysError, bool showMsgBox, const char *format, va_list args
     }
 
     if (showMsgBox) {
-        ::MessageBox(NULL, msg, "Error", MB_OK | MB_ICONSTOP);
+        ::MessageBox(NULL, msg, "JRuby Error", MB_OK | MB_ICONSTOP);
     }
 }
 
@@ -275,6 +275,7 @@ bool checkLoggingArg(int argc, char *argv[], bool delFile) {
     return true;
 }
 
+#ifdef JRUBYW
 bool setupProcess(int &argc, char *argv[], DWORD &parentProcID, const char *attachMsg) {
 #define CHECK_ARG \
     if (i+1 == argc) {\
@@ -285,12 +286,45 @@ bool setupProcess(int &argc, char *argv[], DWORD &parentProcID, const char *atta
     parentProcID = 0;
     DWORD cmdLineArgPPID = 0;
     for (int i = 0; i < argc; i++) {
+        // break arg parsing, once "--" is found
+        if (strcmp("--", argv[i]) == 0) {
+            break;
+        }
         if (strcmp(ARG_NAME_CONSOLE, argv[i]) == 0) {
             CHECK_ARG;
             if (strcmp("new", argv[i + 1]) == 0){
+                logMsg("Allocating new console...");
                 AllocConsole();
             } else if (strcmp("suppress", argv[i + 1]) == 0) {
+                logMsg("Suppressing the attachment to console...");
                 // nothing, no console should be attached
+            } else if (strcmp("attach", argv[i + 1]) == 0) {
+                logMsg("Trying to attach to the existing console...");
+                // attach to parent process console if exists
+                // AttachConsole exists since WinXP, so be nice and do it dynamically
+                typedef BOOL(WINAPI * LPFAC)(DWORD dwProcessId);
+                HINSTANCE hKernel32 = GetModuleHandle("kernel32");
+                if (hKernel32) {
+                    LPFAC attachConsole = (LPFAC) GetProcAddress(hKernel32, "AttachConsole");
+                    if (attachConsole) {
+                        if (cmdLineArgPPID) {
+                            if (!attachConsole(cmdLineArgPPID)) {
+                                logErr(true, false, "AttachConsole of PPID: %u failed.", cmdLineArgPPID);
+                            }
+                        } else {
+                            if (!attachConsole((DWORD) - 1)) {
+                                logErr(true, true, "AttachConsole of PP failed.");
+                            } else {
+                                getParentProcessID(parentProcID);
+                                if (attachMsg) {
+                                    printToConsole(attachMsg);
+                                }
+                            }
+                        }
+                    } else {
+                        logErr(true, false, "GetProcAddress() for AttachConsole failed.");
+                    }
+                }
             } else {
                 logErr(false, true, "Invalid argument for \"%s\" option.", argv[i]);
                 return false;
@@ -305,36 +339,9 @@ bool setupProcess(int &argc, char *argv[], DWORD &parentProcID, const char *atta
     }
 #undef CHECK_ARG
 
-#ifdef ATTACH_CONSOLE_BY_DEFAULT
-    // default, attach to parent process console if exists
-    // AttachConsole exists since WinXP, so be nice and do it dynamically
-    typedef BOOL (WINAPI *LPFAC)(DWORD  dwProcessId);
-    HINSTANCE hKernel32 = GetModuleHandle("kernel32");
-    if (hKernel32) {
-        LPFAC attachConsole = (LPFAC) GetProcAddress(hKernel32, "AttachConsole");
-        if (attachConsole) {
-            if (cmdLineArgPPID) {
-                if (!attachConsole(cmdLineArgPPID)) {
-                    logErr(true, false, "AttachConsole of PPID: %u failed.", cmdLineArgPPID);
-                }
-            } else {
-                if (!attachConsole((DWORD) -1)) {
-                    logErr(true, false, "AttachConsole of PP failed.");
-                } else {
-                    getParentProcessID(parentProcID);
-                    if (attachMsg) {
-                        printToConsole(attachMsg);
-                    }
-                }
-            }
-        } else {
-            logErr(true, false, "GetProcAddress() for AttachConsole failed.");
-        }
-    }
-#endif
-
     return true;
 }
+#endif /* JRUBYW */
 
 bool isConsoleAttached() {
     typedef HWND (WINAPI *GetConsoleWindowT)();
@@ -363,6 +370,7 @@ bool printToConsole(const char *msg) {
     return false;
 }
 
+#ifdef JRUBYW
 bool getParentProcessID(DWORD &id) {
     typedef HANDLE (WINAPI * CreateToolhelp32SnapshotT)(DWORD, DWORD);
     typedef BOOL (WINAPI * Process32FirstT)(HANDLE, LPPROCESSENTRY32);
@@ -410,3 +418,4 @@ bool getParentProcessID(DWORD &id) {
     CloseHandle(hSnapshot);
     return false;
 }
+#endif /* JRUBYW */

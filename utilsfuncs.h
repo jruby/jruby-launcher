@@ -60,10 +60,13 @@ char * trimWhitespaces(char *str);
 void logMsg(const char *format, ...);
 void logErr(bool appendSysError, bool showMsgBox, const char *format, ...);
 bool checkLoggingArg(int argc, char *argv[], bool delFile);
+
+#ifdef JRUBYW
 bool setupProcess(int &argc, char *argv[], DWORD &parentProcID, const char *attachMsg = 0);
-bool printToConsole(const char *msg);
 bool getParentProcessID(DWORD &id);
+#endif /* JRUBYW */
+
+bool printToConsole(const char *msg);
 bool isConsoleAttached();
 
 #endif	/* _UTILSFUNCS_H */
-
