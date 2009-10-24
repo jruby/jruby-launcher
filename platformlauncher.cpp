@@ -367,6 +367,20 @@ void PlatformLauncher::prepareOptions() {
     option = OPT_JRUBY_SHELL;
     option += "cmd.exe";
     javaOptions.push_back(option);
+
+    // TODO: remove default max-heap setting after 1.4. Hard-coded -Xmx500m is
+    // for consistency with 1.4 jruby shell script.
+    bool maxHeap = false;
+    for (list<string>::iterator it = javaOptions.begin(); it != javaOptions.end(); it++) {
+        if (strncmp("-Xmx", it->c_str(), 4) == 0) {
+            maxHeap = true;
+            break;
+        }
+    }
+    if (!maxHeap) {
+        javaOptions.push_back("-Xmx500m");
+    }
+    // end TODO: remove max-heap setting
 }
 
 string & PlatformLauncher::constructClassPath() {
