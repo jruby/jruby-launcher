@@ -48,7 +48,7 @@
 const char *CON_ATTACH_MSG =
     "*WARNING*: The non-console JRubyW launcher is forced to attach to console.\n"
     "This may cause unexpected behavior of CMD console. Use:\n"
-    "    start /wait jrubyw.exe --console attach [args]\n";
+    "    start /wait jrubyw.exe -Xconsole attach [args]\n";
 #endif
 
 int main(int argc, char *argv[]) {

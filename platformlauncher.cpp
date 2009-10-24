@@ -49,19 +49,19 @@ using namespace std;
 
 const char *PlatformLauncher::HELP_MSG =
 "\nJRuby Launcher usage: jruby.exe {options} arguments\n\
-General options:\n\
-  --help                show this help\n\
-  --jdkhome <path>      path to JDK\n\
+Options:\n\
+  -Xhelp                show this help\n\
+  -Xjdkhome <path>      path to JDK\n\
   -J<jvm_option>        pass <jvm_option> to JVM\n\
 \n\
-  --cp:p <classpath>    prepend <classpath> to classpath\n\
-  --cp:a <classpath>    append <classpath> to classpath\n\
+  -Xcp:p <classpath>    prepend <classpath> to classpath\n\
+  -Xcp:a <classpath>    append <classpath> to classpath\n\
 \n\
-  --fork-java           run java in separate process\n\
-  --trace <path>        path for launcher log (for troubleshooting)\n\n\
+  -Xfork-java           run java in separate process\n\
+  -Xtrace <path>        path for launcher log (for troubleshooting)\n\
+  -Xconsole <mode>      jrubyw console attach mode (new|attach|suppress)\n\n\
 To see general JRuby options, type 'jruby -h' or 'jruby --help'.\n\
---------------------------------------------------------------------\
-\n\n";
+--------------------------------------------------------------------\n\n";
 
 const char *PlatformLauncher::REQ_JAVA_VERSION = "1.5";
 
@@ -316,7 +316,7 @@ bool PlatformLauncher::parseArgs(int argc, char *argv[]) {
             nailgunServer = true;
         } else if (strncmp("-J", argv[i], 2) == 0) {
             javaOptions.push_back(argv[i] + 2);
-        } else if (strcmp(argv[i], "-help") == 0) {
+        } else if (strcmp(argv[i], "-Xhelp") == 0) {
             printToConsole(HELP_MSG);
             if (!appendHelp.empty()) {
                 printToConsole(appendHelp.c_str());
@@ -328,7 +328,7 @@ bool PlatformLauncher::parseArgs(int argc, char *argv[]) {
     }
 
     if (jdkhome.empty()) {
-        logMsg("--jdkhome is not set, checking for %%JAVA_HOME%%...");
+        logMsg("-Xjdkhome is not set, checking for %%JAVA_HOME%%...");
         char *javaHome = getenv("JAVA_HOME");
         if (javaHome) {
             logMsg("%%JAVA_HOME%% is set: %s", javaHome);

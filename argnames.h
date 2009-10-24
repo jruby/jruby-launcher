@@ -8,13 +8,17 @@
 #ifndef _ARGNAMES_H
 #define	_ARGNAMES_H
 
-#define ARG_NAME_SEPAR_PROC "--fork-java"
-#define ARG_NAME_CONSOLE    "--console"
-#define ARG_NAME_LAUNCHER_LOG "--trace"
-#define ARG_NAME_BOOTCLASS "--bootclass"
-#define ARG_NAME_JDKHOME "--jdkhome"
-#define ARG_NAME_CP_PREPEND "--cp:p"
-#define ARG_NAME_CP_APPEND "--cp:a"
+/* These are windows-launcher-specific args. They should be prefixed with -X
+   so that they don't clash with normal Ruby args (like --trace for Rake). */
+#define ARG_NAME_SEPAR_PROC "-Xfork-java"
+#define ARG_NAME_CONSOLE    "-Xconsole"
+#define ARG_NAME_LAUNCHER_LOG "-Xtrace"
+#define ARG_NAME_BOOTCLASS "-Xbootclass"
+#define ARG_NAME_JDKHOME "-Xjdkhome"
+#define ARG_NAME_CP_PREPEND "-Xcp:p"
+#define ARG_NAME_CP_APPEND "-Xcp:a"
+
+/* Below are standard JRuby args handled by the launcher. */
 #define ARG_NAME_SERVER "--server"
 #define ARG_NAME_CLIENT "--client"
 #define ARG_NAME_SAMPLE "--sample"
