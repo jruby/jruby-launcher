@@ -5,5 +5,4 @@ Things that are not yet implemented:
   (Without separate binaries, x64 java will always be launched out-of-process).
 * Better handling of bootclasspath vs classpath,
   currently they are identical, I was lazy.
-* Ability to detach the console, ability to launch with new console
-  (these things are supported by Netbeans launchers, it seems)
+* Support JAVA_OPTS and JRUBY_OPTS
