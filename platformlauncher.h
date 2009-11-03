@@ -84,6 +84,7 @@ private:
     bool parseArgs(int argc, char *argv[]);
     bool initPlatformDir();
     void prepareOptions();
+    void setupMaxHeapAndStack();
     std::string & constructClassPath();
     void addFilesToClassPath(const char *dir, const char *subdir, const char *pattern);
     void addToClassPath(const char *path, bool onlyIfExists = false);

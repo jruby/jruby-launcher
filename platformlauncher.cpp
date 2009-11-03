@@ -368,19 +368,31 @@ void PlatformLauncher::prepareOptions() {
     option += "cmd.exe";
     javaOptions.push_back(option);
 
-    // TODO: remove default max-heap setting after 1.4. Hard-coded -Xmx500m is
-    // for consistency with 1.4 jruby shell script.
-    bool maxHeap = false;
+    setupMaxHeapAndStack();
+}
+
+void PlatformLauncher::setupMaxHeapAndStack() {
+    // Hard-coded 500m, 1024k is for consistency with jruby shell script.
+    string heapSize("500m"), stackSize("1024k");
+    bool maxHeap = false, maxStack = false;
     for (list<string>::iterator it = javaOptions.begin(); it != javaOptions.end(); it++) {
-        if (strncmp("-Xmx", it->c_str(), 4) == 0) {
+        if (!maxHeap && strncmp("-Xmx", it->c_str(), 4) == 0) {
+            heapSize = it->substr(4, it->size() - 4);
             maxHeap = true;
-            break;
+        }
+        if (!maxStack && strncmp("-Xss", it->c_str(), 4) == 0) {
+            stackSize = it->substr(4, it->size() - 4);
+            maxStack = true;
         }
     }
     if (!maxHeap) {
-        javaOptions.push_back("-Xmx500m");
+        javaOptions.push_back("-Xmx" + heapSize);
     }
-    // end TODO: remove max-heap setting
+    if (!maxStack) {
+        javaOptions.push_back("-Xss" + stackSize);
+    }
+    javaOptions.push_back("-Djruby.memory.max=" + heapSize);
+    javaOptions.push_back("-Djruby.stack.max=" + stackSize);
 }
 
 string & PlatformLauncher::constructClassPath() {
