@@ -85,6 +85,7 @@ private:
     bool initPlatformDir();
     void prepareOptions();
     void setupMaxHeapAndStack();
+    void addEnvVarToOptions(std::list<std::string> & optionsList, const char * envvar);
     std::string & constructClassPath();
     void addFilesToClassPath(const char *dir, const char *subdir, const char *pattern);
     void addToClassPath(const char *path, bool onlyIfExists = false);

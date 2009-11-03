@@ -248,6 +248,9 @@ bool PlatformLauncher::parseArgs(int argc, char *argv[]) {
         return false;\
     }
 
+    addEnvVarToOptions(javaOptions, "JAVA_OPTS");
+    addEnvVarToOptions(progArgs, "JRUBY_OPTS");
+
     logMsg("Parsing arguments:");
     for (int i = 0; i < argc; i++) {
         logMsg("\t%s", argv[i]);
@@ -482,4 +485,38 @@ void PlatformLauncher::appendToHelp(const char *msg) {
 
 void PlatformLauncher::onExit() {
     logMsg("onExit()");
+}
+
+void PlatformLauncher::addEnvVarToOptions(std::list<std::string> & optionsList, const char * envvar) {
+    const char * value = getenv(envvar);
+    string opts("");
+    if (value) {
+        opts = value;
+    }
+
+    if (opts.size() > 0) {
+        if (opts[0] == '"' || opts[0] == '\'') {
+            char quote = opts[0];
+            if (opts[opts.size() - 1] == quote) {
+                opts = opts.substr(1, opts.size() - 2);
+            }
+        }
+
+        int start = 0, pos = 0;
+        while ((pos = opts.find(' ', start)) != string::npos) {
+            string part(opts.substr(start, pos));
+            if (part.size() > 0) {
+                logMsg("%s += %s", envvar, part.c_str());
+                optionsList.push_back(part);
+            }
+            start = pos + 1;
+        }
+        if (start < opts.size()) {
+            string part(opts.substr(start, string::npos));
+            if (part.size() > 0) {
+                logMsg("%s += %s", envvar, part.c_str());
+                optionsList.push_back(part);
+            }
+        }
+    }
 }
