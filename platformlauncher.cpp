@@ -130,7 +130,7 @@ bool PlatformLauncher::start(char* argv[], int argc, DWORD *retCode, const char*
 
     if (binaryName) {
         // clean up the binaryName first,
-		// remove '.exe' from the end, and the possible path.
+        // remove '.exe' from the end, and the possible path.
         string bn = binaryName;
 
         int found = bn.find_last_of("/\\");
@@ -149,7 +149,7 @@ bool PlatformLauncher::start(char* argv[], int argc, DWORD *retCode, const char*
             logMsg("*** No need to clean the binary name: %s", binaryName);
         }
 
-        if (strncmp(binaryName, DEFAULT_EXECUTABLE, strlen(DEFAULT_EXECUTABLE)) != 0) {
+        if (strnicmp(binaryName, DEFAULT_EXECUTABLE, strlen(DEFAULT_EXECUTABLE)) != 0) {
             logMsg("PlatformLauncher:\n\tNon-default executable name: %s", binaryName);
             logMsg("\tHence, launching with extra parameters: -S %s", binaryName);
             progArgs.push_front(binaryName);
