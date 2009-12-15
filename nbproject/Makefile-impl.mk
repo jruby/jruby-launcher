@@ -27,11 +27,11 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 PROJECTNAME=jruby-launcher
 
 # Active Configuration
-DEFAULTCONF=cygwin
+DEFAULTCONF=mingw
 CONF=${DEFAULTCONF}
 
 # All Configurations
-ALLCONFS=cygwin mingw 
+ALLCONFS=mingw 
 
 
 # build

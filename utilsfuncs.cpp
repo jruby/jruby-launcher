@@ -41,6 +41,7 @@
  * Author: Tomas Holy
  */
 
+#include <stdio.h>
 #include "utilsfuncs.h"
 #include "argnames.h"
 #include <tlhelp32.h>

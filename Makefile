@@ -49,10 +49,10 @@ build: .build-post
 	if [ -d D:/work/jruby-dev/jruby ]; then cp jruby.exe jrubyw.exe jruby.dll D:/work/jruby-dev/jruby/bin/; fi
 
 jruby.exe: jrubyexe.cpp nbexecloader.h utilsfuncs.cpp
-	g++ $(CXXFLAGS) $^ -s -o $@
+	g++ $(CXXFLAGS) $^ -s -o $@ $(LDLIBSOPTIONS)
 
 jrubyw.exe: jrubyexe.cpp nbexecloader.h utilsfuncs.cpp
-	g++ $(CXXFLAGS) -DJRUBYW -mwindows $^ -s -o $@
+	g++ $(CXXFLAGS) -DJRUBYW -mwindows $^ -s -o $@ $(LDLIBSOPTIONS)
 
 # clean
 clean: .clean-post
@@ -64,7 +64,6 @@ clean: .clean-post
 .clean-post: .clean-impl
 # Add your post 'clean' code here...
 	rm -f jruby.exe jrubyw.exe
-
 
 # clobber
 clobber: .clobber-post

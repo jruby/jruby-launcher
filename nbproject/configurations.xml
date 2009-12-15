@@ -33,41 +33,6 @@
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
-    <conf name="cygwin" type="2">
-      <toolsSet>
-        <developmentServer>localhost</developmentServer>
-        <compilerSet>MinGW|MinGW</compilerSet>
-        <platform>3</platform>
-      </toolsSet>
-      <compileType>
-        <cTool>
-          <developmentMode>5</developmentMode>
-          <architecture>1</architecture>
-          <commandlineTool>gcc</commandlineTool>
-          <warningLevel>2</warningLevel>
-        </cTool>
-        <ccTool>
-          <developmentMode>5</developmentMode>
-          <stripSymbols>true</stripSymbols>
-          <architecture>1</architecture>
-          <commandlineTool>g++</commandlineTool>
-          <incDir>
-            <pElem>c:/cygwin/usr/include/mingw</pElem>
-            <pElem>D:/re/java6/include</pElem>
-            <pElem>D:/re/java6/include/win32</pElem>
-          </incDir>
-          <commandLine>-s -mno-cygwin</commandLine>
-          <warningLevel>2</warningLevel>
-        </ccTool>
-        <linkerTool>
-          <output>jruby.dll</output>
-          <stripSymbols>true</stripSymbols>
-          <linkerLibItems>
-            <linkerOptionItem>-lws2_32</linkerOptionItem>
-          </linkerLibItems>
-        </linkerTool>
-      </compileType>
-    </conf>
     <conf name="mingw" type="2">
       <toolsSet>
         <developmentServer>localhost</developmentServer>
@@ -77,8 +42,10 @@
       <compileType>
         <cTool>
           <developmentMode>5</developmentMode>
+          <stripSymbols>true</stripSymbols>
           <architecture>1</architecture>
           <commandlineTool>gcc</commandlineTool>
+          <commandLine>-mno-cygwin</commandLine>
           <warningLevel>2</warningLevel>
         </cTool>
         <ccTool>
@@ -90,13 +57,15 @@
             <pElem>${JAVA_HOME}/include</pElem>
             <pElem>${JAVA_HOME}/include/win32</pElem>
           </incDir>
+          <commandLine>-mno-cygwin</commandLine>
           <warningLevel>2</warningLevel>
         </ccTool>
         <linkerTool>
           <output>jruby.dll</output>
           <stripSymbols>true</stripSymbols>
+          <commandlineTool>${LINK.cc}</commandlineTool>
           <linkerLibItems>
-            <linkerOptionItem>-lws2_32</linkerOptionItem>
+            <linkerOptionItem>-lws2_32 -static-libgcc -lws2_32 -Wl,--enable-auto-import -Wl,-Bstatic -lstdc++ -Wl,-Bdynamic</linkerOptionItem>
           </linkerLibItems>
         </linkerTool>
       </compileType>
