@@ -70,5 +70,42 @@
         </linkerTool>
       </compileType>
     </conf>
+    <conf name="mingw64" type="2">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <compilerSet>MinGW|MinGW_TDM</compilerSet>
+        <platform>3</platform>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <developmentMode>5</developmentMode>
+          <stripSymbols>true</stripSymbols>
+          <architecture>2</architecture>
+          <commandlineTool>gcc</commandlineTool>
+          <commandLine>-mno-cygwin</commandLine>
+          <warningLevel>2</warningLevel>
+        </cTool>
+        <ccTool>
+          <developmentMode>5</developmentMode>
+          <stripSymbols>true</stripSymbols>
+          <architecture>2</architecture>
+          <commandlineTool>g++</commandlineTool>
+          <incDir>
+            <pElem>${JAVA_HOME}/include</pElem>
+            <pElem>${JAVA_HOME}/include/win32</pElem>
+          </incDir>
+          <commandLine>-mno-cygwin</commandLine>
+          <warningLevel>2</warningLevel>
+        </ccTool>
+        <linkerTool>
+          <output>jruby.dll</output>
+          <stripSymbols>true</stripSymbols>
+          <commandlineTool>${LINK.cc}</commandlineTool>
+          <linkerLibItems>
+            <linkerOptionItem>-lws2_32 -static-libgcc -lws2_32 -Wl,--enable-auto-import -Wl,-Bstatic -lstdc++ -Wl,-Bdynamic</linkerOptionItem>
+          </linkerLibItems>
+        </linkerTool>
+      </compileType>
+    </conf>
   </confs>
 </configurationDescriptor>
