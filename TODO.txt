@@ -3,6 +3,7 @@ Things that are not yet implemented:
 * --jdb
 * Do we need separate x86 and x64 binaries?
   (Without separate binaries, x64 java will always be launched out-of-process).
+  Currently, the build can hanble both, x86 and x64 compilers and can build both
+  versions. But for now, we ship JRuby only with x32 version.
 * Better handling of bootclasspath vs classpath,
   currently they are identical, I was lazy.
-* Support JAVA_OPTS and JRUBY_OPTS
