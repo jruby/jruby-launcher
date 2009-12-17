@@ -366,7 +366,7 @@ bool JvmLauncher::startOutProcJvm(const char *mainClassName, std::list<std::stri
 
     char cmdLineStr[32*1024] = "";
     strcpy(cmdLineStr, cmdLine.c_str());
-    if (!CreateProcess(NULL, cmdLineStr, NULL, NULL, FALSE, CREATE_SUSPENDED, NULL, NULL, &si, &pi)) {
+    if (!CreateProcess(NULL, cmdLineStr, NULL, NULL, TRUE, CREATE_SUSPENDED, NULL, NULL, &si, &pi)) {
         logErr(true, true, "Failed to create process");
         return false;
     }
