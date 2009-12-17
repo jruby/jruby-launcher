@@ -262,7 +262,7 @@ bool JvmLauncher::startInProcJvm(const char *mainClassName, std::list<std::strin
             jvmArgs.options = jvmOptions;
             jvmArgs.nOptions = options.size();
             jvmArgs.version = JNI_VERSION_1_4;
-            jvmArgs.ignoreUnrecognized = JNI_TRUE;
+            jvmArgs.ignoreUnrecognized = JNI_FALSE;
 
             logMsg("Creating JVM...");
             if (createJavaVM(&jvm, &env, &jvmArgs) < 0) {
