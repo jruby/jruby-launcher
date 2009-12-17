@@ -133,7 +133,7 @@ bool PlatformLauncher::start(char* argv[], int argc, DWORD *retCode, const char*
         // remove '.exe' from the end, and the possible path.
         string bn = binaryName;
 
-        int found = bn.find_last_of("/\\");
+        size_t found = bn.find_last_of("/\\");
         if (found != string::npos) {
             logMsg("The binary name contains slashes, will remove: %s", binaryName);
             bn = bn.substr(found + 1);
@@ -192,7 +192,7 @@ bool PlatformLauncher::run(DWORD *retCode) {
 
     // replace '/' by '.' to report a better name to jps/jconsole
     string cmdName = mainClass;
-    int position = cmdName.find("/");
+    size_t position = cmdName.find("/");
     while (position != string::npos) {
       cmdName.replace(position, 1, ".");
       position = cmdName.find("/", position + 1);
@@ -502,7 +502,7 @@ void PlatformLauncher::addEnvVarToOptions(std::list<std::string> & optionsList, 
             }
         }
 
-        int start = 0, pos = 0;
+        size_t start = 0, pos = 0;
         while ((pos = opts.find(' ', start)) != string::npos) {
             string part(opts.substr(start, pos));
             if (part.size() > 0) {
