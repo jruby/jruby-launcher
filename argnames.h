@@ -8,6 +8,10 @@
 #ifndef _ARGNAMES_H
 #define	_ARGNAMES_H
 
+/* Standard Java classpath options */
+#define ARG_NAME_CP "-J-cp"
+#define ARG_NAME_CLASSPATH "-J-classpath"
+
 /* These are windows-launcher-specific args. They should be prefixed with -X
    so that they don't clash with normal Ruby args (like --trace for Rake). */
 #define ARG_NAME_SEPAR_PROC "-Xfork-java"

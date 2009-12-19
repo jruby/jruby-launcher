@@ -54,6 +54,7 @@ Options:\n\
   -Xjdkhome <path>      path to JDK\n\
   -J<jvm_option>        pass <jvm_option> to JVM\n\
 \n\
+  -Xcp   <classpath>    set the classpath\n\
   -Xcp:p <classpath>    prepend <classpath> to classpath\n\
   -Xcp:a <classpath>    append <classpath> to classpath\n\
 \n\
@@ -288,13 +289,29 @@ bool PlatformLauncher::parseArgs(int argc, char *argv[]) {
         } else if (strcmp(ARG_NAME_CP_PREPEND, argv[i]) == 0
                 || strcmp(ARG_NAME_CP_PREPEND + 1, argv[i]) == 0) {
             CHECK_ARG;
+            if (!cpBefore.empty()) {
+                cpBefore += ';';
+            }
             cpBefore += argv[++i];
         } else if (strcmp(ARG_NAME_CP_APPEND, argv[i]) == 0
-                || strcmp(ARG_NAME_CP_APPEND + 1, argv[i]) == 0
+                || strcmp(ARG_NAME_CP_APPEND + 1, argv[i]) == 0) {
+            CHECK_ARG;
+            if (!cpAfter.empty()) {
+                cpAfter += ';';
+            }
+            cpAfter += argv[++i];
+        } else if (strcmp(ARG_NAME_CP, argv[i]) == 0
+                || strcmp(ARG_NAME_CP + 1, argv[i]) == 0
+                || strcmp(ARG_NAME_CLASSPATH, argv[i]) == 0
+                || strcmp(ARG_NAME_CLASSPATH + 1, argv[i]) == 0
                 || strncmp(ARG_NAME_CP_APPEND + 1, argv[i], 3) == 0
                 || strncmp(ARG_NAME_CP_APPEND, argv[i], 4) == 0) {
+            // handling -Xcp, -J-cp or -J-classpath options
             CHECK_ARG;
-            cpAfter += argv[++i];
+            if (!cpExplicit.empty()) {
+                cpExplicit += ';';
+            }
+            cpExplicit += argv[++i];
         } else if (strcmp(ARG_NAME_SERVER, argv[i]) == 0
                 || strcmp(ARG_NAME_CLIENT, argv[i]) == 0) {
             javaOptions.push_back(argv[i] + 1); // to JVMLauncher, -server instead of --server
@@ -405,9 +422,15 @@ string & PlatformLauncher::constructClassPath() {
     
     addJarsToClassPathFrom(platformDir.c_str());
 
-    char *envCP = getenv("CLASSPATH");
-    if (envCP) {
-        addToClassPath(envCP, false);
+    if (cpExplicit.empty()) {
+        logMsg("No explicit classpath option is used, looking up %%CLASSPATH%% env");
+        char *envCP = getenv("CLASSPATH");
+        if (envCP) {
+            addToClassPath(envCP, false);
+        }
+    } else {
+        logMsg("Explicit classpath option is used, ignoring %%CLASSPATH%% env");
+        addToClassPath(cpExplicit.c_str(), false);
     }
 
     if (!cpAfter.empty()) {

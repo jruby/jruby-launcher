@@ -102,6 +102,7 @@ private:
     std::string bootclass;
     std::string jdkhome;
     std::string cpBefore;
+    std::string cpExplicit;
     std::string cpAfter;
     std::string nextAction;
 
