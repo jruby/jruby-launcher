@@ -13,6 +13,8 @@
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
                    projectFiles="true">
+      <itemPath>resources/jruby.ico</itemPath>
+      <itemPath>resources/jruby.rc</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"

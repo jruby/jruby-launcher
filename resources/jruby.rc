@@ -1,0 +1,25 @@
+id ICON "jruby.ico"
+
+1 VERSIONINFO
+ FILEVERSION    1,0,0,0
+ PRODUCTVERSION 1,0,0,0
+BEGIN
+ BLOCK "StringFileInfo"
+ BEGIN
+  BLOCK "000004b0"
+  BEGIN
+   VALUE "CompanyName",      "http://www.jruby.org/\0"
+   VALUE "FileDescription",  "Windows JRuby Launcher\0"
+   VALUE "FileVersion",      "1.0\0"
+   VALUE "InternalName",     "jruby.exe\0"
+   VALUE "LegalCopyright",   "Copyright (C) The JRuby Team\0"
+   VALUE "OriginalFilename", "jruby.exe\0"
+   VALUE "ProductName",      "JRuby\0"
+   VALUE "ProductVersion",   "1.0\0"
+  END
+ END
+ BLOCK "VarFileInfo"
+ BEGIN
+  VALUE "Translation", 0x0, 0x4b0
+ END
+END
