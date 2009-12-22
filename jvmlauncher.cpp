@@ -248,6 +248,12 @@ bool JvmLauncher::startInProcJvm(const char *mainClassName, std::list<std::strin
                 return false;
             }
 
+            // Explicity remove -server and -client options, they are not
+            // needed, since we invoke JVM in-process and already know
+            // which DLL to use.
+            options.remove("-server");
+            options.remove("-client");
+
             logMsg("JVM options:");
             jvmOptions = new JavaVMOption[options.size()];
             int i = 0;
