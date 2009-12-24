@@ -60,7 +60,7 @@ class PlatformLauncher {
     static const char *OPT_CLASS_PATH;
     static const char *OPT_BOOT_CLASS_PATH;
 
-    static const char *OPT_JRUBY_LIB;
+    static const char *OPT_JFFI_PATH;
     static const char *OPT_JRUBY_SHELL;
     static const char *OPT_JRUBY_SCRIPT;
 

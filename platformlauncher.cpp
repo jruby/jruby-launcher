@@ -73,7 +73,7 @@ const char *PlatformLauncher::OPT_JRUBY_COMMAND_NAME = "-Dsun.java.command=";
 const char *PlatformLauncher::OPT_CLASS_PATH = "-Djava.class.path=";
 const char *PlatformLauncher::OPT_BOOT_CLASS_PATH = "-Xbootclasspath/a:";
 
-const char *PlatformLauncher::OPT_JRUBY_LIB = "-Djruby.lib=";
+const char *PlatformLauncher::OPT_JFFI_PATH = "-Djffi.boot.library.path=";
 const char *PlatformLauncher::OPT_JRUBY_SHELL = "-Djruby.shell=";
 const char *PlatformLauncher::OPT_JRUBY_SCRIPT = "-Djruby.script=";
 const char *PlatformLauncher::MAIN_CLASS = "org/jruby/Main";
@@ -386,6 +386,11 @@ void PlatformLauncher::prepareOptions() {
 
     option = OPT_JRUBY_SHELL;
     option += "cmd.exe";
+    javaOptions.push_back(option);
+
+    option = OPT_JFFI_PATH;
+    option += (platformDir + "\\lib\\native\\i386-Windows;"
+            + platformDir + "\\lib\\native\\x86_64-Windows");
     javaOptions.push_back(option);
 
     setupMaxHeapAndStack();
