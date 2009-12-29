@@ -319,6 +319,7 @@ bool PlatformLauncher::parseArgs(int argc, char *argv[]) {
             javaOptions.push_back("-Xprof");
         } else if (strcmp(ARG_NAME_MANAGE, argv[i]) == 0) {
             javaOptions.push_back("-Dcom.sun.management.jmxremote");
+            javaOptions.push_back("-Djruby.management.enabled=true");
         } else if (strcmp(ARG_NAME_HEADLESS, argv[i]) == 0) {
             javaOptions.push_back("-Djava.awt.headless=true");
         } else if (strcmp(ARG_NAME_PROFILE, argv[i]) == 0 ||
