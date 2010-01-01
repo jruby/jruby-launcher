@@ -86,7 +86,8 @@ private:
     void prepareOptions();
     void setupMaxHeapAndStack();
     void addEnvVarToOptions(std::list<std::string> & optionsList, const char * envvar);
-    std::string & constructClassPath();
+    void constructClassPath();
+    void constructBootClassPath();
     void addFilesToClassPath(const char *dir, const char *subdir, const char *pattern);
     void addToClassPath(const char *path, bool onlyIfExists = false);
     void addToBootClassPath(const char *path, bool onlyIfExists = false);
@@ -112,6 +113,7 @@ private:
     std::set<std::string> addedToCP;
     std::string classPath;
     std::string bootClassPath;
+    std::set<std::string> addedToBootCP;
     std::string appendHelp;
 };
 

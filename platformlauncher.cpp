@@ -187,6 +187,7 @@ bool PlatformLauncher::start(char* argv[], int argc, DWORD *retCode, const char*
 
 bool PlatformLauncher::run(DWORD *retCode) {
     logMsg("Starting application...");
+    constructBootClassPath();
     constructClassPath();
     const char *mainClass;
     mainClass = bootclass.empty() ? MAIN_CLASS : bootclass.c_str();
@@ -207,9 +208,11 @@ bool PlatformLauncher::run(DWORD *retCode) {
     option += classPath;
     javaOptions.push_back(option);
 
-    option = OPT_BOOT_CLASS_PATH;
-    option += bootClassPath;
-    javaOptions.push_back(option);
+    if (!bootClassPath.empty()) {
+        option = OPT_BOOT_CLASS_PATH;
+        option += bootClassPath;
+        javaOptions.push_back(option);
+    }
 
     jvmLauncher.setSuppressConsole(suppressConsole);
     bool rc = jvmLauncher.start(mainClass, progArgs, javaOptions, separateProcess, retCode);
@@ -421,11 +424,31 @@ void PlatformLauncher::setupMaxHeapAndStack() {
     javaOptions.push_back("-Djruby.stack.max=" + stackSize);
 }
 
-string & PlatformLauncher::constructClassPath() {
-    logMsg("constructClassPath()");
+void PlatformLauncher::constructBootClassPath() {
+    logMsg("constructBootClassPath()");
+    addedToBootCP.clear();
     addedToCP.clear();
     classPath = cpBefore;
-    
+
+    string jruby_complete_jar = platformDir + "\\lib\\jruby-complete.jar";
+    string jruby_jar = platformDir + "\\lib\\jruby.jar";
+
+    if (fileExists(jruby_complete_jar.c_str())) {
+        if (fileExists(jruby_jar.c_str())) {
+            printToConsole("ERROR: Both jruby-complete.jar and jruby.jar are present in the 'lib' directory.");
+            exit(10);
+        }
+        addToBootClassPath(jruby_complete_jar.c_str());
+    } else {
+        addToBootClassPath(jruby_jar.c_str(), true);
+    }
+
+    logMsg("BootclassPath: %s", bootClassPath.c_str());
+}
+
+void PlatformLauncher::constructClassPath() {
+    logMsg("constructClassPath()");
+
     addJarsToClassPathFrom(platformDir.c_str());
 
     if (cpExplicit.empty()) {
@@ -445,7 +468,6 @@ string & PlatformLauncher::constructClassPath() {
     }
 
     logMsg("ClassPath: %s", classPath.c_str());
-    return classPath;
 }
 
 void PlatformLauncher::addJarsToClassPathFrom(const char *dir) {
@@ -470,14 +492,7 @@ void PlatformLauncher::addFilesToClassPath(const char *dir, const char *subdir, 
         string name = subdir;
         name += fd.cFileName;
         string fullName = path + fd.cFileName;
-        if (addedToCP.insert(name).second) {
-            addToClassPath(fullName.c_str());
-            if (!nailgunServer) {
-                addToBootClassPath(fullName.c_str());
-            }
-        } else {
-            logMsg("\"%s\" already added, skipping \"%s\"", name.c_str(), fullName.c_str());
-        }
+        addToClassPath(fullName.c_str());
     } while (FindNextFile(hFind, &fd));
     FindClose(hFind);
 }
@@ -488,22 +503,43 @@ void PlatformLauncher::addToClassPath(const char *path, bool onlyIfExists) {
         return;
     }
 
-    if (!classPath.empty()) {
-        classPath += ';';
+    if (!addedToCP.insert(path).second) {
+        logMsg("\"%s\" already added, skipping", path);
+        return;
     }
-    classPath += path;
+
+    // check that this hasn't been added to boot class path already
+    if (addedToBootCP.find(path) == addedToBootCP.end()) {
+        if (!classPath.empty()) {
+            classPath += ';';
+        }
+        classPath += path;
+    } else {
+        logMsg("No need to add \"%s\" to classpath, it's already in bootclasspath", path);
+    }
 }
 
 void PlatformLauncher::addToBootClassPath(const char *path, bool onlyIfExists) {
     logMsg("addToBootClassPath()\n\tpath: %s\n\tonlyIfExists: %s", path, onlyIfExists ? "true" : "false");
+
+    if (nailgunServer) {
+        logMsg("NOTE: In 'ng-server' mode there is no bootclasspath, adding to classpath...");
+        return addToClassPath(path, onlyIfExists);
+    }
+
     if (onlyIfExists && !fileExists(path)) {
         return;
     }
 
-    if (!bootClassPath.empty()) {
-        bootClassPath += ';';
+    // only add non-duplicates
+    if (addedToBootCP.insert(path).second) {
+        if (!bootClassPath.empty()) {
+            bootClassPath += ';';
+        }
+        bootClassPath += path;
+    } else {
+        logMsg("\"%s\" already in bootclasspath", path);
     }
-    bootClassPath += path;
 }
 
 void PlatformLauncher::appendToHelp(const char *msg) {
