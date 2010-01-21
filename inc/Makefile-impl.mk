@@ -1,14 +1,3 @@
-# 
-# Generated Makefile - do not edit! 
-# 
-# Edit the Makefile in the project folder instead (../Makefile). Each target
-# has a pre- and a post- target defined where you can add customization code.
-#
-# This makefile implements macros and targets common to all configurations.
-#
-# NOCDDL
-
-
 # Building and Cleaning subprojects are done by default, but can be controlled with the SUB
 # macro. If SUB=no, subprojects will not be built or cleaned. The following macro
 # statements set BUILD_SUB-CONF and CLEAN_SUB-CONF to .build-reqprojects-conf
@@ -31,19 +20,18 @@ DEFAULTCONF=mingw
 CONF=${DEFAULTCONF}
 
 # All Configurations
-ALLCONFS=mingw mingw64 unix 
-
+ALLCONFS=mingw mingw64 unix
 
 # build
 .build-impl: .build-pre .validate-impl .depcheck-impl
 	@#echo "=> Running $@... Configuration=$(CONF)"
-	${MAKE} -f nbproject/Makefile-${CONF}.mk SUBPROJECTS=${SUBPROJECTS} .build-conf
+	${MAKE} -f inc/Makefile-rules.mk CONF=$(CONF) SUBPROJECTS=${SUBPROJECTS} .build-conf
 
 
 # clean
-.clean-impl: .clean-pre .validate-impl .depcheck-impl
+.clean-impl: .clean-pre .depcheck-impl
 	@#echo "=> Running $@... Configuration=$(CONF)"
-	${MAKE} -f nbproject/Makefile-${CONF}.mk SUBPROJECTS=${SUBPROJECTS} .clean-conf
+	${MAKE} -f inc/Makefile-rules.mk CONF=$(CONF) SUBPROJECTS=${SUBPROJECTS} .clean-conf
 
 
 # clobber 
@@ -51,7 +39,7 @@ ALLCONFS=mingw mingw64 unix
 	@#echo "=> Running $@..."
 	for CONF in ${ALLCONFS}; \
 	do \
-	    ${MAKE} -f nbproject/Makefile-$${CONF}.mk SUBPROJECTS=${SUBPROJECTS} .clean-conf; \
+	    ${MAKE} -f inc/Makefile-rules.mk CONF=$(CONF) SUBPROJECTS=${SUBPROJECTS} .clean-conf; \
 	done
 
 # all 
@@ -59,8 +47,19 @@ ALLCONFS=mingw mingw64 unix
 	@#echo "=> Running $@..."
 	for CONF in ${ALLCONFS}; \
 	do \
-	    ${MAKE} -f nbproject/Makefile-$${CONF}.mk SUBPROJECTS=${SUBPROJECTS} .build-conf; \
+	    ${MAKE} -f inc/Makefile-rules.mk CONF=$(CONF) SUBPROJECTS=${SUBPROJECTS} .build-conf; \
 	done
+
+# configuration validation
+.validate-impl:
+	@if [ ! "$$JAVA_HOME" ]; \
+	then \
+	    echo ""; \
+	    echo "Error: JAVA_HOME not set. Please make sure you have a JVM installed"; \
+	    echo "and JAVA_HOME pointing to it."; \
+	    echo "Current directory: " `pwd`; \
+	    echo ""; \
+	fi
 
 # dependency checking support
 .depcheck-impl:
@@ -74,22 +73,6 @@ ALLCONFS=mingw mingw64 unix
 	    echo ".KEEP_STATE:" >>.dep.inc; \
 	    echo ".KEEP_STATE_FILE:.make.state.\$${CONF}" >>.dep.inc; \
 	fi
-
-# configuration validation
-.validate-impl:
-	@if [ ! -f nbproject/Makefile-${CONF}.mk ]; \
-	then \
-	    echo ""; \
-	    echo "Error: can not find the makefile for configuration '${CONF}' in project ${PROJECTNAME}"; \
-	    echo "See 'make help' for details."; \
-	    echo "Current directory: " `pwd`; \
-	    echo ""; \
-	fi
-	@if [ ! -f nbproject/Makefile-${CONF}.mk ]; \
-	then \
-	    exit 1; \
-	fi
-
 
 # help
 .help-impl: .help-pre

@@ -25,6 +25,7 @@
       <itemPath>ng.c</itemPath>
       <itemPath>platformlauncher.cpp</itemPath>
       <itemPath>utilsfuncs.cpp</itemPath>
+      <itemPath>utilsfuncswin.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -108,6 +109,42 @@
           </linkerLibItems>
         </linkerTool>
       </compileType>
+    </conf>
+    <conf name="unix" type="2">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <compilerSet>GNU|GNU</compilerSet>
+        <platform>4</platform>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <developmentMode>5</developmentMode>
+          <stripSymbols>true</stripSymbols>
+          <architecture>1</architecture>
+          <commandlineTool>gcc</commandlineTool>
+          <warningLevel>2</warningLevel>
+        </cTool>
+        <ccTool>
+          <developmentMode>5</developmentMode>
+          <stripSymbols>true</stripSymbols>
+          <architecture>1</architecture>
+          <commandlineTool>g++</commandlineTool>
+          <incDir>
+            <pElem>${JAVA_HOME}/include</pElem>
+          </incDir>
+          <warningLevel>2</warningLevel>
+        </ccTool>
+        <linkerTool>
+          <output>jruby.dll</output>
+          <stripSymbols>true</stripSymbols>
+          <commandlineTool>${LINK.cc}</commandlineTool>
+          <linkerLibItems>
+            <linkerOptionItem>-static-libgcc -Wl,--enable-auto-import -Wl,-Bstatic -lstdc++ -Wl,-Bdynamic</linkerOptionItem>
+          </linkerLibItems>
+        </linkerTool>
+      </compileType>
+      <item path="utilsfuncswin.cpp" ex="true" tool="1">
+      </item>
     </conf>
   </confs>
 </configurationDescriptor>

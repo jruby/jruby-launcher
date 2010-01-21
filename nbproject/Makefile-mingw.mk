@@ -34,6 +34,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/jvmlauncher.o \
 	${OBJECTDIR}/platformlauncher.o \
 	${OBJECTDIR}/utilsfuncs.o \
+	${OBJECTDIR}/utilsfuncswin.o \
 	${OBJECTDIR}/ng.o \
 	${OBJECTDIR}/jruby.o \
 	${OBJECTDIR}/jrubyexe.o
@@ -75,6 +76,11 @@ ${OBJECTDIR}/utilsfuncs.o: nbproject/Makefile-${CND_CONF}.mk utilsfuncs.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -Wall -s -I${JAVA_HOME}/include -I${JAVA_HOME}/include/win32  -MMD -MP -MF $@.d -o ${OBJECTDIR}/utilsfuncs.o utilsfuncs.cpp
+
+${OBJECTDIR}/utilsfuncswin.o: nbproject/Makefile-${CND_CONF}.mk utilsfuncswin.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -Wall -s -I${JAVA_HOME}/include -I${JAVA_HOME}/include/win32  -MMD -MP -MF $@.d -o ${OBJECTDIR}/utilsfuncswin.o utilsfuncswin.cpp
 
 ${OBJECTDIR}/ng.o: nbproject/Makefile-${CND_CONF}.mk ng.c 
 	${MKDIR} -p ${OBJECTDIR}

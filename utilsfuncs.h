@@ -1,6 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
+ * Copyright 2009-2010 JRuby Team (www.jruby.org).
  * Copyright 1997-2008 Sun Microsystems, Inc. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
@@ -44,29 +45,32 @@
 #ifndef _UTILSFUNCS_H
 #define	_UTILSFUNCS_H
 
-#include <windows.h>
 #include <string>
 
-bool disableFolderVirtualization(HANDLE hProcess);
-bool getStringFromRegistry(HKEY rootKey, const char *keyName, const char *valueName, std::string &value);
-bool getDwordFromRegistry(HKEY rootKey, const char *keyName, const char *valueName, DWORD &value);
 bool dirExists(const char *path);
 bool fileExists(const char *path);
 bool normalizePath(char *path, int len);
 bool createPath(const char *path);
-char * getCurrentModulePath(char *path, int pathLen);
 char * skipWhitespaces(char *str);
 char * trimWhitespaces(char *str);
 void logMsg(const char *format, ...);
 void logErr(bool appendSysError, bool showMsgBox, const char *format, ...);
 bool checkLoggingArg(int argc, char *argv[], bool delFile);
 
+#ifdef WIN32
+#include <windows.h>
+
 #ifdef JRUBYW
 bool setupProcess(int &argc, char *argv[], DWORD &parentProcID, const char *attachMsg = 0);
 bool getParentProcessID(DWORD &id);
 #endif /* JRUBYW */
 
+bool disableFolderVirtualization(HANDLE hProcess);
+char * getCurrentModulePath(char *path, int pathLen);
+bool getStringFromRegistry(HKEY rootKey, const char *keyName, const char *valueName, std::string &value);
+bool getDwordFromRegistry(HKEY rootKey, const char *keyName, const char *valueName, DWORD &value);
 bool printToConsole(const char *msg);
 bool isConsoleAttached();
+#endif
 
 #endif	/* _UTILSFUNCS_H */
