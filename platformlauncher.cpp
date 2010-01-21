@@ -1,6 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
+ * Copyright 2009-2010 JRuby Team (www.jruby.org).
  * Copyright 1997-2008 Sun Microsystems, Inc. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
@@ -115,7 +116,10 @@ const char** convertToArgvArray(list<string> args) {
 }
 
 bool PlatformLauncher::start(char* argv[], int argc, DWORD *retCode, const char* binaryName) {
-    if (!checkLoggingArg(argc, argv, false) || !initPlatformDir() || !parseArgs(argc, argv)) {
+    if (!checkLoggingArg(argc, argv, false)
+	|| !initPlatformDir()
+	|| !parseArgs(argc, argv)
+	|| !checkJDKHome()) {
         return false;
     }
     disableFolderVirtualization(GetCurrentProcess());
@@ -245,6 +249,30 @@ bool PlatformLauncher::initPlatformDir() {
     return true;
 }
 
+bool PlatformLauncher::checkJDKHome() {
+    if (jdkhome.empty()) {
+        logMsg("-Xjdkhome is not set, checking for %%JAVA_HOME%%...");
+        char *javaHome = getenv("JAVA_HOME");
+        if (javaHome) {
+            logMsg("%%JAVA_HOME%% is set: %s", javaHome);
+            if (!jvmLauncher.initialize(javaHome)) {
+                logMsg("Cannot locate java installation, specified by JAVA_HOME: %s", javaHome);
+                string errMsg = "Cannot locate java installation, specified by JAVA_HOME:\n";
+                errMsg += javaHome;
+                errMsg += "\nDo you want to try to use default version?";
+                jdkhome = "";
+                if (::MessageBox(NULL, errMsg.c_str(),
+                        "Invalid jdkhome specified", MB_ICONQUESTION | MB_YESNO) == IDNO) {
+                    return false;
+                }
+            } else {
+                jdkhome = javaHome;
+            }
+        }
+    }
+    return true;
+}
+
 bool PlatformLauncher::parseArgs(int argc, char *argv[]) {
 #define CHECK_ARG \
     if (i+1 == argc) {\
@@ -348,27 +376,6 @@ bool PlatformLauncher::parseArgs(int argc, char *argv[]) {
             return false;
         } else {
             progArgs.push_back(argv[i]);
-        }
-    }
-
-    if (jdkhome.empty()) {
-        logMsg("-Xjdkhome is not set, checking for %%JAVA_HOME%%...");
-        char *javaHome = getenv("JAVA_HOME");
-        if (javaHome) {
-            logMsg("%%JAVA_HOME%% is set: %s", javaHome);
-            if (!jvmLauncher.initialize(javaHome)) {
-                logMsg("Cannot locate java installation, specified by JAVA_HOME: %s", javaHome);
-                string errMsg = "Cannot locate java installation, specified by JAVA_HOME:\n";
-                errMsg += javaHome;
-                errMsg += "\nDo you want to try to use default version?";
-                jdkhome = "";
-                if (::MessageBox(NULL, errMsg.c_str(),
-                        "Invalid jdkhome specified", MB_ICONQUESTION | MB_YESNO) == IDNO) {
-                    return false;
-                }
-            } else {
-                jdkhome = javaHome;
-            }
         }
     }
 
