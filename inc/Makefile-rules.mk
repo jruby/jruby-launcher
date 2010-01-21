@@ -26,7 +26,7 @@ $(OBJECTDIR)/%.o: %.c inc/Makefile-rules.mk inc/Makefile-conf.mk
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
 	${RM} -r build/$(CONF)
-	${RM} -f jruby.dll
+	${RM} -f $(PROGRAM)
 
 # Subprojects
 .clean-subprojects:
