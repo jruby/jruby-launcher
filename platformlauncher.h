@@ -46,34 +46,14 @@
 #define	_PLATFORMLAUNCHER_H
 
 #include "jvmlauncher.h"
-#include <string>
-#include <list>
-#include <set>
+#include "argparser.h"
 
-class PlatformLauncher {
-    static const char *REQ_JAVA_VERSION;
-    static const char *HELP_MSG;
-
-    static const char *OPT_JDK_HOME;
-    static const char *OPT_JRUBY_HOME;
-    static const char *OPT_JRUBY_COMMAND_NAME;
-    
-    static const char *OPT_CLASS_PATH;
-    static const char *OPT_BOOT_CLASS_PATH;
-
-    static const char *OPT_JFFI_PATH;
-    static const char *OPT_JRUBY_SHELL;
-    static const char *OPT_JRUBY_SCRIPT;
-
-    static const char *MAIN_CLASS;
-    static const char *DEFAULT_EXECUTABLE;
-
+class PlatformLauncher : public ArgParser {
 public:
     PlatformLauncher();
     virtual ~PlatformLauncher();
 
     bool start(char* argv[], int argc, DWORD *retCode, const char *name);
-    void appendToHelp(const char *msg);
     void onExit();
 
     void setSuppressConsole(bool val) {
@@ -82,41 +62,13 @@ public:
 
 private:
     PlatformLauncher(const PlatformLauncher& orig);
-    bool parseArgs(int argc, char *argv[]);
     bool initPlatformDir();
-    void prepareOptions();
-    void setupMaxHeapAndStack();
-    void addEnvVarToOptions(std::list<std::string> & optionsList, const char * envvar);
-    void constructClassPath();
-    void constructBootClassPath();
-    void addFilesToClassPath(const char *dir, const char *subdir, const char *pattern);
-    void addToClassPath(const char *path, bool onlyIfExists = false);
-    void addToBootClassPath(const char *path, bool onlyIfExists = false);
-    void addJarsToClassPathFrom(const char *dir);
     bool run(DWORD *retCode);
     bool checkJDKHome();
 
 private:
-    bool separateProcess;
     bool suppressConsole;
-    bool nailgunClient;
-    bool nailgunServer;
-    std::string platformDir;
-    std::string bootclass;
-    std::string jdkhome;
-    std::string cpBefore;
-    std::string cpExplicit;
-    std::string cpAfter;
-    std::string nextAction;
-
-    std::list<std::string> javaOptions;
-    std::list<std::string> progArgs;
     JvmLauncher jvmLauncher;
-    std::set<std::string> addedToCP;
-    std::string classPath;
-    std::string bootClassPath;
-    std::set<std::string> addedToBootCP;
-    std::string appendHelp;
 };
 
 #endif	/* _PLATFORMLAUNCHER_H */

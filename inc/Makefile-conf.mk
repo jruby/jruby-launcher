@@ -22,7 +22,7 @@ include Makefile
 OBJECTDIR=build/${CONF}/${CND_PLATFORM}
 
 # Object Files
-OBJECTFILES = ${OBJECTDIR}/platformlauncher.o	\
+OBJECTFILES = ${OBJECTDIR}/argparser.o		\
 	      ${OBJECTDIR}/utilsfuncs.o		\
 	      ${OBJECTDIR}/ng.o			\
 	      ${OBJECTDIR}/jrubyexe.o
@@ -31,6 +31,7 @@ INCLUDES = -I${JAVA_HOME}/include
 
 ifdef MINGW
 OBJECTFILES += ${OBJECTDIR}/utilsfuncswin.o	\
+	       ${OBJECTDIR}/platformlauncher.o	\
 	       ${OBJECTDIR}/jvmlauncher.o	\
 	       ${OBJECTDIR}/jruby.o
 INCLUDES += -I${JAVA_HOME}/include/win32
