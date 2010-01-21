@@ -56,4 +56,7 @@ LDLIBSOPTIONS = -static-libgcc -Wl,--enable-auto-import -Wl,-Bstatic -lstdc++ -W
 
 ifdef MINGW
 LDLIBSOPTIONS += -lws2_32
+PROGRAM = jruby.dll
+else
+PROGRAM = jruby
 endif

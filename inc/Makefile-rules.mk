@@ -2,10 +2,13 @@ include inc/Makefile-conf.mk
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	${MAKE} -f inc/Makefile-rules.mk jruby.dll
+	${MAKE} -f inc/Makefile-rules.mk $(PROGRAM)
 
 jruby.dll: ${OBJECTFILES}
-	${LINK.cc} -shared -s -o $@ ${OBJECTFILES} $(LDLIBSOPTIONS)
+	${LINK.cc} -shared -s -o $@ $^ $(LDLIBSOPTIONS)
+
+jruby: ${OBJECTFILES}
+	${LINK.cc} -s -o $@ $^ $(LDLIBSOPTIONS)
 
 $(OBJECTDIR)/%.o: %.cpp inc/Makefile-rules.mk inc/Makefile-conf.mk
 	${MKDIR} -p ${OBJECTDIR}
