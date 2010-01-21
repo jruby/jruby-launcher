@@ -31,6 +31,7 @@ OBJECTDIR=build/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/argparser.o \
 	${OBJECTDIR}/platformlauncher.o \
 	${OBJECTDIR}/ng.o \
 	${OBJECTDIR}/jrubyexe.o \
@@ -60,6 +61,11 @@ LDLIBSOPTIONS=-static-libgcc -Wl,--enable-auto-import -Wl,-Bstatic -lstdc++ -Wl,
 
 jruby.dll: ${OBJECTFILES}
 	${LINK.cc} -dynamiclib -install_name jruby.dll -o jruby.dll -Wl,-S -fPIC ${OBJECTFILES} ${LDLIBSOPTIONS} 
+
+${OBJECTDIR}/argparser.o: nbproject/Makefile-${CND_CONF}.mk argparser.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -Wall -s -I${JAVA_HOME}/include -I${JAVA_HOME}/include/win32  -MMD -MP -MF $@.d -o ${OBJECTDIR}/argparser.o argparser.cpp
 
 ${OBJECTDIR}/platformlauncher.o: nbproject/Makefile-${CND_CONF}.mk platformlauncher.cpp 
 	${MKDIR} -p ${OBJECTDIR}
