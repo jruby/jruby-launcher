@@ -4,9 +4,11 @@ build: .build-post
 .build-pre:
 
 .build-post: .build-impl
-	${MAKE} -f ${SUB_CONFMK} SUBPROJECTS=${SUBPROJECTS} jruby.exe jrubyw.exe
-	if [ -d ../jruby ]; then cp jruby.exe jrubyw.exe jruby.dll ../jruby/bin/; fi
-	if [ -d D:/work/jruby-dev/jruby ]; then cp jruby.exe jrubyw.exe jruby.dll D:/work/jruby-dev/jruby/bin/; fi
+	@if [ "$(findstring mingw, $(CONF))" ]; then											\
+	${MAKE} -f ${SUB_CONFMK} SUBPROJECTS=${SUBPROJECTS} jruby.exe jrubyw.exe;					\
+	if [ -d ../jruby ]; then cp jruby.exe jrubyw.exe jruby.dll ../jruby/bin/; fi;					\
+	if [ -d D:/work/jruby-dev/jruby ]; then cp jruby.exe jrubyw.exe jruby.dll D:/work/jruby-dev/jruby/bin/; fi;	\
+	fi
 
 jruby.res: resources/jruby.rc
 	windres $^ -O coff -o $@
@@ -20,10 +22,10 @@ jrubyw.exe: jrubyexe.cpp nbexecloader.h utilsfuncs.cpp utilsfuncswin.cpp jruby.r
 clean: .clean-post
 
 .clean-pre:
-	-rm -r build/*
+	-rm -rf build/*
 
 .clean-post: .clean-impl
-	rm -f jruby.exe jrubyw.exe jruby.res
+	rm -f *.exe *.res
 
 clobber: .clobber-post
 
@@ -43,15 +45,15 @@ help: .help-post
 
 .help-post: .help-impl
 
-# To use the manually-maintained inc/*.mk makefiles.
-# Comment out to use NB's generated nbproject/*.mk
-USE_INCMK=true
+# Use the manually-maintained inc/*.mk makefiles.
+# Pass NETBEANS=true on the command-line to use NB's generated
+# nbproject/*.mk
 
-ifdef USE_INCMK
+ifdef NETBEANS
+SUB_IMPLMK=nbproject/Makefile-impl.mk
+else
 SUB_IMPLMK=inc/Makefile-impl.mk
 SUB_CONFMK=inc/Makefile-rules.mk
-else
-SUB_IMPLMK=nbproject/Makefile-impl.mk
 endif
 
 # include project implementation makefile
@@ -64,6 +66,6 @@ else
 CONF=unix
 endif
 
-ifndef USE_INCMK
+ifdef NETBEANS
 SUB_CONFMK=nbproject/Makefile-${CONF}.mk
 endif

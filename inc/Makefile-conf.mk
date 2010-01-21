@@ -48,6 +48,9 @@ else ifeq (mingw64,$(CONF))
 CFLAGS += -m64 -mno-cygwin
 endif
 
+# Resources
+WINDRES = windres
+
 # Link Libraries and Options
 LDLIBSOPTIONS = -static-libgcc -Wl,--enable-auto-import -Wl,-Bstatic -lstdc++ -Wl,-Bdynamic
 

@@ -5,7 +5,7 @@ include inc/Makefile-conf.mk
 	${MAKE} -f inc/Makefile-rules.mk jruby.dll
 
 jruby.dll: ${OBJECTFILES}
-	${LINK.cc} -shared -o jruby.dll -s ${OBJECTFILES} ${LDLIBSOPTIONS} 
+	${LINK.cc} -shared -s -o $@ ${OBJECTFILES} $(LDLIBSOPTIONS)
 
 $(OBJECTDIR)/%.o: %.cpp inc/Makefile-rules.mk inc/Makefile-conf.mk
 	${MKDIR} -p ${OBJECTDIR}
