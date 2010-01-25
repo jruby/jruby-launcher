@@ -4,6 +4,17 @@
 
 using namespace std;
 
+bool normalizePath(char *path, int len) {
+    char tmp[MAX_PATH] = "";
+    int i = 0;
+    while (path[i] && i < MAX_PATH - 1) {
+        tmp[i] = path[i] == '/' ? '\\' : path[i];
+        i++;
+    }
+    tmp[i] = '\0';
+    return _fullpath(path, tmp, len) != NULL;
+}
+
 bool disableFolderVirtualization(HANDLE hProcess) {
     OSVERSIONINFO osvi = {0};
     osvi.dwOSVersionInfoSize = sizeof (OSVERSIONINFO);
@@ -163,16 +174,6 @@ bool isConsoleAttached() {
             logErr(true, false, "GetProcAddress() for GetConsoleWindow failed.");
         }
     }
-    return false;
-}
-
-bool printToConsole(const char *msg) {
-    FILE *console = fopen("CON", "a");
-    if (!console) {
-        return false;
-    }
-    fprintf(console, "%s", msg);
-    fclose(console);
     return false;
 }
 

@@ -46,9 +46,16 @@
 #include "utilsfuncs.h"
 #include "argnames.h"
 
+#ifndef WIN32
+#include <sys/stat.h>
+#include <errno.h>
+#include <string.h>
+#endif
+
 using namespace std;
 
 bool dirExists(const char *path) {
+#ifdef WIN32
     WIN32_FIND_DATA fd = {0};
     HANDLE hFind = 0;
     hFind = FindFirstFile(path, &fd);
@@ -59,9 +66,19 @@ bool dirExists(const char *path) {
     logMsg("Dir \"%s\" exists", path);
     FindClose(hFind);
     return (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
+#else
+    struct stat dir;
+    if (stat(path, &dir) != 0) {
+        logMsg("Dir \"%s\" does not exist", path);
+	return false;
+    }
+    logMsg("Dir \"%s\" exists", path);
+    return dir.st_mode & S_IFDIR;
+#endif
 }
 
 bool fileExists(const char *path) {
+#ifdef WIN32
     WIN32_FIND_DATA fd = {0};
     HANDLE hFind = 0;
     hFind = FindFirstFile(path, &fd);
@@ -73,51 +90,19 @@ bool fileExists(const char *path) {
     logMsg("File \"%s\" exists", path);
     FindClose(hFind);
     return true;
-}
-
-bool normalizePath(char *path, int len) {
-    char tmp[MAX_PATH] = "";
-    int i = 0;
-    while (path[i] && i < MAX_PATH - 1) {
-        tmp[i] = path[i] == '/' ? '\\' : path[i];
-        i++;
+#else
+    struct stat dir;
+    if (stat(path, &dir) != 0) {
+        logMsg("Dir \"%s\" does not exist", path);
+	return false;
     }
-    tmp[i] = '\0';
-    return _fullpath(path, tmp, len) != NULL;
+    logMsg("Dir \"%s\" exists", path);
+    return dir.st_mode & S_IFDIR;
+#endif
 }
 
-bool createPath(const char *path) {
-    logMsg("Creating directory \"%s\"", path);
-    char dir[MAX_PATH] = "";
-    const char *sep = strchr(path, '\\');
-    while (sep) {
-        strncpy(dir, path, sep - path);
-        if (!CreateDirectory(dir, 0) && GetLastError() != ERROR_ALREADY_EXISTS) {
-            logErr(true, false, "Failed to create directory %s", dir);
-            return false;
-        }
-        sep = strchr(sep + 1, '\\');
-    }
-    return true;
-}
-
-char * skipWhitespaces(char *str) {
-    while (*str != '\0' && (*str == ' ' || *str == '\t' || *str == '\n' || *str == '\r')) {
-        str++;
-    }
-    return str;
-}
-
-char * trimWhitespaces(char *str) {
-    char *end = str + strlen(str) - 1;
-    while (end >= str && (*end == ' ' || *end == '\t' || *end == '\n' || *end == '\r')) {
-        *end = '\0';
-        end--;
-    }
-    return end;
-}
-
-char* getSysError(char *str, int strSize) {
+const char* getSysError(char *str, int strSize) {
+#ifdef WIN32
     int err = GetLastError();
     LPTSTR lpMsgBuf;
     FormatMessage(
@@ -138,6 +123,10 @@ char* getSysError(char *str, int strSize) {
 
     _snprintf(str, strSize, " %s (%u)", lpMsgBuf, err);
     LocalFree(lpMsgBuf);
+#else
+    const char* error = strerror(errno);
+    snprintf(str, strSize, " %s (%u)", error, errno);
+#endif
     return str;
 }
 
@@ -161,9 +150,11 @@ void logV(bool appendSysError, bool showMsgBox, const char *format, va_list args
         }
     }
 
+#ifdef WIN32
     if (showMsgBox) {
         ::MessageBox(NULL, msg, "JRuby Error", MB_OK | MB_ICONSTOP);
     }
+#endif
 }
 
 void logErr(bool appendSysError, bool showMsgBox, const char *format, ...) {
@@ -190,10 +181,37 @@ bool checkLoggingArg(int argc, char *argv[], bool delFile) {
             }
             gLogFileName = argv[++i];
             if (delFile) {
+#ifdef WIN32
                 DeleteFile(gLogFileName.c_str());
+#else
+		unlink(gLogFileName.c_str());
+#endif
             }
             break;
         }
     }
     return true;
+}
+
+bool printToConsole(const char *msg) {
+#ifdef WIN32
+    FILE *console = fopen("CON", "a");
+    if (!console) {
+        return false;
+    }
+    fprintf(console, "%s", msg);
+    fclose(console);
+#else
+    fprintf(stderr, msg);
+#endif
+    return false;
+}
+
+const char** convertToArgvArray(list<string> args) {
+    const char ** argv = (const char**) malloc(sizeof (char*) * args.size());
+    int i = 0;
+    for (list<string>::iterator it = args.begin(); it != args.end(); ++it, ++i) {
+        argv[i] = it->c_str();
+    }
+    return argv;
 }

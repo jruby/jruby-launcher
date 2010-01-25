@@ -34,10 +34,12 @@ public:
     virtual ~ArgParser();
     bool parseArgs(int argc, char *argv[]);
     void appendToHelp(const char *msg);
+    std::string* buildCommandLine(int argc, char* argv[]);
 
 protected:
     ArgParser(const ArgParser& orig);
 
+    bool initPlatformDir();
     void prepareOptions();
     void setupMaxHeapAndStack();
     void addEnvVarToOptions(std::list<std::string> & optionsList, const char * envvar);

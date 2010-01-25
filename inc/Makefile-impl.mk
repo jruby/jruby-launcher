@@ -59,6 +59,7 @@ ALLCONFS=mingw mingw64 unix
 	    echo "and JAVA_HOME pointing to it."; \
 	    echo "Current directory: " `pwd`; \
 	    echo ""; \
+	    exit 1; \
 	fi
 
 # dependency checking support

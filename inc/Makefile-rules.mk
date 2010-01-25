@@ -8,7 +8,7 @@ jruby.dll: ${OBJECTFILES}
 	${LINK.cc} -shared -s -o $@ $^ $(LDLIBSOPTIONS)
 
 jruby: ${OBJECTFILES}
-	${LINK.cc} -s -o $@ $^ $(LDLIBSOPTIONS)
+	${LINK.cc} -o $@ $^ $(LDLIBSOPTIONS)
 
 $(OBJECTDIR)/%.o: %.cpp inc/Makefile-rules.mk inc/Makefile-conf.mk
 	${MKDIR} -p ${OBJECTDIR}

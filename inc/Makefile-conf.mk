@@ -35,6 +35,8 @@ OBJECTFILES += ${OBJECTDIR}/utilsfuncswin.o	\
 	       ${OBJECTDIR}/jvmlauncher.o	\
 	       ${OBJECTDIR}/jruby.o
 INCLUDES += -I${JAVA_HOME}/include/win32
+else
+OBJECTFILES += ${OBJECTDIR}/unixlauncher.o
 endif
 
 CFLAGS = -O2 -Wall -s $(INCLUDES)
@@ -52,10 +54,10 @@ endif
 WINDRES = windres
 
 # Link Libraries and Options
-LDLIBSOPTIONS = -static-libgcc -Wl,--enable-auto-import -Wl,-Bstatic -lstdc++ -Wl,-Bdynamic
+LDLIBSOPTIONS = -lstdc++
 
 ifdef MINGW
-LDLIBSOPTIONS += -lws2_32
+LDLIBSOPTIONS += -lws2_32 -static-libgcc -Wl,--enable-auto-import -Wl,-Bstatic -Wl,-Bdynamic
 PROGRAM = jruby.dll
 else
 PROGRAM = jruby

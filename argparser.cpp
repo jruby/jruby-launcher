@@ -6,10 +6,19 @@
 #include "argparser.h"
 #include "argnames.h"
 
+#ifndef WIN32
+#include <sys/types.h>
+#include <sys/utsname.h>
+#include <dirent.h>
+#define EXEEXT ""
+#else
+#define EXEEXT ".exe"
+#endif
+
 using namespace std;
 
 const char *ArgParser::HELP_MSG =
-"\nJRuby Launcher usage: jruby.exe {options} arguments\n\
+"\nJRuby Launcher usage: jruby" EXEEXT " {options} arguments\n\
 Options:\n\
   -Xhelp                show this help\n\
   -Xjdkhome <path>      path to JDK\n\
@@ -85,6 +94,45 @@ void ArgParser::addEnvVarToOptions(std::list<std::string> & optionsList, const c
             }
         }
     }
+}
+
+bool ArgParser::initPlatformDir() {
+#ifdef WIN32
+    char path[MAX_PATH] = "";
+    getCurrentModulePath(path, MAX_PATH);
+#else
+    char path[PATH_MAX] = "";
+    bool found = false;
+
+    // the easiest case: we are in linux
+    found = readlink("/proc/self/exe", path, PATH_MAX) != -1;
+    if (!found) {		// try via argv[0]
+	found = realpath(platformDir.c_str(), path) && !access(path, F_OK);
+    }
+    if (!found) {		// try via ENV['JRUBY_HOME']
+	if (getenv("JRUBY_HOME") != NULL) {
+	    strncpy(path, getenv("JRUBY_HOME"), PATH_MAX);
+	    found = true;
+	}
+    }
+    if (!found) {
+	getcwd(path, PATH_MAX);
+    }
+#endif
+    logMsg("Module: %s", path);
+    char *bslash = strrchr(path, FILE_SEP);
+    if (!bslash) {
+        return false;
+    }
+    *bslash = '\0';
+    bslash = strrchr(path, FILE_SEP);
+    if (!bslash) {
+        return false;
+    }
+    *bslash = '\0';
+    platformDir = path;
+    logMsg("Platform dir: %s", platformDir.c_str());
+    return true;
 }
 
 bool ArgParser::parseArgs(int argc, char *argv[]) {
@@ -200,15 +248,60 @@ void ArgParser::prepareOptions() {
     javaOptions.push_back(option);
 
     option = OPT_JRUBY_SHELL;
+#ifdef WIN32
     option += "cmd.exe";
+#else
+    const char* shell = getenv("SHELL");
+    if (shell == NULL) {
+	shell = "/bin/sh";
+    }
+    option += shell;
+#endif
     javaOptions.push_back(option);
 
     option = OPT_JFFI_PATH;
+#ifdef WIN32
     option += (platformDir + "\\lib\\native\\i386-Windows;"
             + platformDir + "\\lib\\native\\x86_64-Windows");
+#else
+    struct utsname name;
+    if (uname(&name) == 0) {
+	option += (platformDir + "/lib/native/" + name.machine + "-" + name.sysname + PATH_SEP
+		   + platformDir + "/lib/native/" + name.sysname);
+    }
+#endif
     javaOptions.push_back(option);
 
     setupMaxHeapAndStack();
+
+    constructBootClassPath();
+    constructClassPath();
+
+    if (bootclass.empty()) {
+	bootclass = MAIN_CLASS;
+    }
+
+    // replace '/' by '.' to report a better name to jps/jconsole
+    string cmdName = bootclass;
+    size_t position = cmdName.find("/");
+    while (position != string::npos) {
+      cmdName.replace(position, 1, ".");
+      position = cmdName.find("/", position + 1);
+    }
+
+    option = OPT_JRUBY_COMMAND_NAME;
+    option += cmdName;
+    javaOptions.push_back(option);
+
+    option = OPT_CLASS_PATH;
+    option += classPath;
+    javaOptions.push_back(option);
+
+    if (!bootClassPath.empty()) {
+        option = OPT_BOOT_CLASS_PATH;
+        option += bootClassPath;
+        javaOptions.push_back(option);
+    }
 }
 
 void ArgParser::setupMaxHeapAndStack() {
@@ -241,8 +334,8 @@ void ArgParser::constructBootClassPath() {
     addedToCP.clear();
     classPath = cpBefore;
 
-    string jruby_complete_jar = platformDir + "\\lib\\jruby-complete.jar";
-    string jruby_jar = platformDir + "\\lib\\jruby.jar";
+    string jruby_complete_jar = platformDir + FILE_SEP + "lib" + FILE_SEP + "jruby-complete.jar";
+    string jruby_jar = platformDir + FILE_SEP + "lib" + FILE_SEP + "jruby.jar";
 
     if (fileExists(jruby_complete_jar.c_str())) {
         if (fileExists(jruby_jar.c_str())) {
@@ -282,30 +375,41 @@ void ArgParser::constructClassPath() {
 }
 
 void ArgParser::addJarsToClassPathFrom(const char *dir) {
-    addFilesToClassPath(dir, "lib", "*.jar");
-}
-
-void ArgParser::addFilesToClassPath(const char *dir, const char *subdir, const char *pattern) {
-    logMsg("addFilesToClassPath()\n\tdir: %s\n\tsubdir: %s\n\tpattern: %s", dir, subdir, pattern);
+    logMsg("addJarsToClassPathFrom()\n\tdir: %s", dir);
     string path = dir;
-    path += '\\';
-    path += subdir;
-    path += '\\';
+    path += FILE_SEP;
+    path += "lib";
 
+#ifdef WIN32
     WIN32_FIND_DATA fd = {0};
-    string patternPath = path + pattern;
+    string patternPath = path + FILE_SEP + "*.jar";
     HANDLE hFind = FindFirstFile(patternPath.c_str(), &fd);
     if (hFind == INVALID_HANDLE_VALUE) {
         logMsg("Nothing found (%s)", patternPath.c_str());
         return;
     }
     do {
-        string name = subdir;
-        name += fd.cFileName;
         string fullName = path + fd.cFileName;
         addToClassPath(fullName.c_str());
     } while (FindNextFile(hFind, &fd));
     FindClose(hFind);
+#else
+    DIR *directory = opendir(path.c_str());
+    if (!directory) {
+        logMsg("Nothing found (%s)", path.c_str());
+        return;
+    }
+
+    struct dirent *ent;
+    while((ent = readdir(directory)) != NULL) {
+	int len = strlen(ent->d_name);
+	if (len > 4 && strncmp(".jar", (ent->d_name + (len - 4)), 4) == 0) {
+	    string fullName = path + FILE_SEP + ent->d_name;
+	    addToClassPath(fullName.c_str());
+	}
+    }
+    closedir(directory);
+#endif
 }
 
 void ArgParser::addToClassPath(const char *path, bool onlyIfExists) {
@@ -322,7 +426,7 @@ void ArgParser::addToClassPath(const char *path, bool onlyIfExists) {
     // check that this hasn't been added to boot class path already
     if (addedToBootCP.find(path) == addedToBootCP.end()) {
         if (!classPath.empty()) {
-            classPath += ';';
+            classPath += PATH_SEP;
         }
         classPath += path;
     } else {
@@ -345,7 +449,7 @@ void ArgParser::addToBootClassPath(const char *path, bool onlyIfExists) {
     // only add non-duplicates
     if (addedToBootCP.insert(path).second) {
         if (!bootClassPath.empty()) {
-            bootClassPath += ';';
+            bootClassPath += PATH_SEP;
         }
         bootClassPath += path;
     } else {

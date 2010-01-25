@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 1997-2008 Sun Microsystems, Inc. All rights reserved.
+ * Copyright 1997-2008, 2010 Sun Microsystems, Inc. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common
@@ -41,6 +41,9 @@
  * Author: Tomas Holy
  */
 
+#include "utilsfuncs.h"
+
+#ifdef WIN32
 #include <windows.h>
 #include "nbexecloader.h"
 
@@ -49,11 +52,15 @@ const char *CON_ATTACH_MSG =
     "*WARNING*: The non-console JRubyW launcher is forced to attach to console.\n"
     "This may cause unexpected behavior of CMD console. Use:\n"
     "    start /wait jrubyw.exe -Xconsole attach [args]\n";
-#endif
+#endif	// JRUBYW
+#else
+#include "unixlauncher.h"
+#endif	// WIN32
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[], char* envp[]) {
     checkLoggingArg(argc, argv, true);
 
+#ifdef WIN32
 #ifdef JRUBYW
     if (!isConsoleAttached()) {
         logMsg("Console is not attached, assume WINDOW mode");
@@ -64,8 +71,13 @@ int main(int argc, char *argv[]) {
     } else {
         logMsg("Console is not attached, assume CONSOLE mode");
     }
-#endif
+#endif	// JRUBYW
 
     NBExecLoader loader;
     return loader.start("jruby.dll", argc - 1, argv + 1, argv[0]);
+
+#else  // !WIN32
+    UnixLauncher launcher;
+    return launcher.run(argc, argv, envp);
+#endif	// WIN32
 }

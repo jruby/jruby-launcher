@@ -46,31 +46,35 @@
 #define	_UTILSFUNCS_H
 
 #include <string>
+#include <list>
 
 bool dirExists(const char *path);
 bool fileExists(const char *path);
-bool normalizePath(char *path, int len);
-bool createPath(const char *path);
-char * skipWhitespaces(char *str);
-char * trimWhitespaces(char *str);
 void logMsg(const char *format, ...);
 void logErr(bool appendSysError, bool showMsgBox, const char *format, ...);
 bool checkLoggingArg(int argc, char *argv[], bool delFile);
+bool printToConsole(const char *msg);
+const char** convertToArgvArray(std::list<std::string> args);
 
-#ifdef WIN32
+#ifndef WIN32
+#define FILE_SEP '/'
+#define PATH_SEP ':'
+#else  // WIN32
 #include <windows.h>
+#define FILE_SEP '\\'
+#define PATH_SEP ';'
 
 #ifdef JRUBYW
 bool setupProcess(int &argc, char *argv[], DWORD &parentProcID, const char *attachMsg = 0);
 bool getParentProcessID(DWORD &id);
 #endif /* JRUBYW */
 
+bool normalizePath(char *path, int len);
 bool disableFolderVirtualization(HANDLE hProcess);
 char * getCurrentModulePath(char *path, int pathLen);
 bool getStringFromRegistry(HKEY rootKey, const char *keyName, const char *valueName, std::string &value);
 bool getDwordFromRegistry(HKEY rootKey, const char *keyName, const char *valueName, DWORD &value);
-bool printToConsole(const char *msg);
 bool isConsoleAttached();
-#endif
+#endif	// WIN32
 
 #endif	/* _UTILSFUNCS_H */

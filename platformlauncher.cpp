@@ -73,16 +73,8 @@ list<string>* GetEnvStringsAsList() {
     return envList;
 }
 
-const char** convertToArgvArray(list<string> args) {
-    const char ** argv = (const char**) malloc(sizeof (char*) * args.size());
-    int i = 0;
-    for (list<string>::iterator it = args.begin(); it != args.end(); ++it, ++i) {
-        argv[i] = it->c_str();
-    }
-    return argv;
-}
-
 bool PlatformLauncher::start(char* argv[], int argc, DWORD *retCode, const char* binaryName) {
+    platformDir = argv[0];
     if (!checkLoggingArg(argc, argv, false)
 	|| !initPlatformDir()
 	|| !parseArgs(argc, argv)
@@ -135,6 +127,7 @@ bool PlatformLauncher::start(char* argv[], int argc, DWORD *retCode, const char*
             return false;
         }
     }
+
     jvmLauncher.getJavaPath(jdkhome);
 
     prepareOptions();
@@ -158,62 +151,13 @@ bool PlatformLauncher::start(char* argv[], int argc, DWORD *retCode, const char*
 
 bool PlatformLauncher::run(DWORD *retCode) {
     logMsg("Starting application...");
-    constructBootClassPath();
-    constructClassPath();
-    const char *mainClass;
-    mainClass = bootclass.empty() ? MAIN_CLASS : bootclass.c_str();
-
-    // replace '/' by '.' to report a better name to jps/jconsole
-    string cmdName = mainClass;
-    size_t position = cmdName.find("/");
-    while (position != string::npos) {
-      cmdName.replace(position, 1, ".");
-      position = cmdName.find("/", position + 1);
-    }
-
-    string option = OPT_JRUBY_COMMAND_NAME;
-    option += cmdName;
-    javaOptions.push_back(option);
-
-    option = OPT_CLASS_PATH;
-    option += classPath;
-    javaOptions.push_back(option);
-
-    if (!bootClassPath.empty()) {
-        option = OPT_BOOT_CLASS_PATH;
-        option += bootClassPath;
-        javaOptions.push_back(option);
-    }
 
     jvmLauncher.setSuppressConsole(suppressConsole);
-    bool rc = jvmLauncher.start(mainClass, progArgs, javaOptions, separateProcess, retCode);
+    bool rc = jvmLauncher.start(bootclass, progArgs, javaOptions, separateProcess, retCode);
     if (!separateProcess) {
         exit(0);
     }
-
-    javaOptions.pop_back();
-    javaOptions.pop_back();
     return rc;
-}
-
-bool PlatformLauncher::initPlatformDir() {
-    char path[MAX_PATH] = "";
-    getCurrentModulePath(path, MAX_PATH);
-    logMsg("Module: %s", path);
-    char *bslash = strrchr(path, '\\');
-    if (!bslash) {
-        return false;
-    }
-    *bslash = '\0';
-    bslash = strrchr(path, '\\');
-    if (!bslash) {
-        return false;
-    }
-    *bslash = '\0';
-    platformDir = path;
-    logMsg("Platform dir: %s", platformDir.c_str());
-    logMsg("classPath: %s", classPath.c_str());
-    return true;
 }
 
 bool PlatformLauncher::checkJDKHome() {

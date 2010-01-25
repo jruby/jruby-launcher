@@ -62,7 +62,6 @@ public:
 
 private:
     PlatformLauncher(const PlatformLauncher& orig);
-    bool initPlatformDir();
     bool run(DWORD *retCode);
     bool checkJDKHome();
 
