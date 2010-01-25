@@ -96,6 +96,10 @@ void ArgParser::addEnvVarToOptions(std::list<std::string> & optionsList, const c
     }
 }
 
+#ifdef __MACH__
+#include <mach-o/dyld.h>
+#endif
+
 bool ArgParser::initPlatformDir() {
 #ifdef WIN32
     char path[MAX_PATH] = "";
@@ -108,22 +112,30 @@ bool ArgParser::initPlatformDir() {
     logMsg("initPlatformDir: trying /proc/self/exe");
     found = readlink("/proc/self/exe", path, PATH_MAX) != -1;
 
-    if (!found) {		// try via argv[0]
-	logMsg("initPlatformDir: trying realpath of argv");
-	found = realpath(platformDir.c_str(), path);
-	// make sure we didn't pick up a 'jruby' directory
-	found &= !checkDirectory(path);
+#ifdef __MACH__
+    uint32_t sz = PATH_MAX;
+    if (_NSGetExecutablePath(path, &sz) == 0) { // OSX-specific
+ 	logMsg("initPlatformDir: using _NSGetExecutablePath");
+	string tmpPath(path);
+	realpath(tmpPath.c_str(), path);
+	found = true;
+    }
+#endif
+
+    if (!found && platformDir[0] == '/') { // argv[0]: absolute path
+	logMsg("initPlatformDir: argv[0] appears to be an absolute path");
+	strncpy(path, platformDir.c_str(), PATH_MAX);
+	found = true;
     }
 
-    if (!found) {		// try via JRUBY_HOME
-	if (getenv("JRUBY_HOME") != NULL) {
-	    logMsg("initPlatformDir: trying JRUBY_HOME");
-	    strncpy(path, getenv("JRUBY_HOME"), PATH_MAX - 11);
-	    strncpy(path + strlen(path), "/bin/jruby", 10);
-	    found = true;
-	}
+    if (!found && platformDir.find('/') != string::npos) { // argv[0]: relative path
+	logMsg("initPlatformDir: argv[0] appears to be a relative path");
+	getcwd(path, PATH_MAX - platformDir.length() - 1);
+	strncpy(path + strlen(path), platformDir.c_str(), platformDir.length());
+	found = true;
     }
-    if (!found) {		// try via PATH
+
+    if (!found) {		// try via PATH search
 	logMsg("initPlatformDir: trying to find executable on PATH");
 	char * location = findOnPath(platformDir.c_str());
 	if (location != NULL) {
@@ -133,14 +145,17 @@ bool ArgParser::initPlatformDir() {
 	}
     }
 
-    if (!found) {		// fall back to PWD
-	logMsg("initPlatformDir: falling back to getcwd");
-	getcwd(path, PATH_MAX - 11);
-	strncpy(path + strlen(path), "/bin/jruby", 10);
+    if (!found) {		// try via JRUBY_HOME
+	if (getenv("JRUBY_HOME") != NULL) {
+	    logMsg("initPlatformDir: trying JRUBY_HOME environment variable");
+	    strncpy(path, getenv("JRUBY_HOME"), PATH_MAX - 11);
+	    strncpy(path + strlen(path), "/bin/jruby", 10);
+	    found = true;
+	}
     }
 
     if (!fileExists(path)) {
-	printToConsole("Could not figure out a proper JRUBY_HOME.\n"
+	printToConsole("Could not figure out a proper location for JRuby.\n"
 		       "Try `jruby -Xtrace trace.log ...` and view trace.log for details.");
 	return false;
     }
