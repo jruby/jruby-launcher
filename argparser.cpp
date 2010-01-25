@@ -104,21 +104,48 @@ bool ArgParser::initPlatformDir() {
     char path[PATH_MAX] = "";
     bool found = false;
 
-    // the easiest case: we are in linux
+    // first try via linux /proc/self/exe
+    logMsg("initPlatformDir: trying /proc/self/exe");
     found = readlink("/proc/self/exe", path, PATH_MAX) != -1;
+
     if (!found) {		// try via argv[0]
-	found = realpath(platformDir.c_str(), path) && !access(path, F_OK);
+	logMsg("initPlatformDir: trying realpath of argv");
+	found = realpath(platformDir.c_str(), path);
+	// make sure we didn't pick up a 'jruby' directory
+	found &= !checkDirectory(path);
     }
-    if (!found) {		// try via ENV['JRUBY_HOME']
+
+    if (!found) {		// try via JRUBY_HOME
 	if (getenv("JRUBY_HOME") != NULL) {
-	    strncpy(path, getenv("JRUBY_HOME"), PATH_MAX);
+	    logMsg("initPlatformDir: trying JRUBY_HOME");
+	    strncpy(path, getenv("JRUBY_HOME"), PATH_MAX - 11);
+	    strncpy(path + strlen(path), "/bin/jruby", 10);
 	    found = true;
 	}
     }
-    if (!found) {
-	getcwd(path, PATH_MAX);
+    if (!found) {		// try via PATH
+	logMsg("initPlatformDir: trying to find executable on PATH");
+	char * location = findOnPath(platformDir.c_str());
+	if (location != NULL) {
+	    strncpy(path, location, PATH_MAX);
+	    free(location);
+	    found = true;
+	}
+    }
+
+    if (!found) {		// fall back to PWD
+	logMsg("initPlatformDir: falling back to getcwd");
+	getcwd(path, PATH_MAX - 11);
+	strncpy(path + strlen(path), "/bin/jruby", 10);
+    }
+
+    if (!fileExists(path)) {
+	printToConsole("Could not figure out a proper JRUBY_HOME.\n"
+		       "Try `jruby -Xtrace trace.log ...` and view trace.log for details.");
+	return false;
     }
 #endif
+
     logMsg("Module: %s", path);
     char *bslash = strrchr(path, FILE_SEP);
     if (!bslash) {

@@ -54,51 +54,85 @@
 
 using namespace std;
 
-bool dirExists(const char *path) {
+bool checkExists(const char* path, unsigned int flags) {
 #ifdef WIN32
     WIN32_FIND_DATA fd = {0};
     HANDLE hFind = 0;
     hFind = FindFirstFile(path, &fd);
     if (hFind == INVALID_HANDLE_VALUE) {
-        logMsg("Dir \"%s\" does not exist", path);
         return false;
     }
-    logMsg("Dir \"%s\" exists", path);
     FindClose(hFind);
-    return (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
+    if (flags == 0) {
+	return true;
+    }
+    return (fd.dwFileAttributes & flags) != 0;
 #else
     struct stat dir;
     if (stat(path, &dir) != 0) {
-        logMsg("Dir \"%s\" does not exist", path);
 	return false;
     }
-    logMsg("Dir \"%s\" exists", path);
-    return dir.st_mode & S_IFDIR;
+    if (flags == 0) {
+	return true;
+    }
+    return dir.st_mode & flags;
 #endif
 }
 
-bool fileExists(const char *path) {
+bool checkDirectory(const char* path) {
 #ifdef WIN32
-    WIN32_FIND_DATA fd = {0};
-    HANDLE hFind = 0;
-    hFind = FindFirstFile(path, &fd);
-    if (hFind == INVALID_HANDLE_VALUE) {
+    unsigned int flags = FILE_ATTRIBUTE_DIRECTORY;
+#else
+    unsigned int flags = S_IFDIR;
+#endif
+    return checkExists(path, flags);
+}
+
+bool dirExists(const char *path) {
+    if (!checkDirectory(path)) {
+        logMsg("Dir \"%s\" does not exist", path);
+        return false;
+    }
+    logMsg("Dir \"%s\" exists", path);
+    return true;
+}
+
+bool fileExists(const char *path) {
+    if (!checkExists(path, 0)) {
         logMsg("File \"%s\" does not exist", path);
         return false;
     }
+    logMsg("File \"%s\" exists", path);
+    return true;
+}
 
-    logMsg("File \"%s\" exists", path);
-    FindClose(hFind);
-    return true;
-#else
-    struct stat dir;
-    if (stat(path, &dir) != 0) {
-        logMsg("File \"%s\" does not exist", path);
-	return false;
+char* findOnPath(const char* name) {
+    string path(getenv("PATH"));
+    size_t start = 0;
+    size_t sep;
+    char * found;
+
+    while (start < path.length()) {
+	sep = path.find(":", start);
+	if (sep == string::npos) {
+	    sep = path.length();
+	}
+
+	string elem(path.substr(start, sep - start));
+	if (elem[elem.length() - 1] != '/') {
+	    elem += '/';
+	}
+	elem += name;
+
+	if (checkExists(elem.c_str(), 0)) {
+	    found = (char*) malloc(elem.length());
+	    strncpy(found, elem.c_str(), elem.length() + 1);
+	    return found;
+	}
+
+	start = sep + 1;
     }
-    logMsg("File \"%s\" exists", path);
-    return true;
-#endif
+    return NULL;
 }
 
 const char* getSysError(char *str, int strSize) {
@@ -202,7 +236,7 @@ bool printToConsole(const char *msg) {
     fprintf(console, "%s", msg);
     fclose(console);
 #else
-    fprintf(stderr, msg);
+    fprintf(stderr, "%s", msg);
 #endif
     return false;
 }

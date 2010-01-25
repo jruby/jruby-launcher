@@ -5,31 +5,6 @@ using namespace std;
 
 extern "C" int nailgunClientMain(int argc, char *argv[], char *env[]);
 
-char* findOnPath(const char* name) {
-    string path(getenv("PATH"));
-    size_t start = 0;
-    size_t sep;
-    char * found;
-
-    while ((sep = path.find(":", start)) != string::npos) {
-	string elem(path.substr(start, sep - start));
-	if (elem[elem.length() - 1] != '/') {
-	    elem += '/';
-	}
-	elem += name;
-
-	if (fileExists(elem.c_str())) {
-	    found = (char*) malloc(elem.length());
-	    strncpy(found, elem.c_str(), elem.length());
-	    return found;
-	}
-
-	start = sep + 1;
-    }
-
-    return NULL;
-}
-
 UnixLauncher::UnixLauncher()
     : ArgParser()
 {
