@@ -293,8 +293,22 @@ void ArgParser::prepareOptions() {
 #else
     struct utsname name;
     if (uname(&name) == 0) {
-	option += (platformDir + "/lib/native/" + name.machine + "-" + name.sysname + PATH_SEP
-		   + platformDir + "/lib/native/" + name.sysname);
+	string ffiPath, ffiBase(platformDir + "/lib/native");
+	DIR* dir = opendir(ffiBase.c_str());
+	struct dirent* ent;
+	if (dir != NULL) {
+	    while ((ent = readdir(dir)) != NULL) {
+		string entry(ent->d_name);
+		if (entry.find(name.sysname) != string::npos) {
+		    if (!ffiPath.empty()) {
+			ffiPath += PATH_SEP;
+		    }
+		    ffiPath += ffiBase + FILE_SEP + entry;
+		}
+	    }
+	    closedir(dir);
+	}
+	option += ffiPath;
     }
 #endif
     javaOptions.push_back(option);
