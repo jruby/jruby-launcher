@@ -1,6 +1,8 @@
 #ifndef _NBEXECLOADER_H
 #define	_NBEXECLOADER_H
 
+#include "utilsfuncs.h"
+
 #define HELP_MSG ""
 
 class NBExecLoader {

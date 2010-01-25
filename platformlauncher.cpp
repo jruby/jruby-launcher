@@ -153,7 +153,7 @@ bool PlatformLauncher::run(DWORD *retCode) {
     logMsg("Starting application...");
 
     jvmLauncher.setSuppressConsole(suppressConsole);
-    bool rc = jvmLauncher.start(bootclass, progArgs, javaOptions, separateProcess, retCode);
+    bool rc = jvmLauncher.start(bootclass.c_str(), progArgs, javaOptions, separateProcess, retCode);
     if (!separateProcess) {
         exit(0);
     }

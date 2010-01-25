@@ -41,8 +41,6 @@
  * Author: Tomas Holy
  */
 
-#include "utilsfuncs.h"
-
 #ifdef WIN32
 #include <windows.h>
 #include "nbexecloader.h"
@@ -56,6 +54,9 @@ const char *CON_ATTACH_MSG =
 #else
 #include "unixlauncher.h"
 #endif	// WIN32
+
+#include "utilsfuncs.h"
+
 
 int main(int argc, char *argv[], char* envp[]) {
     checkLoggingArg(argc, argv, true);
