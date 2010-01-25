@@ -93,11 +93,11 @@ bool fileExists(const char *path) {
 #else
     struct stat dir;
     if (stat(path, &dir) != 0) {
-        logMsg("Dir \"%s\" does not exist", path);
+        logMsg("File \"%s\" does not exist", path);
 	return false;
     }
-    logMsg("Dir \"%s\" exists", path);
-    return dir.st_mode & S_IFDIR;
+    logMsg("File \"%s\" exists", path);
+    return true;
 #endif
 }
 

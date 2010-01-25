@@ -45,7 +45,7 @@ UnixLauncher::~UnixLauncher() {
 
 int UnixLauncher::run(int argc, char* argv[], char* envp[]) {
     platformDir = argv[0];
-    if (!initPlatformDir() || !parseArgs(argc, argv)) {
+    if (!initPlatformDir() || !parseArgs(argc - 1, argv + 1)) {
 	return 255;
     }
 
