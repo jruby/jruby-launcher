@@ -39,15 +39,15 @@ else
 OBJECTFILES += ${OBJECTDIR}/unixlauncher.o
 endif
 
-CFLAGS = -O2 -Wall -s $(INCLUDES)
+CFLAGS = -O2 -Wall $(INCLUDES)
 CCFLAGS = $(CFLAGS)
 CXXFLAGS = $(CFLAGS)
 
 # Compiler Flags
 ifeq (mingw,$(CONF))
-CFLAGS += -m32 -mno-cygwin
+CFLAGS += -m32 -mno-cygwin -s
 else ifeq (mingw64,$(CONF))
-CFLAGS += -m64 -mno-cygwin
+CFLAGS += -m64 -mno-cygwin -s
 endif
 
 # Resources
