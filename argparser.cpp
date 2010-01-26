@@ -215,14 +215,14 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
                 || strcmp(ARG_NAME_CP_PREPEND + 1, argv[i]) == 0) {
             CHECK_ARG;
             if (!cpBefore.empty()) {
-                cpBefore += ';';
+                cpBefore += PATH_SEP;
             }
             cpBefore += argv[++i];
         } else if (strcmp(ARG_NAME_CP_APPEND, argv[i]) == 0
                 || strcmp(ARG_NAME_CP_APPEND + 1, argv[i]) == 0) {
             CHECK_ARG;
             if (!cpAfter.empty()) {
-                cpAfter += ';';
+                cpAfter += PATH_SEP;
             }
             cpAfter += argv[++i];
         } else if (strcmp(ARG_NAME_CP, argv[i]) == 0
@@ -234,7 +234,7 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
             // handling -Xcp, -J-cp or -J-classpath options
             CHECK_ARG;
             if (!cpExplicit.empty()) {
-                cpExplicit += ';';
+                cpExplicit += PATH_SEP;
             }
             cpExplicit += argv[++i];
         } else if (strcmp(ARG_NAME_SERVER, argv[i]) == 0
