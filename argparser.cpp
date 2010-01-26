@@ -423,7 +423,7 @@ void ArgParser::constructClassPath() {
     }
 
     if (!cpAfter.empty()) {
-        classPath += ";";
+        classPath += PATH_SEP;
         classPath += cpAfter;
     }
 
