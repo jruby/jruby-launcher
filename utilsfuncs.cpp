@@ -113,14 +113,14 @@ char* findOnPath(const char* name) {
     char * found;
 
     while (start < path.length()) {
-	sep = path.find(":", start);
+	sep = path.find(PATH_SEP, start);
 	if (sep == string::npos) {
 	    sep = path.length();
 	}
 
 	string elem(path.substr(start, sep - start));
-	if (elem[elem.length() - 1] != '/') {
-	    elem += '/';
+	if (elem[elem.length() - 1] != FILE_SEP) {
+	    elem += FILE_SEP;
 	}
 	elem += name;
 
