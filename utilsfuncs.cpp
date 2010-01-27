@@ -184,11 +184,13 @@ void logV(bool appendSysError, bool showMsgBox, const char *format, va_list args
         }
     }
 
-#ifdef WIN32
     if (showMsgBox) {
+#ifdef WIN32
         ::MessageBox(NULL, msg, "JRuby Error", MB_OK | MB_ICONSTOP);
-    }
+#else
+        fprintf(stderr, "%s\n", msg);
 #endif
+    }
 }
 
 void logErr(bool appendSysError, bool showMsgBox, const char *format, ...) {

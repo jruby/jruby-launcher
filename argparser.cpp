@@ -203,7 +203,6 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
             separateProcess = true;
             logMsg("Run Java in separater process");
         } else if (strcmp(ARG_NAME_LAUNCHER_LOG, argv[i]) == 0) {
-            CHECK_ARG;
             i++;
         } else if (strcmp(ARG_NAME_BOOTCLASS, argv[i]) == 0) {
             CHECK_ARG;
