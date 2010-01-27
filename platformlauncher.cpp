@@ -74,7 +74,7 @@ list<string>* GetEnvStringsAsList() {
 }
 
 bool PlatformLauncher::start(char* argv[], int argc, DWORD *retCode, const char* binaryName) {
-    platformDir = argv[0];
+    platformDir = binaryName;
     if (!checkLoggingArg(argc, argv, false)
 	|| !initPlatformDir()
 	|| !parseArgs(argc, argv)

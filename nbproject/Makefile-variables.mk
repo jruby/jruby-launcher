@@ -22,11 +22,11 @@ CND_ARTIFACT_PATH_mingw64=jruby.dll
 CND_PACKAGE_DIR_mingw64=dist/mingw64/MinGW-Windows/package
 CND_PACKAGE_NAME_mingw64=libjruby-launcher.dll.tar
 CND_PACKAGE_PATH_mingw64=dist/mingw64/MinGW-Windows/package/libjruby-launcher.dll.tar
-# gcc configuration
-CND_PLATFORM_gcc=GNU-MacOSX
-CND_ARTIFACT_DIR_gcc=
-CND_ARTIFACT_NAME_gcc=jruby.dll
-CND_ARTIFACT_PATH_gcc=jruby.dll
-CND_PACKAGE_DIR_gcc=dist/gcc/GNU-MacOSX/package
-CND_PACKAGE_NAME_gcc=libjruby-launcher.dylib.tar
-CND_PACKAGE_PATH_gcc=dist/gcc/GNU-MacOSX/package/libjruby-launcher.dylib.tar
+# unix configuration
+CND_PLATFORM_unix=
+CND_ARTIFACT_DIR_unix=
+CND_ARTIFACT_NAME_unix=jruby.dll
+CND_ARTIFACT_PATH_unix=jruby.dll
+CND_PACKAGE_DIR_unix=dist/unix//package
+CND_PACKAGE_NAME_unix=libjruby-launcher.dylib.tar
+CND_PACKAGE_PATH_unix=dist/unix//package/libjruby-launcher.dylib.tar

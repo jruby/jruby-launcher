@@ -445,7 +445,7 @@ void ArgParser::addJarsToClassPathFrom(const char *dir) {
         return;
     }
     do {
-        string fullName = path + fd.cFileName;
+        string fullName = path + FILE_SEP + fd.cFileName;
         addToClassPath(fullName.c_str());
     } while (FindNextFile(hFind, &fd));
     FindClose(hFind);

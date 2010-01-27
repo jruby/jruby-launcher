@@ -5,6 +5,7 @@
                    displayName="Header Files"
                    projectFiles="true">
       <itemPath>argnames.h</itemPath>
+      <itemPath>argparser.h</itemPath>
       <itemPath>jvmlauncher.h</itemPath>
       <itemPath>nbexecloader.h</itemPath>
       <itemPath>platformlauncher.h</itemPath>
@@ -19,6 +20,7 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <itemPath>argparser.cpp</itemPath>
       <itemPath>jruby.cpp</itemPath>
       <itemPath>jrubyexe.cpp</itemPath>
       <itemPath>jvmlauncher.cpp</itemPath>
