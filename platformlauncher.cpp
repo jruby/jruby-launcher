@@ -85,10 +85,10 @@ bool PlatformLauncher::start(char* argv[], int argc, DWORD *retCode, const char*
 
     if (nailgunClient) {
         progArgs.push_front("org.jruby.util.NailMain");
-        const char ** nailArgv = convertToArgvArray(progArgs);
+        char ** nailArgv = convertToArgvArray(progArgs);
         list<string>* envList = GetEnvStringsAsList();
-        const char ** nailEnv  = convertToArgvArray(*envList);
-        nailgunClientMain(progArgs.size(), (char**)nailArgv, (char**)nailEnv);
+        char ** nailEnv  = convertToArgvArray(*envList);
+        nailgunClientMain(progArgs.size(), nailArgv, nailEnv);
         return true;
     }
 

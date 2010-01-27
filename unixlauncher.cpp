@@ -26,7 +26,7 @@ int UnixLauncher::run(int argc, char* argv[], char* envp[]) {
 
     if (nailgunClient) {
         progArgs.push_front("org.jruby.util.NailMain");
-        const char ** nailArgv = convertToArgvArray(progArgs);
+        char ** nailArgv = convertToArgvArray(progArgs);
         return nailgunClientMain(progArgs.size(), (char**)nailArgv, envp);
     }
 
@@ -39,14 +39,19 @@ int UnixLauncher::run(int argc, char* argv[], char* envp[]) {
     }
 
     list<string> commandLine;
+    commandLine.push_back(java);
     commandLine.insert(commandLine.end(), javaOptions.begin(), javaOptions.end());
     commandLine.insert(commandLine.end(), bootclass);
     commandLine.insert(commandLine.end(), progArgs.begin(), progArgs.end());
 
     logMsg("Command line:");
-    logMsg(java);
     for (list<string>::iterator it = commandLine.begin(); it != commandLine.end(); ++it) {
 	logMsg(it->c_str());
     }
-    return execv(java, (char**)convertToArgvArray(commandLine));
+
+    char** newArgv = convertToArgvArray(commandLine);
+    execv(java, newArgv);
+    // shouldn't get here unless something bad happened with execv
+    logErr(true, true, "execv failed:");
+    return 255;
 }

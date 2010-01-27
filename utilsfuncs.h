@@ -54,7 +54,7 @@ void logMsg(const char *format, ...);
 void logErr(bool appendSysError, bool showMsgBox, const char *format, ...);
 bool checkLoggingArg(int argc, char *argv[], bool delFile);
 bool printToConsole(const char *msg);
-const char** convertToArgvArray(std::list<std::string> args);
+char** convertToArgvArray(std::list<std::string> args);
 char* findOnPath(const char* name);
 bool checkDirectory(const char* path);
 

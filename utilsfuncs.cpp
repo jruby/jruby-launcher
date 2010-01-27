@@ -243,11 +243,13 @@ bool printToConsole(const char *msg) {
     return false;
 }
 
-const char** convertToArgvArray(list<string> args) {
-    const char ** argv = (const char**) malloc(sizeof (char*) * args.size());
+char** convertToArgvArray(list<string> args) {
+    char ** argv = (char**) malloc(sizeof (char*) * args.size() + 1);
     int i = 0;
     for (list<string>::iterator it = args.begin(); it != args.end(); ++it, ++i) {
-        argv[i] = it->c_str();
+        argv[i] = (char*) malloc(sizeof(char) * it->length() + 1);
+        strncpy(argv[i], it->c_str(), it->length() + 1);
     }
+    argv[i] = NULL;
     return argv;
 }
