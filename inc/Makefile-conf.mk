@@ -46,8 +46,10 @@ CXXFLAGS = $(CFLAGS)
 # Compiler Flags
 ifeq (mingw,$(CONF))
 CFLAGS += -m32 -mno-cygwin -s
-else ifeq (mingw64,$(CONF))
+else
+ifeq (mingw64,$(CONF))
 CFLAGS += -m64 -mno-cygwin -s
+endif
 endif
 
 # Resources
