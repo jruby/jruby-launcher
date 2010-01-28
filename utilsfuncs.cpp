@@ -211,8 +211,7 @@ bool checkLoggingArg(int argc, char *argv[], bool delFile) {
             break;
         }
         if (strcmp(ARG_NAME_LAUNCHER_LOG, argv[i]) == 0) {
-            if (i + 1 == argc) {
-                logErr(false, true, "Argument is missing for \"%s\" option.", argv[i]);
+            if (i+1 == argc || *argv[i+1] == '-') {
                 return false;
             }
             gLogFileName = argv[++i];

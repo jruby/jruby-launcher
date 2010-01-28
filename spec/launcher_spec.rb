@@ -12,4 +12,19 @@ describe "JRuby native launcher" do
   it "should print help message" do
     jruby_launcher("-Xhelp 2>&1").should =~ /JRuby Launcher usage/
   end
+
+  it "should complain about a missing log argument" do
+    jruby_launcher("-Xtrace 2>&1").should =~ /Argument is missing/
+    jruby_launcher("-Xtrace -- 2>&1").should =~ /Argument is missing/
+  end
+
+  it "should complain about a missing jdkhome argument" do
+    jruby_launcher("-Xjdkhome 2>&1").should =~ /Argument is missing/
+    jruby_launcher("-Xjdkhome -- 2>&1").should =~ /Argument is missing/
+  end
+
+  it "should complain about a missing jdkhome argument" do
+    jruby_launcher("-Xcp:a 2>&1").should =~ /Argument is missing/
+    jruby_launcher("-Xcp:a -- 2>&1").should =~ /Argument is missing/
+  end
 end

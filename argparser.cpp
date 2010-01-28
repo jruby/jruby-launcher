@@ -182,10 +182,10 @@ bool ArgParser::initPlatformDir() {
 }
 
 bool ArgParser::parseArgs(int argc, char *argv[]) {
-#define CHECK_ARG \
-    if (i+1 == argc) {\
-        logErr(false, true, "Argument is missing for \"%s\" option.", argv[i]);\
-        return false;\
+#define CHECK_ARG							\
+    if (i+1 == argc || *argv[i+1] == '-') {				\
+        logErr(false, true, "Argument is missing for \"%s\" option.", argv[i]);	\
+        return false;							\
     }
 
     addEnvVarToOptions(javaOptions, "JAVA_OPTS");
@@ -209,7 +209,8 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
 	} else if (strcmp(ARG_NAME_CMD_ONLY, argv[i]) == 0) {
 	    printCommandLine = true;
         } else if (strcmp(ARG_NAME_LAUNCHER_LOG, argv[i]) == 0) {
-            i++;
+	    CHECK_ARG;
+	    i++;
         } else if (strcmp(ARG_NAME_BOOTCLASS, argv[i]) == 0) {
             CHECK_ARG;
             bootclass = argv[++i];
