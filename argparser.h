@@ -49,11 +49,13 @@ protected:
     void addToClassPath(const char *path, bool onlyIfExists = false);
     void addToBootClassPath(const char *path, bool onlyIfExists = false);
     void addJarsToClassPathFrom(const char *dir);
+    void addOptionsToCommandLine(std::list<std::string> & commandLine);
 
 protected:
     bool separateProcess;
     bool nailgunClient;
     bool nailgunServer;
+    bool printCommandLine;
     std::string platformDir;
     std::string bootclass;
     std::string jdkhome;

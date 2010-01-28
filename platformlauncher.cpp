@@ -86,6 +86,11 @@ bool PlatformLauncher::start(char* argv[], int argc, DWORD *retCode, const char*
     if (nailgunClient) {
         progArgs.push_front("org.jruby.util.NailMain");
         char ** nailArgv = convertToArgvArray(progArgs);
+	if (printCommandLine) {
+	    printArgvToConsole(nailArgv);
+	    return true;
+	}
+
         list<string>* envList = GetEnvStringsAsList();
         char ** nailEnv  = convertToArgvArray(*envList);
         nailgunClientMain(progArgs.size(), nailArgv, nailEnv);
@@ -131,6 +136,17 @@ bool PlatformLauncher::start(char* argv[], int argc, DWORD *retCode, const char*
     jvmLauncher.getJavaPath(jdkhome);
 
     prepareOptions();
+
+    if (printCommandLine) {
+	list<string> commandLine;
+	commandLine.push_back("java");
+	addOptionsToCommandLine(commandLine);
+	for (list<string>::iterator it = commandLine.begin(); it != commandLine.end(); it++) {
+	    printToConsole(*it);
+	    printToConsole("\n");
+	}
+	return true;
+    }
 
     if (nextAction.empty()) {
         while (true) {

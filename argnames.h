@@ -21,6 +21,7 @@
 #define ARG_NAME_JDKHOME "-Xjdkhome"
 #define ARG_NAME_CP_PREPEND "-Xcp:p"
 #define ARG_NAME_CP_APPEND "-Xcp:a"
+#define ARG_NAME_CMD_ONLY "-Xcommand"
 
 /* Below are standard JRuby args handled by the launcher. */
 #define ARG_NAME_SERVER "--server"

@@ -30,8 +30,11 @@ Options:\n\
 \n\
   -Xfork-java           run java in separate process\n\
   -Xtrace <path>        path for launcher log (for troubleshooting)\n\
-  -Xconsole <mode>      jrubyw console attach mode (new|attach|suppress)\n\n\
-To see general JRuby options, type 'jruby -h' or 'jruby --help'.\n\
+  -Xcommand             just print the equivalent java command and exit\n"
+#ifdef WIN32
+"  -Xconsole <mode>      jrubyw console attach mode (new|attach|suppress)\n\n"
+#endif
+"To see general JRuby options, type 'jruby -h' or 'jruby --help'.\n\
 --------------------------------------------------------------------\n\n";
 
 const char *ArgParser::REQ_JAVA_VERSION = "1.5";
@@ -53,6 +56,7 @@ ArgParser::ArgParser()
     : separateProcess(false)
     , nailgunClient(false)
     , nailgunServer(false)
+    , printCommandLine(false)
 {
 }
 
@@ -202,6 +206,8 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
         } else if (strcmp(ARG_NAME_SEPAR_PROC, argv[i]) == 0) {
             separateProcess = true;
             logMsg("Run Java in separater process");
+	} else if (strcmp(ARG_NAME_CMD_ONLY, argv[i]) == 0) {
+	    printCommandLine = true;
         } else if (strcmp(ARG_NAME_LAUNCHER_LOG, argv[i]) == 0) {
             i++;
         } else if (strcmp(ARG_NAME_BOOTCLASS, argv[i]) == 0) {
@@ -516,4 +522,10 @@ void ArgParser::appendToHelp(const char *msg) {
     if (msg) {
         appendHelp = msg;
     }
+}
+
+void ArgParser::addOptionsToCommandLine(list<string> & commandLine) {
+    commandLine.insert(commandLine.end(), javaOptions.begin(), javaOptions.end());
+    commandLine.insert(commandLine.end(), bootclass);
+    commandLine.insert(commandLine.end(), progArgs.begin(), progArgs.end());
 }

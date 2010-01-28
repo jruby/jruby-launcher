@@ -27,6 +27,9 @@ int UnixLauncher::run(int argc, char* argv[], char* envp[]) {
     if (nailgunClient) {
         progArgs.push_front("org.jruby.util.NailMain");
         char ** nailArgv = convertToArgvArray(progArgs);
+	if (printCommandLine) {
+	    return printArgvToConsole(nailArgv);
+	}
         return nailgunClientMain(progArgs.size(), (char**)nailArgv, envp);
     }
 
@@ -35,14 +38,12 @@ int UnixLauncher::run(int argc, char* argv[], char* envp[]) {
     char * java = findOnPath("java");
     if (java == NULL) {
 	printToConsole("No `java' executable found on PATH.");
-	return 254;
+	return 255;
     }
 
     list<string> commandLine;
     commandLine.push_back(java);
-    commandLine.insert(commandLine.end(), javaOptions.begin(), javaOptions.end());
-    commandLine.insert(commandLine.end(), bootclass);
-    commandLine.insert(commandLine.end(), progArgs.begin(), progArgs.end());
+    addOptionsToCommandLine(commandLine);
 
     logMsg("Command line:");
     for (list<string>::iterator it = commandLine.begin(); it != commandLine.end(); ++it) {
@@ -50,7 +51,13 @@ int UnixLauncher::run(int argc, char* argv[], char* envp[]) {
     }
 
     char** newArgv = convertToArgvArray(commandLine);
+
+    if (printCommandLine) {
+	return printArgvToConsole(newArgv);
+    }
+
     execv(java, newArgv);
+
     // shouldn't get here unless something bad happened with execv
     logErr(true, true, "execv failed:");
     return 255;

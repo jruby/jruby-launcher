@@ -253,3 +253,12 @@ char** convertToArgvArray(list<string> args) {
     argv[i] = NULL;
     return argv;
 }
+
+int printArgvToConsole(char** argv) {
+    while (*argv) {
+	printToConsole(*argv);
+	printToConsole("\n");
+	argv++;
+    }
+    return 0;
+}

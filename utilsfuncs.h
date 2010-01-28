@@ -57,6 +57,7 @@ bool printToConsole(const char *msg);
 char** convertToArgvArray(std::list<std::string> args);
 char* findOnPath(const char* name);
 bool checkDirectory(const char* path);
+int printArgvToConsole(char** argv);
 
 #ifndef WIN32
 #define FILE_SEP '/'
