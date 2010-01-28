@@ -43,7 +43,7 @@
  */
 
 #ifndef _UTILSFUNCS_H
-#define	_UTILSFUNCS_H
+#define _UTILSFUNCS_H
 
 #include <string>
 #include <list>
@@ -78,6 +78,6 @@ char * getCurrentModulePath(char *path, int pathLen);
 bool getStringFromRegistry(HKEY rootKey, const char *keyName, const char *valueName, std::string &value);
 bool getDwordFromRegistry(HKEY rootKey, const char *keyName, const char *valueName, DWORD &value);
 bool isConsoleAttached();
-#endif	// WIN32
+#endif  // WIN32
 
-#endif	/* _UTILSFUNCS_H */
+#endif  /* _UTILSFUNCS_H */

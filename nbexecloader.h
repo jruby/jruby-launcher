@@ -1,5 +1,5 @@
 #ifndef _NBEXECLOADER_H
-#define	_NBEXECLOADER_H
+#define _NBEXECLOADER_H
 
 #include "utilsfuncs.h"
 
@@ -39,5 +39,5 @@ private:
     HMODULE hLib;
 };
 
-#endif	/* _NBEXECLOADER_H */
+#endif  /* _NBEXECLOADER_H */
 

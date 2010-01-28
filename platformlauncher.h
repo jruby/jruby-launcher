@@ -43,7 +43,7 @@
  */
 
 #ifndef _PLATFORMLAUNCHER_H
-#define	_PLATFORMLAUNCHER_H
+#define _PLATFORMLAUNCHER_H
 
 #include "jvmlauncher.h"
 #include "argparser.h"
@@ -70,4 +70,4 @@ private:
     JvmLauncher jvmLauncher;
 };
 
-#endif	/* _PLATFORMLAUNCHER_H */
+#endif  /* _PLATFORMLAUNCHER_H */

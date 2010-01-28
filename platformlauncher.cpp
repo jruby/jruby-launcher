@@ -76,9 +76,9 @@ list<string>* GetEnvStringsAsList() {
 bool PlatformLauncher::start(char* argv[], int argc, DWORD *retCode, const char* binaryName) {
     platformDir = binaryName;
     if (!checkLoggingArg(argc, argv, false)
-	|| !initPlatformDir()
-	|| !parseArgs(argc, argv)
-	|| !checkJDKHome()) {
+        || !initPlatformDir()
+        || !parseArgs(argc, argv)
+        || !checkJDKHome()) {
         return false;
     }
     disableFolderVirtualization(GetCurrentProcess());
@@ -86,10 +86,10 @@ bool PlatformLauncher::start(char* argv[], int argc, DWORD *retCode, const char*
     if (nailgunClient) {
         progArgs.push_front("org.jruby.util.NailMain");
         char ** nailArgv = convertToArgvArray(progArgs);
-	if (printCommandLine) {
-	    printArgvToConsole(nailArgv);
-	    return true;
-	}
+        if (printCommandLine) {
+            printArgvToConsole(nailArgv);
+            return true;
+        }
 
         list<string>* envList = GetEnvStringsAsList();
         char ** nailEnv  = convertToArgvArray(*envList);
@@ -138,13 +138,13 @@ bool PlatformLauncher::start(char* argv[], int argc, DWORD *retCode, const char*
     prepareOptions();
 
     if (printCommandLine) {
-	list<string> commandLine;
-	commandLine.push_back("java");
-	addOptionsToCommandLine(commandLine);
-	for (list<string>::iterator it = commandLine.begin(); it != commandLine.end(); it++) {
-	    printf("%s\n", it->c_str());
-	}
-	return true;
+        list<string> commandLine;
+        commandLine.push_back("java");
+        addOptionsToCommandLine(commandLine);
+        for (list<string>::iterator it = commandLine.begin(); it != commandLine.end(); it++) {
+            printf("%s\n", it->c_str());
+        }
+        return true;
     }
 
     if (nextAction.empty()) {
@@ -177,14 +177,14 @@ bool PlatformLauncher::run(DWORD *retCode) {
 
 bool PlatformLauncher::checkJDKHome() {
     if (!jdkhome.empty() && !jvmLauncher.initialize(jdkhome.c_str())) {
-	logMsg("Cannot locate java installation in specified jdkhome: %s", jdkhome.c_str());
-	string errMsg = "Cannot locate java installation in specified jdkhome:\n";
-	errMsg += jdkhome;
-	errMsg += "\nDo you want to try to use default version?";
-	jdkhome = "";
-	if (::MessageBox(NULL, errMsg.c_str(), "Invalid jdkhome specified", MB_ICONQUESTION | MB_YESNO) == IDNO) {
-	    return false;
-	}
+        logMsg("Cannot locate java installation in specified jdkhome: %s", jdkhome.c_str());
+        string errMsg = "Cannot locate java installation in specified jdkhome:\n";
+        errMsg += jdkhome;
+        errMsg += "\nDo you want to try to use default version?";
+        jdkhome = "";
+        if (::MessageBox(NULL, errMsg.c_str(), "Invalid jdkhome specified", MB_ICONQUESTION | MB_YESNO) == IDNO) {
+            return false;
+        }
     }
 
     if (jdkhome.empty()) {

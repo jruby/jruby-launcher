@@ -119,49 +119,49 @@ bool ArgParser::initPlatformDir() {
 #ifdef __MACH__
     uint32_t sz = PATH_MAX;
     if (_NSGetExecutablePath(path, &sz) == 0) { // OSX-specific
- 	logMsg("initPlatformDir: using _NSGetExecutablePath");
-	string tmpPath(path);
-	realpath(tmpPath.c_str(), path);
-	found = true;
+        logMsg("initPlatformDir: using _NSGetExecutablePath");
+        string tmpPath(path);
+        realpath(tmpPath.c_str(), path);
+        found = true;
     }
 #endif
 
     if (!found && platformDir[0] == '/') { // argv[0]: absolute path
-	logMsg("initPlatformDir: argv[0] appears to be an absolute path");
-	strncpy(path, platformDir.c_str(), PATH_MAX);
-	found = true;
+        logMsg("initPlatformDir: argv[0] appears to be an absolute path");
+        strncpy(path, platformDir.c_str(), PATH_MAX);
+        found = true;
     }
 
     if (!found && platformDir.find('/') != string::npos) { // argv[0]: relative path
-	logMsg("initPlatformDir: argv[0] appears to be a relative path");
-	getcwd(path, PATH_MAX - platformDir.length() - 1);
-	strncpy(path + strlen(path), platformDir.c_str(), platformDir.length());
-	found = true;
+        logMsg("initPlatformDir: argv[0] appears to be a relative path");
+        getcwd(path, PATH_MAX - platformDir.length() - 1);
+        strncpy(path + strlen(path), platformDir.c_str(), platformDir.length());
+        found = true;
     }
 
-    if (!found) {		// try via PATH search
-	logMsg("initPlatformDir: trying to find executable on PATH");
-	char * location = findOnPath(platformDir.c_str());
-	if (location != NULL) {
-	    strncpy(path, location, PATH_MAX);
-	    free(location);
-	    found = true;
-	}
+    if (!found) {               // try via PATH search
+        logMsg("initPlatformDir: trying to find executable on PATH");
+        char * location = findOnPath(platformDir.c_str());
+        if (location != NULL) {
+            strncpy(path, location, PATH_MAX);
+            free(location);
+            found = true;
+        }
     }
 
-    if (!found) {		// try via JRUBY_HOME
-	if (getenv("JRUBY_HOME") != NULL) {
-	    logMsg("initPlatformDir: trying JRUBY_HOME environment variable");
-	    strncpy(path, getenv("JRUBY_HOME"), PATH_MAX - 11);
-	    strncpy(path + strlen(path), "/bin/jruby", 10);
-	    found = true;
-	}
+    if (!found) {               // try via JRUBY_HOME
+        if (getenv("JRUBY_HOME") != NULL) {
+            logMsg("initPlatformDir: trying JRUBY_HOME environment variable");
+            strncpy(path, getenv("JRUBY_HOME"), PATH_MAX - 11);
+            strncpy(path + strlen(path), "/bin/jruby", 10);
+            found = true;
+        }
     }
 
     if (!fileExists(path)) {
-	printToConsole("Could not figure out a proper location for JRuby.\n"
-		       "Try `jruby -Xtrace trace.log ...` and view trace.log for details.");
-	return false;
+        printToConsole("Could not figure out a proper location for JRuby.\n"
+                       "Try `jruby -Xtrace trace.log ...` and view trace.log for details.");
+        return false;
     }
 #endif
 
@@ -182,10 +182,10 @@ bool ArgParser::initPlatformDir() {
 }
 
 bool ArgParser::parseArgs(int argc, char *argv[]) {
-#define CHECK_ARG							\
-    if (i+1 == argc || *argv[i+1] == '-') {				\
-        logErr(false, true, "Argument is missing for \"%s\" option.", argv[i]);	\
-        return false;							\
+#define CHECK_ARG                                                       \
+    if (i+1 == argc || *argv[i+1] == '-') {                             \
+        logErr(false, true, "Argument is missing for \"%s\" option.", argv[i]); \
+        return false;                                                   \
     }
 
     addEnvVarToOptions(javaOptions, "JAVA_OPTS");
@@ -206,11 +206,11 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
         } else if (strcmp(ARG_NAME_SEPAR_PROC, argv[i]) == 0) {
             separateProcess = true;
             logMsg("Run Java in separater process");
-	} else if (strcmp(ARG_NAME_CMD_ONLY, argv[i]) == 0) {
-	    printCommandLine = true;
+        } else if (strcmp(ARG_NAME_CMD_ONLY, argv[i]) == 0) {
+            printCommandLine = true;
         } else if (strcmp(ARG_NAME_LAUNCHER_LOG, argv[i]) == 0) {
-	    CHECK_ARG;
-	    i++;
+            CHECK_ARG;
+            i++;
         } else if (strcmp(ARG_NAME_BOOTCLASS, argv[i]) == 0) {
             CHECK_ARG;
             bootclass = argv[++i];
@@ -301,7 +301,7 @@ void ArgParser::prepareOptions() {
 #else
     const char* shell = getenv("SHELL");
     if (shell == NULL) {
-	shell = "/bin/sh";
+        shell = "/bin/sh";
     }
     option += shell;
 #endif
@@ -314,22 +314,22 @@ void ArgParser::prepareOptions() {
 #else
     struct utsname name;
     if (uname(&name) == 0) {
-	string ffiPath, ffiBase(platformDir + "/lib/native");
-	DIR* dir = opendir(ffiBase.c_str());
-	struct dirent* ent;
-	if (dir != NULL) {
-	    while ((ent = readdir(dir)) != NULL) {
-		string entry(ent->d_name);
-		if (entry.find(name.sysname) != string::npos) {
-		    if (!ffiPath.empty()) {
-			ffiPath += PATH_SEP;
-		    }
-		    ffiPath += ffiBase + FILE_SEP + entry;
-		}
-	    }
-	    closedir(dir);
-	}
-	option += ffiPath;
+        string ffiPath, ffiBase(platformDir + "/lib/native");
+        DIR* dir = opendir(ffiBase.c_str());
+        struct dirent* ent;
+        if (dir != NULL) {
+            while ((ent = readdir(dir)) != NULL) {
+                string entry(ent->d_name);
+                if (entry.find(name.sysname) != string::npos) {
+                    if (!ffiPath.empty()) {
+                        ffiPath += PATH_SEP;
+                    }
+                    ffiPath += ffiBase + FILE_SEP + entry;
+                }
+            }
+            closedir(dir);
+        }
+        option += ffiPath;
     }
 #endif
     javaOptions.push_back(option);
@@ -340,7 +340,7 @@ void ArgParser::prepareOptions() {
     constructClassPath();
 
     if (bootclass.empty()) {
-	bootclass = MAIN_CLASS;
+        bootclass = MAIN_CLASS;
     }
 
     // replace '/' by '.' to report a better name to jps/jconsole
@@ -464,11 +464,11 @@ void ArgParser::addJarsToClassPathFrom(const char *dir) {
 
     struct dirent *ent;
     while((ent = readdir(directory)) != NULL) {
-	int len = strlen(ent->d_name);
-	if (len > 4 && strncmp(".jar", (ent->d_name + (len - 4)), 4) == 0) {
-	    string fullName = path + FILE_SEP + ent->d_name;
-	    addToClassPath(fullName.c_str());
-	}
+        int len = strlen(ent->d_name);
+        if (len > 4 && strncmp(".jar", (ent->d_name + (len - 4)), 4) == 0) {
+            string fullName = path + FILE_SEP + ent->d_name;
+            addToClassPath(fullName.c_str());
+        }
     }
     closedir(directory);
 #endif

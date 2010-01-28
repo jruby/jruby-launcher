@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   argnames.h
  * Author: Holy
  *
@@ -6,7 +6,7 @@
  */
 
 #ifndef _ARGNAMES_H
-#define	_ARGNAMES_H
+#define _ARGNAMES_H
 
 /* Standard Java classpath options */
 #define ARG_NAME_CP "-J-cp"
@@ -33,5 +33,5 @@
 #define ARG_NAME_NG_SERVER "--ng-server"
 #define ARG_NAME_NG "--ng"
 
-#endif	/* _ARGNAMES_H */
+#endif  /* _ARGNAMES_H */
 

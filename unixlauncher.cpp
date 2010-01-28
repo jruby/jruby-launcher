@@ -21,15 +21,15 @@ UnixLauncher::~UnixLauncher() {
 int UnixLauncher::run(int argc, char* argv[], char* envp[]) {
     platformDir = argv[0];
     if (!initPlatformDir() || !parseArgs(argc - 1, argv + 1)) {
-	return 255;
+        return 255;
     }
 
     if (nailgunClient) {
         progArgs.push_front("org.jruby.util.NailMain");
         char ** nailArgv = convertToArgvArray(progArgs);
-	if (printCommandLine) {
-	    return printArgvToConsole(nailArgv);
-	}
+        if (printCommandLine) {
+            return printArgvToConsole(nailArgv);
+        }
         return nailgunClientMain(progArgs.size(), (char**)nailArgv, envp);
     }
 
@@ -37,8 +37,8 @@ int UnixLauncher::run(int argc, char* argv[], char* envp[]) {
 
     char * java = findOnPath("java");
     if (java == NULL) {
-	printToConsole("No `java' executable found on PATH.");
-	return 255;
+        printToConsole("No `java' executable found on PATH.");
+        return 255;
     }
 
     list<string> commandLine;
@@ -47,13 +47,13 @@ int UnixLauncher::run(int argc, char* argv[], char* envp[]) {
 
     logMsg("Command line:");
     for (list<string>::iterator it = commandLine.begin(); it != commandLine.end(); ++it) {
-	logMsg(it->c_str());
+        logMsg(it->c_str());
     }
 
     char** newArgv = convertToArgvArray(commandLine);
 
     if (printCommandLine) {
-	return printArgvToConsole(newArgv);
+        return printArgvToConsole(newArgv);
     }
 
     execv(java, newArgv);
