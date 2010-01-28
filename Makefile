@@ -3,7 +3,7 @@ build: .build-post
 
 .build-pre:
 
-.build-post: .build-impl
+.build-post: .build-impl test
 	@if [ "$(findstring mingw, $(CONF))" ]; then											\
 	${MAKE} -f ${SUB_CONFMK} SUBPROJECTS=${SUBPROJECTS} jruby.exe jrubyw.exe;					\
 	if [ -d ../jruby ]; then cp jruby.exe jrubyw.exe jruby.dll ../jruby/bin/; fi;					\
@@ -18,6 +18,9 @@ jruby.exe: jrubyexe.cpp nbexecloader.h utilsfuncs.cpp utilsfuncswin.cpp jruby.re
 
 jrubyw.exe: jrubyexe.cpp nbexecloader.h utilsfuncs.cpp utilsfuncswin.cpp jruby.res
 	g++ $(CXXFLAGS) -DJRUBYW -mwindows $^ -s -o $@ $(LDLIBSOPTIONS)
+
+test:
+	rake
 
 clean: .clean-post
 
