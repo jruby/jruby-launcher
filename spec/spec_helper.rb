@@ -8,7 +8,7 @@ end
 
 module JRubyLauncherHelper
   WINDOWS = Config::CONFIG['host_os'] =~ /Windows|mswin/
-  EXE = JRubyLauncherHelper::WINDOWS ? ".\\jruby.exe" : "./jruby"
+  EXE = File.expand_path(File.join(File.join(File.dirname(__FILE__), ".."), "jruby") << Config::CONFIG['EXEEXT'])
 
   def self.check_executable_built
     unless File.executable?(EXE)
