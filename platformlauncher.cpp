@@ -142,7 +142,7 @@ bool PlatformLauncher::start(char* argv[], int argc, DWORD *retCode, const char*
 	commandLine.push_back("java");
 	addOptionsToCommandLine(commandLine);
 	for (list<string>::iterator it = commandLine.begin(); it != commandLine.end(); it++) {
-	    printToConsole(*it);
+	    printToConsole(it->c_str());
 	    printToConsole("\n");
 	}
 	return true;
