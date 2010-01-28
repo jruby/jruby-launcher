@@ -230,16 +230,7 @@ bool checkLoggingArg(int argc, char *argv[], bool delFile) {
 }
 
 bool printToConsole(const char *msg) {
-#ifdef WIN32
-    FILE *console = fopen("CON", "a");
-    if (!console) {
-        return false;
-    }
-    fprintf(console, "%s", msg);
-    fclose(console);
-#else
     fprintf(stderr, "%s", msg);
-#endif
     return false;
 }
 
