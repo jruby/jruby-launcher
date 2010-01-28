@@ -3,7 +3,9 @@ build: .build-post
 
 .build-pre:
 
-.build-post: .build-impl test
+.build-post: .build-impl build-exe test
+
+build-exe:
 	@if [ "$(findstring mingw, $(CONF))" ]; then											\
 	${MAKE} -f ${SUB_CONFMK} SUBPROJECTS=${SUBPROJECTS} jruby.exe jrubyw.exe;					\
 	if [ -d ../jruby ]; then cp jruby.exe jrubyw.exe jruby.dll ../jruby/bin/; fi;					\
