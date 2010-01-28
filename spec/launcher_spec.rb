@@ -10,6 +10,6 @@ describe "JRuby native launcher" do
   end
 
   it "should print help message" do
-    jruby_launcher("-Xhelp").should =~ /JRuby Launcher usage/
+    jruby_launcher("-Xhelp 2>&1").should =~ /JRuby Launcher usage/
   end
 end

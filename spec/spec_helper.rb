@@ -8,11 +8,16 @@ end
 
 module JRubyLauncherHelper
   WINDOWS = Config::CONFIG['host_os'] =~ /Windows|mswin/
+  EXE = JRubyLauncherHelper::WINDOWS ? "./jruby.exe" : "./jruby"
+
+  def self.check_executable_built
+    unless File.executable?(EXE)
+      raise "Error: launcher executable not built; type `make' before continuing."
+    end
+  end
 
   def jruby_launcher(args)
-    command = "./jruby #{args}"
-    command += " 2>&1" unless WINDOWS
-    `#{command}`
+    `./jruby #{args}`
   end
 
   def jruby_launcher_args(args)
@@ -26,10 +31,7 @@ end
 
 Spec::Runner.configure do |config|
   config.before(:all) do
-    exe = JRubyLauncherHelper::WINDOWS ? "./jruby.exe" : "./jruby"
-    unless File.executable?(exe)
-      raise "Error: launcher executable not built; type `make' before continuing."
-    end
+    JRubyLauncherHelper.check_executable_built
   end
   config.include(JRubyLauncherHelper)
 end

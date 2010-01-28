@@ -256,8 +256,7 @@ char** convertToArgvArray(list<string> args) {
 
 int printArgvToConsole(char** argv) {
     while (*argv) {
-	printToConsole(*argv);
-	printToConsole("\n");
+	printf("%s\n", *argv);
 	argv++;
     }
     return 0;
