@@ -26,7 +26,8 @@ end
 
 Spec::Runner.configure do |config|
   config.before(:all) do
-    unless File.executable?("./jruby")
+    exe = JRubyLauncherHelper::WINDOWS ? "./jruby.exe" : "./jruby"
+    unless File.executable?(exe)
       raise "Error: launcher executable not built; type `make' before continuing."
     end
   end
