@@ -7,21 +7,20 @@ if defined?(JRUBY_VERSION)
 end
 
 module JRubyLauncherHelper
-  WINDOWS = Config::CONFIG['host_os'] =~ /Windows|mswin/
-  EXE = File.expand_path(File.join(File.join(File.dirname(__FILE__), ".."), "jruby") << Config::CONFIG['EXEEXT'])
+  JRUBY_EXE = File.expand_path("../../jruby", __FILE__) + Config::CONFIG['EXEEXT']
 
   def self.check_executable_built
-    unless File.executable?(EXE)
+    unless File.executable?(JRUBY_EXE)
       raise "Error: launcher executable not built; type `make' before continuing."
     end
   end
 
   def jruby_launcher(args)
-    `#{EXE} #{args}`
+    `#{JRUBY_EXE} #{args}`
   end
 
   def jruby_launcher_args(args)
-    jruby_launcher("-Xcommand #{args}").split
+    jruby_launcher("-Xcommand #{args}").split("\n")
   end
 
   def last_exit_code
