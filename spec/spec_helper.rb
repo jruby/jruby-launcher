@@ -26,6 +26,20 @@ module JRubyLauncherHelper
   def last_exit_code
     $?.exitstatus
   end
+
+  def with_environment(pairs = {})
+    prev_env = {}
+    pairs.each_pair do |k,v|
+      prev_env[k] = ENV[k] if ENV.has_key?(k)
+      ENV[k] = v
+    end
+    begin
+      yield
+    ensure
+      pairs.keys.each {|k| ENV.delete(k)}
+      ENV.update(prev_env)
+    end
+  end
 end
 
 Spec::Runner.configure do |config|
