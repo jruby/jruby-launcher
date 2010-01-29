@@ -7,7 +7,10 @@ include inc/Makefile-conf.mk
 jruby.dll: ${OBJECTFILES}
 	${LINK.cc} -shared -s -o $@ $^ $(LDLIBSOPTIONS)
 
-jruby: ${OBJECTFILES}
+jruby: $(OBJECTDIR)/jruby-launcher
+	cp $^ $@
+
+$(OBJECTDIR)/jruby-launcher: ${OBJECTFILES}
 	${LINK.cc} -o $@ $^ $(LDLIBSOPTIONS)
 
 $(OBJECTDIR)/%.o: %.cpp inc/Makefile-rules.mk inc/Makefile-conf.mk

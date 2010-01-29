@@ -13,7 +13,9 @@ MINGW := true
 endif
 
 # Macros
+ifndef CND_PLATFORM
 CND_PLATFORM=$(shell uname -s)
+endif
 
 # Include project Makefile
 include Makefile
@@ -39,17 +41,16 @@ else
 OBJECTFILES += ${OBJECTDIR}/unixlauncher.o
 endif
 
-CFLAGS = -O2 -Wall $(INCLUDES)
+CFLAGS += -O2 -Wall $(INCLUDES)
 CCFLAGS = $(CFLAGS)
 CXXFLAGS = $(CFLAGS)
 
 # Compiler Flags
 ifeq (mingw,$(CONF))
 CFLAGS += -m32 -mno-cygwin -s
-else
+endif
 ifeq (mingw64,$(CONF))
 CFLAGS += -m64 -mno-cygwin -s
-endif
 endif
 
 # Resources
