@@ -26,6 +26,7 @@
       <itemPath>jvmlauncher.cpp</itemPath>
       <itemPath>ng.c</itemPath>
       <itemPath>platformlauncher.cpp</itemPath>
+      <itemPath>unixlauncher.cpp</itemPath>
       <itemPath>utilsfuncs.cpp</itemPath>
       <itemPath>utilsfuncswin.cpp</itemPath>
     </logicalFolder>

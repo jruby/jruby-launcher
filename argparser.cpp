@@ -209,6 +209,9 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
         } else if (strcmp(ARG_NAME_CMD_ONLY, argv[i]) == 0) {
             printCommandLine = true;
         } else if (strcmp(ARG_NAME_LAUNCHER_LOG, argv[i]) == 0) {
+            // We only check the validity of args here,
+            // the actual parsing and setting the log file
+            // is done earlier, in checkLoggingArg()
             CHECK_ARG;
             i++;
         } else if (strcmp(ARG_NAME_BOOTCLASS, argv[i]) == 0) {

@@ -75,8 +75,7 @@ list<string>* GetEnvStringsAsList() {
 
 bool PlatformLauncher::start(char* argv[], int argc, DWORD *retCode, const char* binaryName) {
     platformDir = binaryName;
-    if (!checkLoggingArg(argc, argv, false)
-        || !initPlatformDir()
+    if (!initPlatformDir()
         || !parseArgs(argc, argv)
         || !checkJDKHome()) {
         return false;

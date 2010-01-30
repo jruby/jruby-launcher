@@ -186,10 +186,12 @@ void logV(bool appendSysError, bool showMsgBox, const char *format, va_list args
 
     if (showMsgBox) {
 #ifdef WIN32
-        ::MessageBox(NULL, msg, "JRuby Error", MB_OK | MB_ICONSTOP);
-#else
-        fprintf(stderr, "%s\n", msg);
+        // Pop-up the message box only if there is no console
+        if (!isConsoleAttached()) {
+            ::MessageBox(NULL, msg, "JRuby Error", MB_OK | MB_ICONSTOP);
+        }
 #endif
+        fprintf(stderr, "%s\n", msg);
     }
 }
 
