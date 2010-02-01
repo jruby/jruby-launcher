@@ -58,14 +58,16 @@ describe "JRuby native launcher" do
 
   it "should add the contents of the CLASSPATH environment variable" do
     with_environment "CLASSPATH" => "some.jar" do
-      jruby_launcher_args("").should include("-Djava.class.path=some.jar")
+      classpath_arg = jruby_launcher_args("").detect{|a| a =~ /java\.class\.path/}
+      classpath_arg.should =~ /-Djava.class.path=.*some.jar/
     end
   end
 
   it "should add the classpath elements in proper order" do
     s = File::PATH_SEPARATOR
     with_environment "CLASSPATH" => "some-env.jar" do
-      jruby_launcher_args("-Xcp:a some-other.jar -Xcp:p some.jar").should include("-Djava.class.path=some.jar#{s}some-env.jar#{s}some-other.jar")
+      classpath_arg = jruby_launcher_args("-Xcp:a some-other.jar -Xcp:p some.jar").detect{|a| a =~ /java\.class\.path/}
+      classpath_arg.should =~ /-Djava.class.path=some.jar.*#{s}some-env.jar#{s}some-other.jar/
     end
   end
 
