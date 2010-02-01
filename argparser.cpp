@@ -126,6 +126,22 @@ bool ArgParser::initPlatformDir() {
     }
 #endif
 
+#ifdef __SUNOS__
+    const char* execname = getexecname();
+    if (execname) {
+        logMsg("initPlatformDir: using getexecname");
+        char * dst = path;
+        if (execname[0] != '/') {
+            getcwd(path, PATH_MAX - strlen(execname) - 2);
+            dst = path + strlen(path);
+            *dst++ = '/';
+        }
+
+        strncpy(dst, execname, strlen(execname));
+        found = true;
+    }
+#endif
+
     if (!found && platformDir[0] == '/') { // argv[0]: absolute path
         logMsg("initPlatformDir: argv[0] appears to be an absolute path");
         strncpy(path, platformDir.c_str(), PATH_MAX);

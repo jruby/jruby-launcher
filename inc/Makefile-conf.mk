@@ -65,3 +65,8 @@ PROGRAM = jruby.dll
 else
 PROGRAM = jruby
 endif
+
+ifneq (,$(findstring SunOS,$(CND_PLATFORM)))
+CFLAGS += -D__SUNOS__
+LDLIBSOPTIONS += -lsocket -lnsl
+endif

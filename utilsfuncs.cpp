@@ -52,6 +52,10 @@
 #include <string.h>
 #endif
 
+#ifdef __SUNOS__
+#include <sys/varargs.h>
+#endif
+
 using namespace std;
 
 bool checkExists(const char* path, unsigned int flags) {
