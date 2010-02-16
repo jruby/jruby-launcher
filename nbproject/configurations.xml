@@ -9,6 +9,7 @@
       <itemPath>jvmlauncher.h</itemPath>
       <itemPath>nbexecloader.h</itemPath>
       <itemPath>platformlauncher.h</itemPath>
+      <itemPath>rb_w32_cmdvector.h</itemPath>
       <itemPath>utilsfuncs.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"

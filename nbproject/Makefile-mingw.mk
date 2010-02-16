@@ -75,7 +75,7 @@ ${OBJECTDIR}/utilsfuncswin.o: nbproject/Makefile-${CND_CONF}.mk utilsfuncswin.cp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -Wall -s -I${JAVA_HOME}/include -I${JAVA_HOME}/include/win32  -MMD -MP -MF $@.d -o ${OBJECTDIR}/utilsfuncswin.o utilsfuncswin.cpp
 
-${OBJECTDIR}/platformlauncher.o: nbproject/Makefile-${CND_CONF}.mk platformlauncher.cpp
+${OBJECTDIR}/platformlauncher.o: nbproject/Makefile-${CND_CONF}.mk platformlauncher.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -Wall -s -I${JAVA_HOME}/include -I${JAVA_HOME}/include/win32  -MMD -MP -MF $@.d -o ${OBJECTDIR}/platformlauncher.o platformlauncher.cpp
