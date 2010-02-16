@@ -27,6 +27,7 @@ OBJECTDIR=build/${CONF}/${CND_PLATFORM}
 OBJECTFILES = ${OBJECTDIR}/argparser.o		\
 	      ${OBJECTDIR}/utilsfuncs.o		\
 	      ${OBJECTDIR}/ng.o			\
+	      ${OBJECTDIR}/strlcpy.o	\
 	      ${OBJECTDIR}/jrubyexe.o
 
 INCLUDES = -I${JAVA_HOME}/include

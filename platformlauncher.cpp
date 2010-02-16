@@ -44,6 +44,7 @@
 
 #include "utilsfuncs.h"
 #include "platformlauncher.h"
+#include "rb_w32_cmdvector.h"
 
 using namespace std;
 
@@ -74,6 +75,15 @@ list<string>* GetEnvStringsAsList() {
 }
 
 bool PlatformLauncher::start(char* argv[], int argc, DWORD *retCode, const char* binaryName) {
+
+    // subvert cmd.exe's feeble attempt at command line parsing,
+    // the code is taken from MRI
+    argc = rb_w32_cmdvector(GetCommandLine(), &argv);
+
+    // remove the first argument ('jruby')
+    argc -= 1;
+    argv += 1;
+
     platformDir = binaryName;
     if (!initPlatformDir()
         || !parseArgs(argc, argv)

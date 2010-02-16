@@ -36,7 +36,9 @@ OBJECTFILES= \
 	${OBJECTDIR}/platformlauncher.o \
 	${OBJECTDIR}/ng.o \
 	${OBJECTDIR}/jrubyexe.o \
+	${OBJECTDIR}/strlcpy.o \
 	${OBJECTDIR}/jvmlauncher.o \
+	${OBJECTDIR}/unixlauncher.o \
 	${OBJECTDIR}/utilsfuncs.o \
 	${OBJECTDIR}/jruby.o
 
@@ -88,10 +90,20 @@ ${OBJECTDIR}/jrubyexe.o: nbproject/Makefile-${CND_CONF}.mk jrubyexe.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -Wall -s -I${JAVA_HOME}/include -I${JAVA_HOME}/include/win32  -MMD -MP -MF $@.d -o ${OBJECTDIR}/jrubyexe.o jrubyexe.cpp
 
+${OBJECTDIR}/strlcpy.o: nbproject/Makefile-${CND_CONF}.mk strlcpy.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -O2 -Wall -s  -MMD -MP -MF $@.d -o ${OBJECTDIR}/strlcpy.o strlcpy.c
+
 ${OBJECTDIR}/jvmlauncher.o: nbproject/Makefile-${CND_CONF}.mk jvmlauncher.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -Wall -s -I${JAVA_HOME}/include -I${JAVA_HOME}/include/win32  -MMD -MP -MF $@.d -o ${OBJECTDIR}/jvmlauncher.o jvmlauncher.cpp
+
+${OBJECTDIR}/unixlauncher.o: nbproject/Makefile-${CND_CONF}.mk unixlauncher.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -Wall -s -I${JAVA_HOME}/include -I${JAVA_HOME}/include/win32  -MMD -MP -MF $@.d -o ${OBJECTDIR}/unixlauncher.o unixlauncher.cpp
 
 ${OBJECTDIR}/utilsfuncs.o: nbproject/Makefile-${CND_CONF}.mk utilsfuncs.cpp 
 	${MKDIR} -p ${OBJECTDIR}
