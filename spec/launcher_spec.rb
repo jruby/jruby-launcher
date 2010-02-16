@@ -94,4 +94,9 @@ describe "JRuby native launcher" do
   it "should stop argument processing when a -- is seen" do
     jruby_launcher_args("-- -Xhelp -Xtrace --headless").should include("-Xhelp", "-Xtrace", "--headless")
   end
+
+  # JRUBY-4151
+  it "should properly handle single quotes" do
+    jruby_launcher_args("-e 'ABC DEF'").should include("ABC DEF")
+  end
 end
