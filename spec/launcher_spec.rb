@@ -99,4 +99,11 @@ describe "JRuby native launcher" do
   it "should properly handle single quotes" do
     jruby_launcher_args("-e 'ABC DEF'").should include("ABC DEF")
   end
+
+  # JRUBY-4581
+  it "should prepend JRUBY_OPTS to the start of the argument list to process" do
+    with_environment "JRUBY_OPTS" => "--server -J-Dsome.key=val -rubygems" do
+      jruby_launcher_args("-e 'ABC DEF'").should include("-server", "-Dsome.key=val", "-rubygems", "-e", "ABC DEF")
+    end
+  end
 end

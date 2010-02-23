@@ -250,6 +250,12 @@ char** convertToArgvArray(list<string> args) {
     return argv;
 }
 
+void addToArgList(list<string> & args, int argc, char ** argv) {
+    for (int i = 0; i < argc; i++) {
+	args.push_back(argv[i]);
+    }
+}
+
 int printArgvToConsole(char** argv) {
     while (*argv) {
 	printf("%s\n", *argv);

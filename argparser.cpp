@@ -83,7 +83,7 @@ void ArgParser::addEnvVarToOptions(std::list<std::string> & optionsList, const c
 
         size_t start = 0, pos = 0;
         while ((pos = opts.find(' ', start)) != string::npos) {
-            string part(opts.substr(start, pos));
+            string part(opts.substr(start, pos - start));
             if (part.size() > 0) {
                 logMsg("%s += %s", envvar, part.c_str());
                 optionsList.push_back(part);
@@ -91,7 +91,7 @@ void ArgParser::addEnvVarToOptions(std::list<std::string> & optionsList, const c
             start = pos + 1;
         }
         if (start < opts.size()) {
-            string part(opts.substr(start, string::npos));
+            string part(opts.substr(start));
             if (part.size() > 0) {
                 logMsg("%s += %s", envvar, part.c_str());
                 optionsList.push_back(part);
@@ -198,103 +198,109 @@ bool ArgParser::initPlatformDir() {
 }
 
 bool ArgParser::parseArgs(int argc, char *argv[]) {
+    list<string> args;
+
 #define CHECK_ARG                                                       \
-    if (i+1 == argc || *argv[i+1] == '-') {                             \
-        logErr(false, true, "Argument is missing for \"%s\" option.", argv[i]); \
+    it++;								\
+    if (it == args.end() || it->at(0) == '-') {				\
+        logErr(false, true, "Argument is missing for \"%s\" option.", it->c_str()); \
         return false;                                                   \
-    }
+    }									\
+    it--;
+#define INCR ++it, ++i
 
     addEnvVarToOptions(javaOptions, "JAVA_OPTS");
-    addEnvVarToOptions(progArgs, "JRUBY_OPTS");
+    addEnvVarToOptions(args, "JRUBY_OPTS");
+    addToArgList(args, argc, argv);
 
     logMsg("Parsing arguments:");
-    for (int i = 0; i < argc; i++) {
-        logMsg("\t%s", argv[i]);
+    for (list<string>::iterator it = args.begin(); it != args.end(); ++it) {
+        logMsg("\t%s", it->c_str());
     }
+
     bool doneScanning = false;
 
-    for (int i = 0; i < argc; i++) {
+    int i = 0;
+    for (list<string>::iterator it = args.begin(); it != args.end(); INCR) {
         if (doneScanning) {
-            progArgs.push_back(argv[i]);
-        } else if (strcmp("--", argv[i]) == 0) {
-            progArgs.push_back(argv[i]);
+            progArgs.push_back(*it);
+        } else if (it->compare("--") == 0) {
+            progArgs.push_back(*it);
             doneScanning = true;
-        } else if (strcmp(ARG_NAME_SEPAR_PROC, argv[i]) == 0) {
+        } else if (it->compare(ARG_NAME_SEPAR_PROC) == 0) {
             separateProcess = true;
             logMsg("Run Java in separater process");
-        } else if (strcmp(ARG_NAME_CMD_ONLY, argv[i]) == 0) {
+        } else if (it->compare(ARG_NAME_CMD_ONLY) == 0) {
             printCommandLine = true;
-        } else if (strcmp(ARG_NAME_LAUNCHER_LOG, argv[i]) == 0) {
+        } else if (it->compare(ARG_NAME_LAUNCHER_LOG) == 0) {
             // We only check the validity of args here,
             // the actual parsing and setting the log file
             // is done earlier, in checkLoggingArg()
             CHECK_ARG;
-            i++;
-        } else if (strcmp(ARG_NAME_BOOTCLASS, argv[i]) == 0) {
+            INCR;
+        } else if (it->compare(ARG_NAME_BOOTCLASS) == 0) {
             CHECK_ARG;
-            bootclass = argv[++i];
-        } else if (strcmp(ARG_NAME_JDKHOME, argv[i]) == 0) {
+	    INCR;
+            bootclass = *it;
+        } else if (it->compare(ARG_NAME_JDKHOME) == 0) {
             CHECK_ARG;
-            jdkhome = argv[++i];
-        } else if (strcmp(ARG_NAME_CP_PREPEND, argv[i]) == 0
-                || strcmp(ARG_NAME_CP_PREPEND + 1, argv[i]) == 0) {
+	    INCR;
+            jdkhome = *it;
+        } else if (it->compare(ARG_NAME_CP_PREPEND) == 0) {
             CHECK_ARG;
             if (!cpBefore.empty()) {
                 cpBefore += PATH_SEP;
             }
-            cpBefore += argv[++i];
-        } else if (strcmp(ARG_NAME_CP_APPEND, argv[i]) == 0
-                || strcmp(ARG_NAME_CP_APPEND + 1, argv[i]) == 0) {
+	    INCR;
+            cpBefore += *it;
+        } else if (it->compare(ARG_NAME_CP_APPEND) == 0) {
             CHECK_ARG;
             if (!cpAfter.empty()) {
                 cpAfter += PATH_SEP;
             }
-            cpAfter += argv[++i];
-        } else if (strcmp(ARG_NAME_CP, argv[i]) == 0
-                || strcmp(ARG_NAME_CP + 1, argv[i]) == 0
-                || strcmp(ARG_NAME_CLASSPATH, argv[i]) == 0
-                || strcmp(ARG_NAME_CLASSPATH + 1, argv[i]) == 0
-                || strncmp(ARG_NAME_CP_APPEND + 1, argv[i], 3) == 0
-                || strncmp(ARG_NAME_CP_APPEND, argv[i], 4) == 0) {
-            // handling -Xcp, -J-cp or -J-classpath options
+	    INCR;
+            cpAfter += *it;
+        } else if (it->compare(ARG_NAME_CP) == 0
+		   || it->compare(ARG_NAME_CLASSPATH) == 0) {
             CHECK_ARG;
             if (!cpExplicit.empty()) {
                 cpExplicit += PATH_SEP;
             }
-            cpExplicit += argv[++i];
-        } else if (strcmp(ARG_NAME_SERVER, argv[i]) == 0
-                || strcmp(ARG_NAME_CLIENT, argv[i]) == 0) {
-            javaOptions.push_back(argv[i] + 1); // to JVMLauncher, -server instead of --server
-        } else if (strcmp(ARG_NAME_SAMPLE, argv[i]) == 0) {
+	    INCR;
+            cpExplicit += *it;
+        } else if (it->compare(ARG_NAME_SERVER) == 0
+                || it->compare(ARG_NAME_CLIENT) == 0) {
+            javaOptions.push_back(it->substr(1)); // to JVMLauncher, -server instead of --server
+        } else if (it->compare(ARG_NAME_SAMPLE) == 0) {
             javaOptions.push_back("-Xprof");
-        } else if (strcmp(ARG_NAME_MANAGE, argv[i]) == 0) {
+        } else if (it->compare(ARG_NAME_MANAGE) == 0) {
             javaOptions.push_back("-Dcom.sun.management.jmxremote");
             javaOptions.push_back("-Djruby.management.enabled=true");
-        } else if (strcmp(ARG_NAME_HEADLESS, argv[i]) == 0) {
+        } else if (it->compare(ARG_NAME_HEADLESS) == 0) {
             javaOptions.push_back("-Djava.awt.headless=true");
-        } else if (strcmp(ARG_NAME_PROFILE, argv[i]) == 0 ||
-                strcmp(ARG_NAME_PROFILE "-all", argv[i]) == 0) {
-            std::string filterType = strlen(argv[i]) == strlen(ARG_NAME_PROFILE) ? "ruby" : "all";
+        } else if (it->compare(ARG_NAME_PROFILE) == 0 ||
+                it->compare(ARG_NAME_PROFILE "-all") == 0) {
+            std::string filterType = it->length() == strlen(ARG_NAME_PROFILE) ? "ruby" : "all";
             javaOptions.push_front("-Dprofile.properties=" + platformDir + "/lib/profile-" + filterType + ".properties");
             javaOptions.push_front("-javaagent:" + platformDir + "/lib/profile.jar");
             progArgs.push_back("-X+C");
             printToConsole("Running with instrumented profiler\n");
-        } else if (strcmp(ARG_NAME_NG, argv[i]) == 0) {
+        } else if (it->compare(ARG_NAME_NG) == 0) {
             nailgunClient = true;
-        } else if (strcmp(ARG_NAME_NG_SERVER, argv[i]) == 0) {
+        } else if (it->compare(ARG_NAME_NG_SERVER) == 0) {
             bootclass = "com/martiansoftware/nailgun/NGServer";
             javaOptions.push_back("-server");
             nailgunServer = true;
-        } else if (strncmp("-J", argv[i], 2) == 0) {
-            javaOptions.push_back(argv[i] + 2);
-        } else if (strcmp(argv[i], "-Xhelp") == 0) {
+        } else if (it->compare(0, 2, "-J", 2) == 0) {
+            javaOptions.push_back(it->substr(2));
+        } else if (strcmp(it->c_str(), "-Xhelp") == 0) {
             printToConsole(HELP_MSG);
             if (!appendHelp.empty()) {
                 printToConsole(appendHelp.c_str());
             }
             return false;
         } else {
-            progArgs.push_back(argv[i]);
+            progArgs.push_back(*it);
         }
     }
 
