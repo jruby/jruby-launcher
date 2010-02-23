@@ -85,6 +85,7 @@ bool PlatformLauncher::start(char* argv[], int argc, DWORD *retCode, const char*
     argv += 1;
 
     platformDir = binaryName;
+    checkLoggingArg(argc, argv, false);
     if (!initPlatformDir()
         || !parseArgs(argc, argv)
         || !checkJDKHome()) {
