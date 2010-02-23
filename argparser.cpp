@@ -418,14 +418,13 @@ void ArgParser::constructBootClassPath() {
     string jruby_complete_jar = platformDir + FILE_SEP + "lib" + FILE_SEP + "jruby-complete.jar";
     string jruby_jar = platformDir + FILE_SEP + "lib" + FILE_SEP + "jruby.jar";
 
-    if (fileExists(jruby_complete_jar.c_str())) {
-        if (fileExists(jruby_jar.c_str())) {
-            printToConsole("ERROR: Both jruby-complete.jar and jruby.jar are present in the 'lib' directory.");
-            exit(10);
-        }
+    if (fileExists(jruby_jar.c_str())) {
+      addToBootClassPath(jruby_jar.c_str(), true);
+      if (fileExists(jruby_complete_jar.c_str())) {
+          printToConsole("WARNING: Both jruby-complete.jar and jruby.jar are present in the 'lib' directory. Will use jruby.jar\n");
+      }
+    } else if (fileExists(jruby_complete_jar.c_str())) {
         addToBootClassPath(jruby_complete_jar.c_str());
-    } else {
-        addToBootClassPath(jruby_jar.c_str(), true);
     }
 
     logMsg("BootclassPath: %s", bootClassPath.c_str());
