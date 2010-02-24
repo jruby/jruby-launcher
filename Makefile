@@ -1,3 +1,5 @@
+# This line gets substituted with the actual Config::CONFIG['bindir'] location by extconf.rb
+BINDIR =
 
 build: .build-post
 
@@ -20,6 +22,13 @@ jruby.exe: jrubyexe.cpp nbexecloader.h utilsfuncs.cpp utilsfuncswin.cpp jruby.re
 
 jrubyw.exe: jrubyexe.cpp nbexecloader.h utilsfuncs.cpp utilsfuncswin.cpp jruby.res
 	g++ $(CXXFLAGS) -DJRUBYW -mwindows $^ -s -o $@ $(LDLIBSOPTIONS)
+
+install:
+	@if [ ! -f ./jruby ]; then echo "Please run 'make' first."; exit 1; fi
+	@if [ x$(BINDIR) = x ]; then echo "Please define where to install by passing BINDIR=<directory>."; exit 1; fi
+	@if [ ! -w $(BINDIR) ]; then echo "'$(BINDIR)' does not exist or cannot write to '$(BINDIR)'."; exit 1; fi
+	@if [ -f $(BINDIR)/jruby -a ! -w $(BINDIR)/jruby ]; then echo "Cannot write to '$(BINDIR)/jruby'."; exit 1; fi
+	cp ./jruby $(BINDIR)/jruby
 
 test:
 	rake
