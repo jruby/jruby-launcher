@@ -30,7 +30,9 @@ OBJECTFILES = ${OBJECTDIR}/argparser.o		\
 	      ${OBJECTDIR}/strlcpy.o	\
 	      ${OBJECTDIR}/jrubyexe.o
 
+ifdef JAVA_HOME
 INCLUDES = -I${JAVA_HOME}/include
+endif
 
 ifdef MINGW
 OBJECTFILES += ${OBJECTDIR}/utilsfuncswin.o	\

@@ -50,9 +50,9 @@ ALLCONFS=mingw mingw64 unix
 	    ${MAKE} -f inc/Makefile-rules.mk CONF=$(CONF) SUBPROJECTS=${SUBPROJECTS} .build-conf; \
 	done
 
-# configuration validation
+# configuration validation (currently only needed on mingw/windows)
 .validate-impl:
-	@if [ ! "$$JAVA_HOME" ]; \
+	@if [ $(CONF) = mingw -a ! "$$JAVA_HOME" ]; \
 	then \
 	    echo ""; \
 	    echo "Error: JAVA_HOME not set. Please make sure you have a JVM installed"; \
