@@ -20,7 +20,6 @@ gemspec = Gem::Specification.new do |s|
   s.extensions = ["extconf.rb"]
   s.files = FileList["COPYING", "README.txt", "Makefile", "Rakefile", "*.c", "*.cpp", "*.h", "inc/*.*", "**/*.rb", "resources/*.*"]
   s.homepage = %q{http://jruby.org}
-  s.rdoc_options = ["--main", "README.txt"]
   s.rubyforge_project = %q{jruby-extras}
 end
 
