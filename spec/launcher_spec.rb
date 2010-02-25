@@ -13,6 +13,12 @@ describe "JRuby native launcher" do
     jruby_launcher("-Xhelp 2>&1").should =~ /JRuby Launcher usage/
   end
 
+  it "should use $JAVA_HOME/bin/java when JAVA_HOME is specified" do
+    with_environment "JAVA_HOME" => File.join("some", "java", "home") do
+      jruby_launcher_args("-v").first.should == File.join("some", "java", "home", "bin", "java")
+    end
+  end
+
   it "should complain about a missing log argument" do
     jruby_launcher("-Xtrace 2>&1").should =~ /Argument is missing/
     jruby_launcher("-Xtrace -- 2>&1").should =~ /Argument is missing/

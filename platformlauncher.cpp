@@ -149,7 +149,7 @@ bool PlatformLauncher::start(char* argv[], int argc, DWORD *retCode, const char*
 
     if (printCommandLine) {
         list<string> commandLine;
-        commandLine.push_back("java");
+        commandLine.push_back(jdkhome + "\\bin\\java");
         addOptionsToCommandLine(commandLine);
         for (list<string>::iterator it = commandLine.begin(); it != commandLine.end(); it++) {
             printf("%s\n", it->c_str());
