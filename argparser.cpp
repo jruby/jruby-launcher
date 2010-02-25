@@ -206,7 +206,7 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
 #define CHECK_ARG                                                       \
     it++;								\
     if (it == args.end() || it->at(0) == '-') {				\
-        logErr(false, true, "Argument is missing for \"%s\" option.", it->c_str()); \
+        logErr(false, true, "Argument is missing for \"%s\" option.", (--it)->c_str()); \
         return false;                                                   \
     }									\
     it--;
