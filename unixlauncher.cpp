@@ -37,7 +37,9 @@ int UnixLauncher::run(int argc, char* argv[], char* envp[]) {
 
     string java("");
 
-    if (getenv("JAVA_HOME") != NULL) {
+    if (!jdkhome.empty()) {
+        java = jdkhome + "/bin/java";
+    } else if (getenv("JAVA_HOME") != NULL) {
         java = string(getenv("JAVA_HOME")) + "/bin/java";
     } else {
         java = findOnPath("java");
@@ -65,7 +67,7 @@ int UnixLauncher::run(int argc, char* argv[], char* envp[]) {
 
 
     if (!fileExists(java.c_str())) {
-	string msg = "No `java' exists at " + java + ", please double-check JAVA_HOME.\n";
+        string msg = "No `java' exists at " + java + ", please double-check JAVA_HOME.\n";
         printToConsole(msg.c_str());
         return 255;
     }

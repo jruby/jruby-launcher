@@ -15,11 +15,21 @@ describe "JRuby native launcher" do
 
   it "should use $JAVA_HOME/bin/java when JAVA_HOME is specified" do
     with_environment "JAVA_HOME" => File.join("some", "java", "home") do
-       if windows?
-         jruby_launcher_args("-v 2>&1").join.should =~ %r{some/java/home}
-       else
+      if windows?
+        jruby_launcher_args("-v 2>&1").join.should =~ %r{some/java/home}
+      else
         jruby_launcher_args("-v").first.should == File.join("some", "java", "home", "bin", "java")
-       end
+      end
+    end
+  end
+
+  it "should use -Xjdkhome argument above JAVA_HOME" do
+    with_environment "JAVA_HOME" => File.join("env", "java", "home") do
+      if windows?
+        jruby_launcher_args("-Xjdkhome some/java/home 2>&1").join.should =~ %r{some/java/home}
+      else
+        jruby_launcher_args("-Xjdkhome some/java/home").first.should == File.join("some", "java", "home", "bin", "java")
+      end
     end
   end
 
