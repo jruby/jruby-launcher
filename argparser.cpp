@@ -2,6 +2,8 @@
  * Copyright 2009-2010 JRuby Team (www.jruby.org).
  */
 
+#include <cstring>
+#include <cstdlib>
 #include "utilsfuncs.h"
 #include "argparser.h"
 #include "argnames.h"
