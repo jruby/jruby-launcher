@@ -52,7 +52,7 @@ describe "JRuby native launcher" do
     jruby_launcher_args("").should include("-Xss1024k", "-Djruby.stack.max=1024k")
   end
 
-  it "should allow max heap to be overridden" do
+  it "should allow max stack to be overridden" do
     jruby_launcher_args("-J-Xss512k").should include("-Xss512k", "-Djruby.stack.max=512k")
   end
 
