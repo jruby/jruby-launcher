@@ -4,6 +4,7 @@
 
 #include <cstring>
 #include <cstdlib>
+#include <memory>
 #include "utilsfuncs.h"
 #include "argparser.h"
 #include "argnames.h"
