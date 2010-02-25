@@ -8,6 +8,7 @@ end
 
 module JRubyLauncherHelper
   JRUBY_EXE = File.expand_path("../../jruby", __FILE__) + Config::CONFIG['EXEEXT']
+  WINDOWS = Config::CONFIG['target_os'] =~ /mswin/
 
   def self.check_executable_built
     unless File.executable?(JRUBY_EXE)
@@ -25,6 +26,10 @@ module JRubyLauncherHelper
 
   def last_exit_code
     $?.exitstatus
+  end
+
+  def windows?
+    WINDOWS
   end
 
   def with_environment(pairs = {})

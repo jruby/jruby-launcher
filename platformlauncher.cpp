@@ -42,6 +42,7 @@
  * Author: Tomas Holy
  */
 
+#include <stdio.h>
 #include "utilsfuncs.h"
 #include "platformlauncher.h"
 #include "rb_w32_cmdvector.h"
@@ -188,11 +189,17 @@ bool PlatformLauncher::run(DWORD *retCode) {
 bool PlatformLauncher::checkJDKHome() {
     if (!jdkhome.empty() && !jvmLauncher.initialize(jdkhome.c_str())) {
         logMsg("Cannot locate java installation in specified jdkhome: %s", jdkhome.c_str());
-        string errMsg = "Cannot locate java installation in specified jdkhome:\n";
+        string errMsg = "ERROR: Cannot locate Java installation in specified jdkhome:\n";
         errMsg += jdkhome;
-        errMsg += "\nDo you want to try to use default version?";
+        string errMsgFull = errMsg + "\nDo you want to try to use default version?";
         jdkhome = "";
-        if (::MessageBox(NULL, errMsg.c_str(), "Invalid jdkhome specified", MB_ICONQUESTION | MB_YESNO) == IDNO) {
+        // Pop-up the message box only if there is no console
+        if (!isConsoleAttached()) {
+            if (::MessageBox(NULL, errMsgFull.c_str(), "Invalid jdkhome specified", MB_ICONQUESTION | MB_YESNO) == IDNO) {
+                return false;
+            }
+        } else {
+            fprintf(stderr, "%s\n", errMsg.c_str());
             return false;
         }
     }
@@ -203,13 +210,19 @@ bool PlatformLauncher::checkJDKHome() {
         if (javaHome) {
             logMsg("%%JAVA_HOME%% is set: %s", javaHome);
             if (!jvmLauncher.initialize(javaHome)) {
-                logMsg("Cannot locate java installation, specified by JAVA_HOME: %s", javaHome);
-                string errMsg = "Cannot locate java installation, specified by JAVA_HOME:\n";
+                logMsg("ERROR: Cannot locate java installation, specified by JAVA_HOME: %s", javaHome);
+                string errMsg = "Cannot locate Java installation, specified by JAVA_HOME:\n";
                 errMsg += javaHome;
-                errMsg += "\nDo you want to try to use default version?";
+                string errMsgFull = errMsg + "\nDo you want to try to use default version?";
                 jdkhome = "";
-                if (::MessageBox(NULL, errMsg.c_str(),
-                        "Invalid jdkhome specified", MB_ICONQUESTION | MB_YESNO) == IDNO) {
+                // Pop-up the message box only if there is no console
+                if (!isConsoleAttached()) {
+                    if (::MessageBox(NULL, errMsgFull.c_str(),
+                            "Invalid jdkhome specified", MB_ICONQUESTION | MB_YESNO) == IDNO) {
+                        return false;
+                    }
+                } else {
+                    fprintf(stderr, "%s\n", errMsg.c_str());
                     return false;
                 }
             } else {
