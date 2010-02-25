@@ -44,6 +44,9 @@
 
 #include <stdio.h>
 #include <stdarg.h>
+#include <cstring>
+#include <cstdlib>
+#include <memory>
 #include "utilsfuncs.h"
 #include "argnames.h"
 
