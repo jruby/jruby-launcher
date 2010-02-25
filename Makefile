@@ -3,6 +3,12 @@ PREFIX = notspecified
 BINDIR = $(PREFIX)/bin
 SITELIBDIR = $(PREFIX)/lib/ruby/site_ruby/1.8
 
+ifeq (true,$(shell test -x $(BINDIR)/jruby && echo true))
+RAKE=$(BINDIR)/jruby -S rake
+else
+RAKE=rake
+endif
+
 build: .build-post
 
 .build-pre:
@@ -36,14 +42,14 @@ install:
 	cp ./lib/rubygems/defaults/jruby_native.rb $(SITELIBDIR)/rubygems/defaults
 
 test:
-	rake
+	$(RAKE)
 
 # Universal binary on OSX
 FAT_ARCHES=i386 ppc x86_64
 
 fat: $(FAT_ARCHES)
 	lipo -create $(foreach arch,$(FAT_ARCHES),build/unix/Darwin-$(arch)/jruby-launcher) -output jruby
-	rake
+	$(RAKE)
 
 $(FAT_ARCHES):
 	$(MAKE) -f $(SUB_CONFMK) CND_PLATFORM=Darwin-$@ CFLAGS="-arch $@" build/unix/Darwin-$@/jruby-launcher
