@@ -50,6 +50,12 @@ end
 Spec::Runner.configure do |config|
   config.before(:all) do
     JRubyLauncherHelper.check_executable_built
+    # clear environment for better control
+    ENV.delete("JAVA_HOME")
+    ENV.delete("JRUBY_HOME")
+    ENV.delete("JAVA_OPTS")
+    ENV.delete("JRUBY_OPTS")
+    ENV.delete("CLASSPATH")
   end
   config.include(JRubyLauncherHelper)
 end

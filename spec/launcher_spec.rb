@@ -61,27 +61,19 @@ describe "JRuby native launcher" do
   end
 
   it "should default to 500m max heap" do
-    with_environment "JAVA_OPTS" => "" do
-      jruby_launcher_args("").should include("-Xmx500m", "-Djruby.memory.max=500m")
-    end
+    jruby_launcher_args("").should include("-Xmx500m", "-Djruby.memory.max=500m")
   end
 
   it "should allow max heap to be overridden" do
-    with_environment "JAVA_OPTS" => "" do
-      jruby_launcher_args("-J-Xmx256m").should include("-Xmx256m", "-Djruby.memory.max=256m")
-    end
+    jruby_launcher_args("-J-Xmx256m").should include("-Xmx256m", "-Djruby.memory.max=256m")
   end
 
   it "should default to 1024k max stack" do
-    with_environment "JAVA_OPTS" => "" do
-      jruby_launcher_args("").should include("-Xss1024k", "-Djruby.stack.max=1024k")
-    end
+    jruby_launcher_args("").should include("-Xss1024k", "-Djruby.stack.max=1024k")
   end
 
   it "should allow max stack to be overridden" do
-    with_environment "JAVA_OPTS" => "" do
-      jruby_launcher_args("-J-Xss512k").should include("-Xss512k", "-Djruby.stack.max=512k")
-    end
+    jruby_launcher_args("-J-Xss512k").should include("-Xss512k", "-Djruby.stack.max=512k")
   end
 
   it "should add the contents of the CLASSPATH environment variable" do
