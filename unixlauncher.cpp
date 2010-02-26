@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "unixlauncher.h"
 #include "utilsfuncs.h"
 
