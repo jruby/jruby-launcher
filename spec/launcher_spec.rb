@@ -126,4 +126,9 @@ describe "JRuby native launcher" do
       jruby_launcher_args("-e 'ABC DEF'").should include("-server", "-Dsome.key=val", "-rubygems", "-e", "ABC DEF")
     end
   end
+
+  # JRUBY-4611
+  it "stops argument processing on first non-option argument" do
+    jruby_launcher_args("foo.rb --profile")[-2..-1].should == ["foo.rb", "--profile"]
+  end
 end

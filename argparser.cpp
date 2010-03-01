@@ -227,7 +227,7 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
     for (list<string>::iterator it = args.begin(); it != args.end(); INCR) {
         if (doneScanning) {
             progArgs.push_back(*it);
-        } else if (it->compare("--") == 0) {
+        } else if (it->compare("--") == 0 || it->at(0) != '-') {
             progArgs.push_back(*it);
             doneScanning = true;
         } else if (it->compare(ARG_NAME_SEPAR_PROC) == 0) {
