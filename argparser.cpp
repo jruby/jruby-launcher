@@ -302,7 +302,13 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
             javaOptions.push_back("-server");
             nailgunServer = true;
         } else if (it->compare(0, 2, "-J", 2) == 0) {
-            javaOptions.push_back(it->substr(2));
+            std::string javaOpt = it->substr(2);
+            if (javaOpt.compare(0, 3, "-ea", 3) == 0
+                    || javaOpt.compare(0, 17, "-enableassertions", 17) == 0) {
+                logMsg("Note: -ea option is specified, there will be no bootclasspath in order to enable assertions");
+                noBootClassPath = true;
+            }
+            javaOptions.push_back(javaOpt);
         } else if (strcmp(it->c_str(), "-Xhelp") == 0) {
             printToConsole(HELP_MSG);
             if (!appendHelp.empty()) {
@@ -533,8 +539,8 @@ void ArgParser::addToClassPath(const char *path, bool onlyIfExists) {
 void ArgParser::addToBootClassPath(const char *path, bool onlyIfExists) {
     logMsg("addToBootClassPath()\n\tpath: %s\n\tonlyIfExists: %s", path, onlyIfExists ? "true" : "false");
 
-    if (nailgunServer) {
-        logMsg("NOTE: In 'ng-server' mode there is no bootclasspath, adding to classpath...");
+    if (nailgunServer || noBootClassPath) {
+        logMsg("NOTE: In this mode there is no bootclasspath, adding to classpath...");
         return addToClassPath(path, onlyIfExists);
     }
 
