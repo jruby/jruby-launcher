@@ -214,6 +214,13 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
 
     addEnvVarToOptions(javaOptions, "JAVA_OPTS");
     addEnvVarToOptions(args, "JRUBY_OPTS");
+
+#ifdef __MACH__
+    if (getenv("JAVA_ENCODING") == NULL) {
+        javaOptions.push_back("-Dfile.encoding=UTF-8");
+    }
+#endif
+
     addToArgList(args, argc, argv);
 
     logMsg("Parsing arguments:");
