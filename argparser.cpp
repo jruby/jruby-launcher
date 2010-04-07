@@ -205,7 +205,7 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
 
 #define CHECK_ARG                                                       \
     it++;								\
-    if (it == args.end() || it->at(0) == '-') {				\
+    if (it == args.end() || it->empty() || it->at(0) == '-') {	\
         logErr(false, true, "Argument is missing for \"%s\" option.", (--it)->c_str()); \
         return false;                                                   \
     }									\
@@ -234,7 +234,7 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
     for (list<string>::iterator it = args.begin(); it != args.end(); INCR) {
         if (doneScanning) {
             progArgs.push_back(*it);
-        } else if (it->compare("--") == 0 || it->at(0) != '-') {
+        } else if (it->compare("--") == 0 || it->empty() || it->at(0) != '-') {
             progArgs.push_back(*it);
             doneScanning = true;
         } else if (it->compare(ARG_NAME_SEPAR_PROC) == 0) {

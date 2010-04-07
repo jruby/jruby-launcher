@@ -142,4 +142,10 @@ describe "JRuby native launcher" do
       end
     end
   end
+
+  it "does not crash on empty args" do
+    jruby_launcher_args("-e ''").should include("-e")
+    jruby_launcher("-Xtrace '' 2>&1").should =~ /-Xtrace/
+    jruby_launcher("-Xjdkhome '' 2>&1").should =~ /-Xjdkhome/
+  end
 end
