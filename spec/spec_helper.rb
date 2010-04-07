@@ -56,6 +56,7 @@ Spec::Runner.configure do |config|
     ENV.delete("JAVA_OPTS")
     ENV.delete("JRUBY_OPTS")
     ENV.delete("CLASSPATH")
+    ENV.delete("JAVA_ENCODING")
   end
   config.include(JRubyLauncherHelper)
 end

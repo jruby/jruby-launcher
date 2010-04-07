@@ -1,4 +1,5 @@
 require File.expand_path('../spec_helper.rb', __FILE__)
+require 'rbconfig'
 
 describe "JRuby native launcher" do
   it "should run org.jruby.Main" do
@@ -130,5 +131,15 @@ describe "JRuby native launcher" do
   # JRUBY-4611
   it "stops argument processing on first non-option argument" do
     jruby_launcher_args("foo.rb --profile")[-2..-1].should == ["foo.rb", "--profile"]
+  end
+
+  # JRUBY-4608
+  if Config::CONFIG['target_os'] =~ /darwin/i
+    it "includes file.encoding=UTF-8 on Mac if JAVA_ENCODING is not set" do
+      jruby_launcher_args("-e true").should include("-Dfile.encoding=UTF-8")
+      with_environment "JAVA_ENCODING" => "MacRoman" do
+        jruby_launcher_args("-e true").should_not include("-Dfile.encoding=UTF-8")
+      end
+    end
   end
 end
