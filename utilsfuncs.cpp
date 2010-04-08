@@ -184,7 +184,7 @@ void logV(bool appendSysError, bool showMsgBox, const char *format, va_list args
         strncat(msg, sysErr, 4096 - strlen(msg));
     }
 
-    if (!gLogFileName.empty()) {
+    if (!gLogFileName.empty() && gLogFileName != "''") {
         FILE *file = fopen(gLogFileName.c_str(), "a");
         if (file) {
             fprintf(file, "%s\n", msg);
