@@ -300,6 +300,7 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
             javaOptions.push_front("-Dprofile.properties=" + platformDir + "/lib/profile-" + filterType + ".properties");
             javaOptions.push_front("-javaagent:" + platformDir + "/lib/profile.jar");
             progArgs.push_back("-X+C");
+            noBootClassPath = true;
             printToConsole("Running with instrumented profiler\n");
         } else if (it->compare(ARG_NAME_NG) == 0) {
             nailgunClient = true;
@@ -307,6 +308,7 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
             bootclass = "com/martiansoftware/nailgun/NGServer";
             javaOptions.push_back("-server");
             nailgunServer = true;
+            noBootClassPath = true;
         } else if (it->compare(0, 2, "-J", 2) == 0) {
             std::string javaOpt = it->substr(2);
             if (javaOpt.compare(0, 3, "-ea", 3) == 0
@@ -548,8 +550,8 @@ void ArgParser::addToClassPath(const char *path, bool onlyIfExists) {
 void ArgParser::addToBootClassPath(const char *path, bool onlyIfExists) {
     logMsg("addToBootClassPath()\n\tpath: %s\n\tonlyIfExists: %s", path, onlyIfExists ? "true" : "false");
 
-    if (nailgunServer || noBootClassPath) {
-        logMsg("NOTE: In this mode there is no bootclasspath, adding to classpath...");
+    if (noBootClassPath) {
+        logMsg("NOTE: In this mode there is no bootclasspath, adding to the classpath instead...");
         return addToClassPath(path, onlyIfExists);
     }
 
