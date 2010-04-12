@@ -54,7 +54,6 @@ protected:
 protected:
     bool separateProcess;
     bool nailgunClient;
-    bool nailgunServer;
     bool noBootClassPath;
     bool printCommandLine;
     std::string platformDir;

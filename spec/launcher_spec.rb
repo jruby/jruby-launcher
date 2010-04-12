@@ -1,5 +1,4 @@
 require File.expand_path('../spec_helper.rb', __FILE__)
-require 'rbconfig'
 
 describe "JRuby native launcher" do
   it "should run org.jruby.Main" do
@@ -147,5 +146,12 @@ describe "JRuby native launcher" do
     jruby_launcher_args("-e ''").should include("-e")
     jruby_launcher("-Xtrace '' 2>&1").should =~ /-Xtrace/
     jruby_launcher("-Xjdkhome '' 2>&1").should =~ /-Xjdkhome/
+  end
+
+  it "should put JRuby on regular classpath when -Xnobootclasspath is used" do
+    args = jruby_launcher_args("-e true")
+    args.grep(/Xbootclasspath/).should_not be_empty
+    args = jruby_launcher_args("-Xnobootclasspath -e true")
+    args.grep(/Xbootclasspath/).should be_empty
   end
 end

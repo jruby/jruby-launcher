@@ -22,6 +22,7 @@
 #define ARG_NAME_CP_PREPEND "-Xcp:p"
 #define ARG_NAME_CP_APPEND "-Xcp:a"
 #define ARG_NAME_CMD_ONLY "-Xcommand"
+#define ARG_NAME_NO_BOOTCLASSPATH "-Xnobootclasspath"
 
 /* Below are standard JRuby args handled by the launcher. */
 #define ARG_NAME_SERVER "--server"

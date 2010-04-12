@@ -1,5 +1,6 @@
 require 'spec'
 require 'rbconfig'
+require 'fileutils'
 
 if defined?(JRUBY_VERSION)
   require 'jruby'
@@ -7,13 +8,25 @@ if defined?(JRUBY_VERSION)
 end
 
 module JRubyLauncherHelper
-  JRUBY_EXE = File.expand_path("../../jruby", __FILE__) + Config::CONFIG['EXEEXT']
+  JRUBY_EXE = ''
   WINDOWS = Config::CONFIG['target_os'] =~ /mswin/
 
   def self.check_executable_built
-    unless File.executable?(JRUBY_EXE)
+    exe = File.expand_path("../../jruby", __FILE__) + Config::CONFIG['EXEEXT']
+    unless File.executable?(exe)
       raise "Error: launcher executable not built; type `make' before continuing."
     end
+    top = File.dirname(exe)
+    name = File.basename(exe)
+    home = File.join(top, "build/home")
+    FileUtils.mkdir_p(File.join(home, "bin"))
+    FileUtils.cp(exe, File.join(home, "bin"))
+    if JRubyLauncherHelper::WINDOWS
+      FileUtils.cp(JRubyLauncherHelper::JRUBY_EXE.sub(/exe/,'dll'), File.join(home, "bin"))
+    end
+    FileUtils.mkdir_p(File.join(home, "lib"))
+    FileUtils.touch(File.join(home, "lib/jruby.jar"))
+    JRUBY_EXE.concat File.join(home, "bin", name)
   end
 
   def jruby_launcher(args)

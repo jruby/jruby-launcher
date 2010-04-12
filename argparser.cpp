@@ -33,7 +33,8 @@ Options:\n\
 \n\
   -Xfork-java           run java in separate process\n\
   -Xtrace <path>        path for launcher log (for troubleshooting)\n\
-  -Xcommand             just print the equivalent java command and exit\n"
+  -Xcommand             just print the equivalent java command and exit\n\
+  -Xnobootclasspath     don't put jruby jars on the bootclasspath\n"
 #ifdef WIN32
 "  -Xconsole <mode>      jrubyw console attach mode (new|attach|suppress)\n\n"
 #endif
@@ -58,7 +59,7 @@ const char *ArgParser::DEFAULT_EXECUTABLE = "jruby";
 ArgParser::ArgParser()
     : separateProcess(false)
     , nailgunClient(false)
-    , nailgunServer(false)
+    , noBootClassPath(false)
     , printCommandLine(false)
 {
 }
@@ -242,6 +243,8 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
             logMsg("Run Java in separater process");
         } else if (it->compare(ARG_NAME_CMD_ONLY) == 0) {
             printCommandLine = true;
+        } else if (it->compare(ARG_NAME_NO_BOOTCLASSPATH) == 0) {
+            noBootClassPath = true;
         } else if (it->compare(ARG_NAME_LAUNCHER_LOG) == 0) {
             // We only check the validity of args here,
             // the actual parsing and setting the log file
@@ -301,7 +304,6 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
         } else if (it->compare(ARG_NAME_NG_SERVER) == 0) {
             bootclass = "com/martiansoftware/nailgun/NGServer";
             javaOptions.push_back("-server");
-            nailgunServer = true;
             noBootClassPath = true;
         } else if (it->compare(0, 2, "-J", 2) == 0) {
             std::string javaOpt = it->substr(2);
