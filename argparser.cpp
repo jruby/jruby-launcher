@@ -221,12 +221,6 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
     }
 #endif
 
-    const char* verifyJRuby = getenv("VERIFY_JRUBY");
-    if (verifyJRuby != NULL) {
-        logMsg("Note: VERIFY_JRUBY evnironment variable is specified, there will be no bootclasspath");
-        noBootClassPath = true;
-    }
-
     addToArgList(args, argc, argv);
 
     logMsg("Parsing arguments:");
@@ -314,9 +308,6 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
             if (javaOpt.compare(0, 3, "-ea", 3) == 0
                     || javaOpt.compare(0, 17, "-enableassertions", 17) == 0) {
                 logMsg("Note: -ea option is specified, there will be no bootclasspath in order to enable assertions");
-                noBootClassPath = true;
-            } else if (javaOpt.compare(0, 15, "-DVERIFY_JRUBY=", 15) == 0) {
-                logMsg("Note: VERIFY_JRUBY property is specified, there will be no bootclasspath");
                 noBootClassPath = true;
             }
             javaOptions.push_back(javaOpt);
