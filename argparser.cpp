@@ -477,6 +477,11 @@ void ArgParser::constructClassPath() {
         classPath += cpAfter;
     }
 
+    // JRUBY-4709: Include this by default to have PWD as part of classpath
+    if (!classPath.empty()) {
+        classPath += PATH_SEP;
+    }
+
     logMsg("ClassPath: %s", classPath.c_str());
 }
 

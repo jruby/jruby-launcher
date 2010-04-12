@@ -148,10 +148,16 @@ describe "JRuby native launcher" do
     jruby_launcher("-Xjdkhome '' 2>&1").should =~ /-Xjdkhome/
   end
 
+  # JRUBY-4706
   it "should put JRuby on regular classpath when -Xnobootclasspath is used" do
     args = jruby_launcher_args("-e true")
     args.grep(/Xbootclasspath/).should_not be_empty
     args = jruby_launcher_args("-Xnobootclasspath -e true")
     args.grep(/Xbootclasspath/).should be_empty
+  end
+
+  # JRUBY-4709
+  it "should include a bare : at the end of the classpath, to include PWD in the path" do
+    jruby_launcher_args("-Xnobootclasspath -e true").grep(/java\.class\.path/).first.should =~ /:$/
   end
 end
