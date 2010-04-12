@@ -8,6 +8,7 @@
 #include "utilsfuncs.h"
 #include "argparser.h"
 #include "argnames.h"
+#include "version.h"
 
 #ifndef WIN32
 #include <sys/types.h>
@@ -318,6 +319,9 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
             if (!appendHelp.empty()) {
                 printToConsole(appendHelp.c_str());
             }
+            return false;
+        } else if (strcmp(it->c_str(), "-Xversion") == 0) {
+            printToConsole("JRuby Launcher Version " JRUBY_LAUNCHER_VERSION "\n");
             return false;
         } else {
             progArgs.push_back(*it);
