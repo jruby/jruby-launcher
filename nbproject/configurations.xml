@@ -11,6 +11,7 @@
       <itemPath>platformlauncher.h</itemPath>
       <itemPath>rb_w32_cmdvector.h</itemPath>
       <itemPath>utilsfuncs.h</itemPath>
+      <itemPath>version.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
