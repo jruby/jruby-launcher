@@ -22,7 +22,7 @@ module JRubyLauncherHelper
     FileUtils.mkdir_p(File.join(home, "bin"))
     FileUtils.cp(exe, File.join(home, "bin"))
     if JRubyLauncherHelper::WINDOWS
-      FileUtils.cp(JRubyLauncherHelper::JRUBY_EXE.sub(/exe/,'dll'), File.join(home, "bin"))
+      FileUtils.cp(exe.sub(/exe/, 'dll'), File.join(home, "bin"))
     end
     FileUtils.mkdir_p(File.join(home, "lib"))
     FileUtils.touch(File.join(home, "lib/jruby.jar"))
