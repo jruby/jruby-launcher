@@ -22,25 +22,26 @@
 using namespace std;
 
 const char *ArgParser::HELP_MSG =
-"\nJRuby Launcher usage: jruby" EXEEXT " {options} arguments\n\
+"JRuby Launcher usage: jruby" EXEEXT " {options} arguments\n\n\
 Options:\n\
   -Xhelp                show this help\n\
-  -Xjdkhome <path>      path to JDK\n\
+  -Xversion             print launcher's version\n\
+\nJvm Management:\n\
+  -Xjdkhome <path>      set path to JDK\n\
+  -Xfork-java           run java in separate process\n\
   -J<jvm_option>        pass <jvm_option> to JVM\n\
-\n\
+\nClasspath Management:\n\
   -Xcp   <classpath>    set the classpath\n\
   -Xcp:p <classpath>    prepend <classpath> to classpath\n\
   -Xcp:a <classpath>    append <classpath> to classpath\n\
-\n\
-  -Xfork-java           run java in separate process\n\
+  -Xnobootclasspath     don't put jruby jars on the bootclasspath\n\
+\nMisc:\n\
   -Xtrace <path>        path for launcher log (for troubleshooting)\n\
-  -Xcommand             just print the equivalent java command and exit\n\
-  -Xnobootclasspath     don't put jruby jars on the bootclasspath\n"
+  -Xcommand             just print the equivalent java command and exit\n"
 #ifdef WIN32
 "  -Xconsole <mode>      jrubyw console attach mode (new|attach|suppress)\n\n"
 #endif
-"To see general JRuby options, type 'jruby -h' or 'jruby --help'.\n\
---------------------------------------------------------------------\n\n";
+"To see general JRuby options, type 'jruby -h' or 'jruby --help'.\n";
 
 const char *ArgParser::REQ_JAVA_VERSION = "1.5";
 
