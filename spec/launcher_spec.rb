@@ -157,8 +157,13 @@ describe "JRuby native launcher" do
   end
 
   # JRUBY-4709
-  it "should include a bare : at the end of the classpath, to include PWD in the path" do
-    jruby_launcher_args("-Xnobootclasspath -e true").grep(/java\.class\.path/).first.should =~ /:$/
+  it "should include a bare : or ; at the end of the classpath, to include PWD in the path" do
+    jruby_launcher_args("-Xnobootclasspath -e true").grep(/java\.class\.path/).first.should =~
+      if windows?
+        /;$/
+      else
+        /:$/
+      end
   end
 
   it "should print the version" do
