@@ -12,7 +12,7 @@ BEGIN
    VALUE "FileDescription",  "Windows JRuby Launcher\0"
    VALUE "FileVersion",      "1.0\0"
    VALUE "InternalName",     "jruby.exe\0"
-   VALUE "LegalCopyright",   "Copyright (C) The JRuby Team\0"
+   VALUE "LegalCopyright",   "Copyright 2009-2010 JRuby Team\0"
    VALUE "OriginalFilename", "jruby.exe\0"
    VALUE "ProductName",      "JRuby\0"
    VALUE "ProductVersion",   "1.0\0"
