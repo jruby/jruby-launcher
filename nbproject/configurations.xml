@@ -38,6 +38,7 @@
       <itemPath>Makefile</itemPath>
       <itemPath>TODO.txt</itemPath>
     </logicalFolder>
+    <itemPath>spec</itemPath>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
