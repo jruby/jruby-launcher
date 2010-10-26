@@ -293,14 +293,6 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
             javaOptions.push_back("-Djruby.management.enabled=true");
         } else if (it->compare(ARG_NAME_HEADLESS) == 0) {
             javaOptions.push_back("-Djava.awt.headless=true");
-        } else if (it->compare(ARG_NAME_PROFILE) == 0 ||
-                it->compare(ARG_NAME_PROFILE "-all") == 0) {
-            std::string filterType = it->length() == strlen(ARG_NAME_PROFILE) ? "ruby" : "all";
-            javaOptions.push_front("-Dprofile.properties=" + platformDir + "/lib/profile-" + filterType + ".properties");
-            javaOptions.push_front("-javaagent:" + platformDir + "/lib/profile.jar");
-            progArgs.push_back("-X+C");
-            noBootClassPath = true;
-            printToConsole("Running with instrumented profiler\n");
         } else if (it->compare(ARG_NAME_NG) == 0) {
             nailgunClient = true;
         } else if (it->compare(ARG_NAME_NG_SERVER) == 0) {

@@ -1,10 +1,15 @@
-require 'spec/rake/spectask'
 require 'rake/gempackagetask'
 require 'date'
 
-Spec::Rake::SpecTask.new
-
-task :default => :spec
+begin
+  require 'spec/rake/spectask'
+  Spec::Rake::SpecTask.new
+  task :default => :spec
+rescue LoadError
+  task :default do
+    puts "rspec 1.3.0 or higher is not installed; skipping jruby-launcher specs"
+  end
+end
 
 file './lib/jruby-launcher.rb' => 'version.h' do |t|
   version = nil
