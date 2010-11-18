@@ -37,7 +37,9 @@ Options:\n\
   -Xnobootclasspath     don't put jruby jars on the bootclasspath\n\
 \nMisc:\n\
   -Xtrace <path>        path for launcher log (for troubleshooting)\n\
-  -Xcommand             just print the equivalent java command and exit\n"
+  -Xcommand             just print the equivalent java command and exit\n\
+  -Xprop.erty[=value]   equivalent to -J-Djruby.<prop.erty>[=value]\n\
+                          see --properties for a list (omit \"jruby.\" with -X\n"
 #ifdef WIN32
 "  -Xconsole <mode>      jrubyw console attach mode (new|attach|suppress)\n\n"
 #endif
@@ -316,6 +318,12 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
         } else if (strcmp(it->c_str(), "-Xversion") == 0) {
             printToConsole("JRuby Launcher Version " JRUBY_LAUNCHER_VERSION "\n");
             return false;
+        } else if (it->compare(0, 2, "-X", 2) == 0 && islower(it->c_str()[2])) {
+	        // Any other /-X([a-z].*)/ get turned into a -Djruby.\1 property
+			std::string propPart = it->substr(2);
+	        std::string propSet = std::string("-Djruby.");
+			propSet += propPart;
+            javaOptions.push_back(propSet);
         } else {
             progArgs.push_back(*it);
         }

@@ -60,6 +60,10 @@ describe "JRuby native launcher" do
     jruby_launcher_args("-J-Darg1=value1 -J-Darg2=value2").should include("-Darg1=value1", "-Darg2=value2")
   end
 
+  it "should pass -Xprop.erty=value as -J-Djruby.prop.erty=value" do
+    jruby_launcher_args("-Xprop.erty=value").should include("-Djruby.prop.erty=value")
+  end
+
   it "should default to 500m max heap" do
     jruby_launcher_args("").should include("-Xmx500m", "-Djruby.memory.max=500m")
   end
