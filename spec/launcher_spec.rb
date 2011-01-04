@@ -13,6 +13,16 @@ describe "JRuby native launcher" do
     jruby_launcher("-Xhelp 2>&1").should =~ /JRuby Launcher usage/
   end
 
+  it "should use $JAVACMD when JAVACMD is specified" do
+    with_environment "JAVACMD" => File.join("jato") do
+      if windows?
+        jruby_launcher_args("-v 2>&1").join.should =~ %r{jato}
+      else
+        jruby_launcher_args("-v").first.should == File.join("jato")
+      end
+    end
+  end
+
   it "should use $JAVA_HOME/bin/java when JAVA_HOME is specified" do
     with_environment "JAVA_HOME" => File.join("some", "java", "home") do
       if windows?

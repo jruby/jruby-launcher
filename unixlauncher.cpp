@@ -38,12 +38,16 @@ int UnixLauncher::run(int argc, char* argv[], char* envp[]) {
 
     string java("");
 
-    if (!jdkhome.empty()) {
-        java = jdkhome + "/bin/java";
-    } else if (getenv("JAVA_HOME") != NULL) {
-        java = string(getenv("JAVA_HOME")) + "/bin/java";
+    if (getenv("JAVACMD") != NULL) {
+        java = getenv("JAVACMD");
     } else {
-        java = findOnPath("java");
+        if (!jdkhome.empty()) {
+            java = jdkhome + "/bin/java";
+        } else if (getenv("JAVA_HOME") != NULL) {
+            java = string(getenv("JAVA_HOME")) + "/bin/java";
+        } else {
+            java = findOnPath("java");
+        }
     }
 
     if (java.empty()) {
