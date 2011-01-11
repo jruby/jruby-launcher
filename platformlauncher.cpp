@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 2009-2010 JRuby Team (www.jruby.org).
+ * Copyright 2009-2011 JRuby Team (www.jruby.org).
  * Copyright 1997-2008 Sun Microsystems, Inc. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
@@ -137,20 +137,30 @@ bool PlatformLauncher::start(char* argv[], int argc, DWORD *retCode, const char*
         }
     }
 
-    if (jdkhome.empty()) {
-        if (!jvmLauncher.initialize(REQ_JAVA_VERSION)) {
-            logErr(false, true, "Cannot find Java %s or higher.", REQ_JAVA_VERSION);
-            return false;
-        }
-    }
-
-    jvmLauncher.getJavaPath(jdkhome);
-
     prepareOptions();
+
+    string java("");
+
+    if (getenv("JAVACMD") != NULL) {
+        java = getenv("JAVACMD");
+        jvmLauncher.setJavaCmd(java);
+        separateProcess = true;
+        suppressConsole = false;
+    } else {
+        if (jdkhome.empty()) {
+            if (!jvmLauncher.initialize(REQ_JAVA_VERSION)) {
+                logErr(false, true, "Cannot find Java %s or higher.", REQ_JAVA_VERSION);
+                return false;
+            }
+        }
+
+        jvmLauncher.getJavaPath(jdkhome);
+        java = jdkhome + "\\bin\\java";
+    }
 
     if (printCommandLine) {
         list<string> commandLine;
-        commandLine.push_back(jdkhome + "\\bin\\java");
+        commandLine.push_back(java);
         addOptionsToCommandLine(commandLine);
         for (list<string>::iterator it = commandLine.begin(); it != commandLine.end(); it++) {
             printf("%s\n", it->c_str());
@@ -179,6 +189,7 @@ bool PlatformLauncher::run(DWORD *retCode) {
     logMsg("Starting application...");
 
     jvmLauncher.setSuppressConsole(suppressConsole);
+
     bool rc = jvmLauncher.start(bootclass.c_str(), progArgs, javaOptions, separateProcess, retCode);
     if (!separateProcess) {
         exit(0);
