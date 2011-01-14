@@ -1,4 +1,4 @@
 class Gem::ConfigFile
-  PLATFORM_DEFAULTS.delete('install')
-  PLATFORM_DEFAULTS.delete('update')
+  PLATFORM_DEFAULTS['install'] = '--no-rdoc --no-ri'
+  PLATFORM_DEFAULTS['update'] = '--no-rdoc --no-ri'
 end
