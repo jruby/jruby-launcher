@@ -86,8 +86,8 @@ describe "JRuby native launcher" do
     jruby_launcher_args("-J-Xmx256m").should include("-Xmx256m", "-Djruby.memory.max=256m")
   end
 
-  it "should default to 1024k max stack" do
-    jruby_launcher_args("").should include("-Xss1024k", "-Djruby.stack.max=1024k")
+  it "should default to 2048k max stack" do
+    jruby_launcher_args("").should include("-Xss2048k", "-Djruby.stack.max=2048k")
   end
 
   it "should allow max stack to be overridden" do

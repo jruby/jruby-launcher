@@ -419,8 +419,8 @@ void ArgParser::prepareOptions() {
 }
 
 void ArgParser::setupMaxHeapAndStack() {
-    // Hard-coded 500m, 1024k is for consistency with jruby shell script.
-    string heapSize("500m"), stackSize("1024k");
+    // Hard-coded 500m, 2048k is for consistency with jruby shell script.
+    string heapSize("500m"), stackSize("2048k");
     bool maxHeap = false, maxStack = false;
     for (list<string>::iterator it = javaOptions.begin(); it != javaOptions.end(); it++) {
         if (!maxHeap && strncmp("-Xmx", it->c_str(), 4) == 0) {
