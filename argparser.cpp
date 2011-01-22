@@ -24,7 +24,6 @@ using namespace std;
 const char *ArgParser::HELP_MSG =
 "JRuby Launcher usage: jruby" EXEEXT " {options} arguments\n\n\
 Options:\n\
-  -Xhelp                show this help\n\
   -Xversion             print launcher's version\n\
 \nJvm Management:\n\
   -Xjdkhome <path>      set path to JDK\n\
@@ -37,7 +36,7 @@ Options:\n\
   -Xnobootclasspath     don't put jruby jars on the bootclasspath\n\
 \nMisc:\n\
   -Xtrace <path>        path for launcher log (for troubleshooting)\n\
-  -Xcommand             just print the equivalent java command and exit\n\
+  -Xcommand             just print the equivalent java command and exit\n\n\
   -Xprop.erty[=value]   equivalent to -J-Djruby.<prop.erty>[=value]\n\
   -Xproperties          list supported properties (omit \"jruby.\" with -X)\n"
 #ifdef WIN32
@@ -309,7 +308,7 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
                 noBootClassPath = true;
             }
             javaOptions.push_back(javaOpt);
-        } else if (strcmp(it->c_str(), "-Xhelp") == 0) {
+        } else if (strcmp(it->c_str(), "-Xhelp") == 0 || strcmp(it->c_str(), "-X") == 0) {
             printToConsole(HELP_MSG);
             if (!appendHelp.empty()) {
                 printToConsole(appendHelp.c_str());
