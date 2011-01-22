@@ -23,6 +23,7 @@ using namespace std;
 
 const char *ArgParser::HELP_MSG =
 "JRuby Launcher usage: jruby" EXEEXT " {options} arguments\n\n\
+To see general JRuby options, type 'jruby -h' or 'jruby --help'.\n\n\
 Options:\n\
   -Xversion             print launcher's version\n\
 \nJvm Management:\n\
@@ -42,7 +43,7 @@ Options:\n\
 #ifdef WIN32
 "  -Xconsole <mode>      jrubyw console attach mode (new|attach|suppress)\n\n"
 #endif
-"To see general JRuby options, type 'jruby -h' or 'jruby --help'.\n";
+;
 
 const char *ArgParser::REQ_JAVA_VERSION = "1.5";
 
@@ -313,6 +314,10 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
             if (!appendHelp.empty()) {
                 printToConsole(appendHelp.c_str());
             }
+            progArgs.push_back("-Xnopreamble");
+            return false;
+        } else if (strcmp(it->c_str(), "-Xversion") == 0) {
+            printToConsole("JRuby Launcher Version " JRUBY_LAUNCHER_VERSION "\n");
             return false;
         } else if (strcmp(it->c_str(), "-Xversion") == 0) {
             printToConsole("JRuby Launcher Version " JRUBY_LAUNCHER_VERSION "\n");
