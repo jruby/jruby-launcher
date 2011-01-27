@@ -23,8 +23,8 @@ using namespace std;
 
 const char *ArgParser::HELP_MSG =
 "JRuby Launcher usage: jruby" EXEEXT " {options} arguments\n\n\
+To see general JRuby options, type 'jruby -h' or 'jruby --help'.\n\n\
 Options:\n\
-  -Xhelp                show this help\n\
   -Xversion             print launcher's version\n\
 \nJvm Management:\n\
   -Xjdkhome <path>      set path to JDK\n\
@@ -37,13 +37,13 @@ Options:\n\
   -Xnobootclasspath     don't put jruby jars on the bootclasspath\n\
 \nMisc:\n\
   -Xtrace <path>        path for launcher log (for troubleshooting)\n\
-  -Xcommand             just print the equivalent java command and exit\n\
+  -Xcommand             just print the equivalent java command and exit\n\n\
   -Xprop.erty[=value]   equivalent to -J-Djruby.<prop.erty>[=value]\n\
   -Xproperties          list supported properties (omit \"jruby.\" with -X)\n"
 #ifdef WIN32
 "  -Xconsole <mode>      jrubyw console attach mode (new|attach|suppress)\n\n"
 #endif
-"To see general JRuby options, type 'jruby -h' or 'jruby --help'.\n";
+;
 
 const char *ArgParser::REQ_JAVA_VERSION = "1.5";
 
@@ -309,11 +309,15 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
                 noBootClassPath = true;
             }
             javaOptions.push_back(javaOpt);
-        } else if (strcmp(it->c_str(), "-Xhelp") == 0) {
+        } else if (strcmp(it->c_str(), "-Xhelp") == 0 || strcmp(it->c_str(), "-X") == 0) {
             printToConsole(HELP_MSG);
             if (!appendHelp.empty()) {
                 printToConsole(appendHelp.c_str());
             }
+            progArgs.push_back("-Xnopreamble");
+            return false;
+        } else if (strcmp(it->c_str(), "-Xversion") == 0) {
+            printToConsole("JRuby Launcher Version " JRUBY_LAUNCHER_VERSION "\n");
             return false;
         } else if (strcmp(it->c_str(), "-Xversion") == 0) {
             printToConsole("JRuby Launcher Version " JRUBY_LAUNCHER_VERSION "\n");
@@ -419,8 +423,8 @@ void ArgParser::prepareOptions() {
 }
 
 void ArgParser::setupMaxHeapAndStack() {
-    // Hard-coded 500m, 1024k is for consistency with jruby shell script.
-    string heapSize("500m"), stackSize("1024k");
+    // Hard-coded 500m, 2048k is for consistency with jruby shell script.
+    string heapSize("500m"), stackSize("2048k");
     bool maxHeap = false, maxStack = false;
     for (list<string>::iterator it = javaOptions.begin(); it != javaOptions.end(); it++) {
         if (!maxHeap && strncmp("-Xmx", it->c_str(), 4) == 0) {
