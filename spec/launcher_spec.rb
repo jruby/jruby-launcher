@@ -10,8 +10,12 @@ describe "JRuby native launcher" do
   end
 
   it "should print help message" do
-    jruby_launcher("-Xhelp 2>&1").should =~ /JRuby Launcher usage/
-    jruby_launcher("-X 2>&1").should =~ /JRuby Launcher usage/
+    args = jruby_launcher_args("-Xhelp 2>&1")
+    args.detect{|l| l =~ /JRuby Launcher usage/}.should be_true
+    args[-1].should == "-X"
+    args = jruby_launcher_args("-X 2>&1")
+    args.detect{|l| l =~ /JRuby Launcher usage/}.should be_true
+    args[-1].should == "-X"
   end
 
   it "should use $JAVACMD when JAVACMD is specified" do
