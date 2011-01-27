@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2010 JRuby Team (www.jruby.org).
+ * Copyright 2009-2011 JRuby Team (www.jruby.org).
  */
 
 #include <cstring>
@@ -41,8 +41,9 @@ Options:\n\
   -Xprop.erty[=value]   equivalent to -J-Djruby.<prop.erty>[=value]\n\
   -Xproperties          list supported properties (omit \"jruby.\" with -X)\n"
 #ifdef WIN32
-"  -Xconsole <mode>      jrubyw console attach mode (new|attach|suppress)\n\n"
+"  -Xconsole <mode>      jrubyw console attach mode (new|attach|suppress)\n"
 #endif
+"\n"
 ;
 
 const char *ArgParser::REQ_JAVA_VERSION = "1.5";
@@ -314,8 +315,8 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
             if (!appendHelp.empty()) {
                 printToConsole(appendHelp.c_str());
             }
-            progArgs.push_back("-Xnopreamble");
-            return false;
+            javaOptions.push_back("-Djruby.launcher.nopreamble=true");
+            progArgs.push_back("-X");
         } else if (strcmp(it->c_str(), "-Xversion") == 0) {
             printToConsole("JRuby Launcher Version " JRUBY_LAUNCHER_VERSION "\n");
             return false;
