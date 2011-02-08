@@ -206,7 +206,29 @@ bool JvmLauncher::isVersionString(const char *str) {
     return *end == '\0';
 }
 
-bool JvmLauncher::startInProcJvm(const char *mainClassName, std::list<std::string> args, std::list<std::string> options) {
+bool JvmLauncher::startInProcJvm(const char *mainClassName, std::list<std::string> mbcs_args, std::list<std::string> mbcs_options) {
+
+  std::list<std::string> args;
+  for (std::list<std::string>::iterator it = mbcs_args.begin(); it != mbcs_args.end(); ++it) {
+    wchar_t wstr[2048];
+    UINT cp = AreFileApisANSI() ? CP_ACP : CP_OEMCP;
+    MultiByteToWideChar(cp, 0, it->c_str(), -1, wstr, sizeof(wstr) / sizeof(wchar_t));
+    int mb_size = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, NULL, 0, NULL, NULL);
+    char *mbstr = (char*)malloc(mb_size);
+    WideCharToMultiByte(CP_UTF8, 0, wstr, -1, mbstr, mb_size, NULL, NULL);
+    args.push_back(mbstr);
+  }
+
+  std::list<std::string> options;
+  for (std::list<std::string>::iterator it = mbcs_options.begin(); it != mbcs_options.end(); ++it) {
+    wchar_t wstr[2048];
+    UINT cp = AreFileApisANSI() ? CP_ACP : CP_OEMCP;
+    MultiByteToWideChar(cp, 0, it->c_str(), -1, wstr, sizeof(wstr) / sizeof(wchar_t));
+    int mb_size = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, NULL, 0, NULL, NULL);
+    char *mbstr = (char*)malloc(mb_size);
+    WideCharToMultiByte(CP_UTF8, 0, wstr, -1, mbstr, mb_size, NULL, NULL);
+    options.push_back(mbstr);
+  }
 
     class Jvm {
     public:
