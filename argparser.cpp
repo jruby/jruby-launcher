@@ -356,11 +356,7 @@ void ArgParser::prepareOptions() {
 #ifdef WIN32
     option += "cmd.exe";
 #else
-    const char* shell = getenv("SHELL");
-    if (shell == NULL) {
-        shell = "/bin/sh";
-    }
-    option += shell;
+    option += "/bin/sh";
 #endif
     javaOptions.push_back(option);
 
