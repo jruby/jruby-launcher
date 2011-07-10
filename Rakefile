@@ -2,12 +2,14 @@ require 'rake/gempackagetask'
 require 'date'
 
 begin
-  require 'spec/rake/spectask'
-  Spec::Rake::SpecTask.new
+  gem 'rspec'
+  require 'rspec/core/rake_task'
+  desc "Runs Java Integration Specs"
+  RSpec::Core::RakeTask.new
   task :default => :spec
 rescue LoadError
   task :default do
-    puts "rspec 1.3.0 or higher is not installed; skipping jruby-launcher specs"
+    puts "rspec 2.0.0 or higher is not installed; skipping jruby-launcher specs"
   end
 end
 

@@ -1,4 +1,4 @@
-require 'spec'
+require 'rspec'
 require 'rbconfig'
 require 'fileutils'
 
@@ -60,7 +60,7 @@ module JRubyLauncherHelper
   end
 end
 
-Spec::Runner.configure do |config|
+RSpec.configure do |config|
   config.before(:all) do
     JRubyLauncherHelper.check_executable_built
     # clear environment for better control
