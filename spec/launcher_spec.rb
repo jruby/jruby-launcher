@@ -179,6 +179,13 @@ describe "JRuby native launcher" do
     args.grep(/Xbootclasspath/).should be_empty
   end
 
+  it "should put JRuby on regular classpath when VERIFY_JRUBY is set" do
+    with_environment "VERIFY_JRUBY" => "true" do
+      args = jruby_launcher_args("-e true")
+      args.grep(/Xbootclasspath/).should be_empty
+    end
+  end
+
   # JRUBY-4709
   it "should include a bare : or ; at the end of the classpath, to include PWD in the path" do
     jruby_launcher_args("-Xnobootclasspath -e true").grep(/java\.class\.path/).first.should =~

@@ -226,6 +226,9 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
         javaOptions.push_back("-Dfile.encoding=UTF-8");
     }
 #endif
+    if (getenv("VERIFY_JRUBY") != NULL) {
+        noBootClassPath = true;
+    }
 
     addToArgList(args, argc, argv);
 
