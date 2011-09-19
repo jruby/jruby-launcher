@@ -204,8 +204,8 @@ describe "JRuby native launcher" do
   end
 
   it "should honor JAVA_STACK" do
-    with_environment "JAVA_STACK" => "-Xss2048k" do
-      jruby_launcher_args("").should include("-Xss2048k", "-Djruby.stack.max=2048k")
+    with_environment "JAVA_STACK" => "-Xss3072k" do
+      jruby_launcher_args("").should include("-Xss3072k", "-Djruby.stack.max=3072k")
     end
   end
 
