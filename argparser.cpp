@@ -230,6 +230,11 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
         noBootClassPath = true;
     }
 
+    const char *java_mem = getenv("JAVA_MEM");
+    if (java_mem != NULL) {
+        javaOptions.push_back(java_mem);
+    }
+
     addToArgList(args, argc, argv);
 
     logMsg("Parsing arguments:");

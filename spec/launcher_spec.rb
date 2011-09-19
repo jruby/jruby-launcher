@@ -196,6 +196,13 @@ describe "JRuby native launcher" do
       end
   end
 
+  # JRUBY-6016
+  it "should honor JAVA_MEM" do
+    with_environment "JAVA_MEM" => "-Xmx768m" do
+      jruby_launcher_args("").should include("-Xmx768m", "-Djruby.memory.max=768m")
+    end
+  end
+
   it "should print the version" do
     jruby_launcher("-Xversion 2>&1").should =~ /Launcher Version [0-9.]+/
   end
