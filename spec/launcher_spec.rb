@@ -203,6 +203,12 @@ describe "JRuby native launcher" do
     end
   end
 
+  it "should honor JAVA_STACK" do
+    with_environment "JAVA_STACK" => "-Xss2048k" do
+      jruby_launcher_args("").should include("-Xss2048k", "-Djruby.stack.max=2048k")
+    end
+  end
+
   it "should print the version" do
     jruby_launcher("-Xversion 2>&1").should =~ /Launcher Version [0-9.]+/
   end

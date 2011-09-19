@@ -235,6 +235,11 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
         javaOptions.push_back(java_mem);
     }
 
+    const char *java_stack = getenv("JAVA_STACK");
+    if (java_stack != NULL) {
+        javaOptions.push_back(java_stack);
+    }
+
     addToArgList(args, argc, argv);
 
     logMsg("Parsing arguments:");
