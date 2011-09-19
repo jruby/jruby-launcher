@@ -1,4 +1,4 @@
-require 'rake/gempackagetask'
+require 'rubygems/package_task'
 require 'date'
 
 begin
@@ -43,7 +43,7 @@ task :gemspec => './lib/jruby-launcher.rb' do
 end
 
 task :package => :gemspec do
-  Rake::GemPackageTask.new(@gemspec) do |pkg|
+  Gem::PackageTask.new(@gemspec) do |pkg|
   end
   Rake::Task['gem'].invoke
 end
