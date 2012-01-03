@@ -1,7 +1,8 @@
 # These line gets substituted with the actual Config::CONFIG items location by extconf.rb
 PREFIX = notspecified
 BINDIR = $(PREFIX)/bin
-SITELIBDIR = $(PREFIX)/lib/ruby/site_ruby/1.8
+INSTALLDIR = $(PREFIX)/lib/ruby/shared/rubygems/defaults
+OLDINSTALLDIR = $(PREFIX)/lib/ruby/site_ruby/1.8/rubygems/defaults
 
 ifeq (true,$(shell test -x $(BINDIR)/jruby && echo true))
 RAKE=$(BINDIR)/jruby -S rake
@@ -37,9 +38,18 @@ install:
 	@if [ ! -w $(BINDIR) ]; then echo "'$(BINDIR)' does not exist or cannot write to '$(BINDIR)'."; exit 1; fi
 	@if [ -f $(BINDIR)/jruby -a ! -w $(BINDIR)/jruby ]; then echo "Cannot write to '$(BINDIR)/jruby'."; exit 1; fi
 	cp ./jruby $(BINDIR)/jruby
-	@if [ x$(SITELIBDIR) = xnotspecified/lib/ruby/site_ruby/1.8 ]; then echo "Please define where to install by passing PREFIX=<jruby-home>."; exit 1; fi
-	@if [ ! -w $(SITELIBDIR) ]; then echo "'$(SITELIBDIR)' does not exist or cannot write to '$(SITELIBDIR)'."; exit 1; fi
-	cp ./lib/rubygems/defaults/jruby_native.rb $(SITELIBDIR)/rubygems/defaults
+	@if [ x$(PREFIX) = xnotspecified ]; then echo "Please define where to install by passing PREFIX=<jruby-home>."; exit 1; fi
+	@if [ ! -w $(INSTALLDIR) ]; then \
+		if [ ! -w $(OLDINSTALLDIR) ]; then \
+			echo "Neither '$(INSTALLDIR)' nor '$(OLDINSTALLDIR)' exist and are writable"; exit 1; \
+		else \
+			echo "cp ./lib/rubygems/defaults/jruby_native.rb $(OLDINSTALLDIR)"; \
+			cp ./lib/rubygems/defaults/jruby_native.rb $(OLDINSTALLDIR); \
+		fi; \
+	else \
+		echo "cp ./lib/rubygems/defaults/jruby_native.rb $(INSTALLDIR)"; \
+		cp ./lib/rubygems/defaults/jruby_native.rb $(INSTALLDIR); \
+	fi;
 
 test:
 	$(RAKE)
