@@ -33,7 +33,7 @@ task :gemspec => './lib/jruby-launcher.rb' do
 end
 
 desc "Create gem file"
-task :package => [:update_version, :gemspec] do
+task :package => [:update_version, :gemspec, :spec] do
   Gem::PackageTask.new(@gemspec) do |pkg|
   end
   Rake::Task['gem'].invoke
