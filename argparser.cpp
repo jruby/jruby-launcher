@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2011 JRuby Team (www.jruby.org).
+ * Copyright 2009-2012 JRuby Team (www.jruby.org).
  */
 
 #include <cstring>
