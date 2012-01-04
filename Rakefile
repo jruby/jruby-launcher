@@ -42,8 +42,18 @@ task :gemspec => './lib/jruby-launcher.rb' do
   end
 end
 
-task :package => :gemspec do
+task :package => :update_version, :gemspec do
   Gem::PackageTask.new(@gemspec) do |pkg|
   end
   Rake::Task['gem'].invoke
+end
+
+task :update_version do
+  load File.join(File.dirname(__FILE__), "lib", "jruby-launcher.rb")
+  version_file = File.join(File.dirname(__FILE__), "version.h")
+  version_file_content = File.read(version_file)
+  version_file_content.gsub! /JRUBY_LAUNCHER_VERSION\s+"[^"]+"/, "JRUBY_LAUNCHER_VERSION \"#{JRubyLauncher::VERSION}\""
+  File.open(version_file, "w") do |f|
+    f.puts version_file_content
+  end
 end
