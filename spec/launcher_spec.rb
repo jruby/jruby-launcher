@@ -1,4 +1,5 @@
 require File.expand_path('../spec_helper.rb', __FILE__)
+load File.expand_path('../../lib/jruby-launcher.rb', __FILE__)
 
 describe "JRuby native launcher" do
   it "should run org.jruby.Main" do
@@ -210,6 +211,6 @@ describe "JRuby native launcher" do
   end
 
   it "should print the version" do
-    jruby_launcher("-Xversion 2>&1").should =~ /Launcher Version [0-9.]+/
+    jruby_launcher("-Xversion 2>&1").should =~ /Launcher Version #{JRubyLauncher::VERSION}/
   end
 end
