@@ -13,17 +13,7 @@ rescue LoadError
   end
 end
 
-file './lib/jruby-launcher.rb' => 'version.h' do |t|
-  version = nil
-  IO.readlines(t.prerequisites.first).grep(/LAUNCHER_VERSION\s+"([^"]+)"/) {|l| version = $1 }
-  ruby = IO.readlines(t.name)
-  File.open(t.name, "wb") do |f|
-    ruby.each do |l|
-      f << l.sub(/VERSION\s*=\s*"([^"]*)"/, "VERSION = \"#{version}\"")
-    end
-  end
-end
-
+desc "Generate gemspec file"
 task :gemspec => './lib/jruby-launcher.rb' do
   @gemspec ||= Gem::Specification.new do |s|
     load './lib/jruby-launcher.rb'
@@ -42,12 +32,14 @@ task :gemspec => './lib/jruby-launcher.rb' do
   end
 end
 
+desc "Create gem file"
 task :package => [:update_version, :gemspec] do
   Gem::PackageTask.new(@gemspec) do |pkg|
   end
   Rake::Task['gem'].invoke
 end
 
+desc "Update version.h based on information in lib/jruby-launcher.rb"
 task :update_version do
   load File.join(File.dirname(__FILE__), "lib", "jruby-launcher.rb")
   version_file = File.join(File.dirname(__FILE__), "version.h")
