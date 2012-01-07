@@ -247,12 +247,12 @@ bool printToConsole(const char *msg) {
 }
 
 char** convertToArgvArray(list<string> args) {
-    char ** argv = new char*[args.size()+2];
+    char ** argv = new char*[args.size()+1];
     int i = 0;
     for (list<string>::iterator it = args.begin(); it != args.end(); ++it, ++i) {
         argv[i] = strdup((*it).c_str());
     }
-    argv[args.size()+1] = NULL;
+    argv[args.size()] = NULL;
     return argv;
 }
 
