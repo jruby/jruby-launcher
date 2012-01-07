@@ -5,6 +5,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <memory>
+#include <string>
 #include "utilsfuncs.h"
 #include "argparser.h"
 #include "argnames.h"
@@ -166,12 +167,9 @@ bool ArgParser::initPlatformDir() {
 
     if (!found) {               // try via PATH search
         logMsg("initPlatformDir: trying to find executable on PATH");
-        char * location = findOnPath(platformDir.c_str());
-        if (location != NULL) {
-            strncpy(path, location, PATH_MAX);
-            free(location);
-            found = true;
-        }
+        std::string location = findOnPath(platformDir.c_str());
+        strncpy(path, location.c_str(), PATH_MAX);
+        found = true;
     }
 
     if (!found) {               // try via JRUBY_HOME
@@ -430,6 +428,7 @@ void ArgParser::prepareOptions() {
         option += bootClassPath;
         javaOptions.push_back(option);
     }
+
 }
 
 void ArgParser::setupMaxHeapAndStack() {

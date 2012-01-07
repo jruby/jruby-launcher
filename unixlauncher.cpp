@@ -28,8 +28,15 @@ int UnixLauncher::run(int argc, char* argv[], char* envp[]) {
     if (nailgunClient) {
         progArgs.push_front("org.jruby.util.NailMain");
         char ** nailArgv = convertToArgvArray(progArgs);
+        int nailArgc = progArgs.size();
+
         if (printCommandLine) {
-            return printArgvToConsole(nailArgv);
+            printListToConsole(progArgs);
+            for (int i = 0; i < nailArgc; i++) {
+                free(nailArgv[i]);
+            }
+            delete[] nailArgv;
+            return 0;
         }
         return nailgunClientMain(progArgs.size(), (char**)nailArgv, envp);
     }
@@ -65,11 +72,16 @@ int UnixLauncher::run(int argc, char* argv[], char* envp[]) {
     }
 
     char** newArgv = convertToArgvArray(commandLine);
+    int newArgc = commandLine.size();
 
     if (printCommandLine) {
-        return printArgvToConsole(newArgv);
+        printListToConsole(commandLine);
+        for (int i = 0; i < newArgc; i++) {
+            free(newArgv[i]);
+        }
+        delete[] newArgv;
+        return 0;
     }
-
 
     if (!fileExists(java.c_str())) {
         string msg = "No `java' exists at " + java + ", please double-check JAVA_HOME.\n";

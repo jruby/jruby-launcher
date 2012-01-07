@@ -47,6 +47,10 @@
 #include <cstring>
 #include <cstdlib>
 #include <memory>
+#include <list>
+#include <algorithm>
+#include <iterator>
+#include <iostream>
 #include "utilsfuncs.h"
 #include "argnames.h"
 
@@ -114,7 +118,7 @@ bool fileExists(const char *path) {
     return true;
 }
 
-char* findOnPath(const char* name) {
+string findOnPath(const char* name) {
     string path(getenv("PATH"));
     size_t start = 0;
     size_t sep;
@@ -133,9 +137,8 @@ char* findOnPath(const char* name) {
 	elem += name;
 
 	if (checkExists(elem.c_str(), 0)) {
-	    found = (char*) malloc(elem.length());
-	    strncpy(found, elem.c_str(), elem.length() + 1);
-	    return found;
+            string found_string(elem);
+	    return found_string;
 	}
 
 	start = sep + 1;
@@ -244,26 +247,24 @@ bool printToConsole(const char *msg) {
 }
 
 char** convertToArgvArray(list<string> args) {
-    char ** argv = (char**) malloc(sizeof (char*) * args.size() + 1);
+    char ** argv = new char*[args.size()+2];
     int i = 0;
     for (list<string>::iterator it = args.begin(); it != args.end(); ++it, ++i) {
-        argv[i] = (char*) malloc(sizeof(char) * it->length() + 1);
-        strncpy(argv[i], it->c_str(), it->length() + 1);
+        argv[i] = strdup((*it).c_str());
     }
-    argv[i] = NULL;
+    argv[args.size()+1] = NULL;
     return argv;
 }
 
 void addToArgList(list<string> & args, int argc, char ** argv) {
     for (int i = 0; i < argc; i++) {
-	args.push_back(argv[i]);
+        std::string str(argv[i]);
+	args.push_back(str);
     }
 }
 
-int printArgvToConsole(char** argv) {
-    while (*argv) {
-	printf("%s\n", *argv);
-	argv++;
+void printListToConsole(list<string> values) {
+    for (list<string>::iterator it = values.begin(); it != values.end(); ++it) {
+        std::cout << *it << std::endl;
     }
-    return 0;
 }
