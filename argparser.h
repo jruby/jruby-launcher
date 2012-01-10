@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2010 JRuby Team (www.jruby.org).
+ * Copyright 2009-2012 JRuby Team (www.jruby.org).
  */
 
 
@@ -41,7 +41,7 @@ protected:
 
     bool initPlatformDir();
     void prepareOptions();
-    void setupMaxHeapAndStack();
+    void setupMaxHeapAndStack(std::list<std::string> userOptions);
     void addEnvVarToOptions(std::list<std::string> & optionsList, const char * envvar);
     void constructClassPath();
     void constructBootClassPath();

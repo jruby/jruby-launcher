@@ -210,6 +210,13 @@ describe "JRuby native launcher" do
     end
   end
 
+  it "should place user-supplied options after default options" do
+    args = jruby_launcher_args("-J-Djruby.home=/tmp")
+    home_args = args.select {|x| x =~ /^-Djruby\.home/ }
+    home_args.length.should == 2
+    home_args.last.should == "-Djruby.home=/tmp"
+  end
+
   it "should print the version" do
     jruby_launcher("-Xversion 2>&1").should =~ /Launcher Version #{JRubyLauncher::VERSION}/
   end

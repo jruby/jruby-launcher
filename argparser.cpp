@@ -351,6 +351,9 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
 }
 
 void ArgParser::prepareOptions() {
+    list<string> userOptions(javaOptions);
+    javaOptions.clear();
+
     string option = OPT_JDK_HOME;
     option += jdkhome;
     javaOptions.push_back(option);
@@ -398,7 +401,7 @@ void ArgParser::prepareOptions() {
 #endif
     javaOptions.push_back(option);
 
-    setupMaxHeapAndStack();
+    setupMaxHeapAndStack(userOptions);
 
     constructBootClassPath();
     constructClassPath();
@@ -429,13 +432,14 @@ void ArgParser::prepareOptions() {
         javaOptions.push_back(option);
     }
 
+    javaOptions.insert(javaOptions.end(), userOptions.begin(), userOptions.end());
 }
 
-void ArgParser::setupMaxHeapAndStack() {
+void ArgParser::setupMaxHeapAndStack(list<string> userOptions) {
     // Hard-coded 500m, 2048k is for consistency with jruby shell script.
     string heapSize("500m"), stackSize("2048k");
     bool maxHeap = false, maxStack = false;
-    for (list<string>::iterator it = javaOptions.begin(); it != javaOptions.end(); it++) {
+    for (list<string>::iterator it = userOptions.begin(); it != userOptions.end(); it++) {
         if (!maxHeap && strncmp("-Xmx", it->c_str(), 4) == 0) {
             heapSize = it->substr(4, it->size() - 4);
             maxHeap = true;
