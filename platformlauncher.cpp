@@ -98,7 +98,7 @@ bool PlatformLauncher::start(char* argv[], int argc, DWORD *retCode, const char*
         progArgs.push_front("org.jruby.util.NailMain");
         char ** nailArgv = convertToArgvArray(progArgs);
         if (printCommandLine) {
-            printArgvToConsole(nailArgv);
+            printListToConsole(progArgs);
             return true;
         }
 
