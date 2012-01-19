@@ -29,7 +29,6 @@ Options:\n\
   -Xversion             print launcher's version\n\
 \nJvm Management:\n\
   -Xjdkhome <path>      set path to JDK\n\
-  -Xfork-java           run java in separate process\n\
   -J<jvm_option>        pass <jvm_option> to JVM\n\
 \nClasspath Management:\n\
   -Xcp   <classpath>    set the classpath\n\
@@ -42,7 +41,9 @@ Options:\n\
   -Xprop.erty[=value]   equivalent to -J-Djruby.<prop.erty>[=value]\n\
   -Xproperties          list supported properties (omit \"jruby.\" with -X)\n"
 #ifdef WIN32
-"  -Xconsole <mode>      jrubyw console attach mode (new|attach|suppress)\n"
+"\
+  -Xfork-java           run java in separate process\n\
+  -Xconsole <mode>      jrubyw console attach mode (new|attach|suppress)\n"
 #endif
 "\n"
 ;
