@@ -314,7 +314,7 @@ void processnailgunstream() {
             break;
       case CHUNKTYPE_EXIT:   processExit(buf, len);
             break;
-      default:  fprintf(stderr, "Unexpected chunk type %d ('%c')\n", chunkType, chunkType);
+      default:  fprintf(stdout, "Unexpected chunk type %d ('%c')\n", chunkType, chunkType);
           cleanUpAndExit(NAILGUN_UNEXPECTED_CHUNKTYPE);
     }
   /*}*/
@@ -451,24 +451,24 @@ int isNailgunClientName(char *s) {
  */
 void usage(int exitcode) {
 
-  fprintf(stderr, "Usage: ng class [--nailgun-options] [args]\n");
-  fprintf(stderr, "          (to execute a class)\n");
-  fprintf(stderr, "   or: ng alias [--nailgun-options] [args]\n");
-  fprintf(stderr, "          (to execute an aliased class)\n");
-  fprintf(stderr, "   or: alias [--nailgun-options] [args]\n");
-  fprintf(stderr, "          (to execute an aliased class, where \"alias\"\n");
-  fprintf(stderr, "           is both the alias for the class and a symbolic\n");
-  fprintf(stderr, "           link to the ng client)\n\n");
+  fprintf(stdout, "Usage: ng class [--nailgun-options] [args]\n");
+  fprintf(stdout, "          (to execute a class)\n");
+  fprintf(stdout, "   or: ng alias [--nailgun-options] [args]\n");
+  fprintf(stdout, "          (to execute an aliased class)\n");
+  fprintf(stdout, "   or: alias [--nailgun-options] [args]\n");
+  fprintf(stdout, "          (to execute an aliased class, where \"alias\"\n");
+  fprintf(stdout, "           is both the alias for the class and a symbolic\n");
+  fprintf(stdout, "           link to the ng client)\n\n");
 
-  fprintf(stderr, "where options include:\n");
-  fprintf(stderr, "   --nailgun-D<name>=<value>   set/override a client environment variable\n");
-  fprintf(stderr, "   --nailgun-version           print product version and exit\n");
-  fprintf(stderr, "   --nailgun-showversion       print product version and continue\n");
-  fprintf(stderr, "   --nailgun-server            to specify the address of the nailgun server\n");
-  fprintf(stderr, "                               (default is localhost)\n");
-  fprintf(stderr, "   --nailgun-port              to specify the port of the nailgun server\n");
-  fprintf(stderr, "                               (default is 2113)\n");
-  fprintf(stderr, "   --nailgun-help              print this message and exit\n");
+  fprintf(stdout, "where options include:\n");
+  fprintf(stdout, "   --nailgun-D<name>=<value>   set/override a client environment variable\n");
+  fprintf(stdout, "   --nailgun-version           print product version and exit\n");
+  fprintf(stdout, "   --nailgun-showversion       print product version and continue\n");
+  fprintf(stdout, "   --nailgun-server            to specify the address of the nailgun server\n");
+  fprintf(stdout, "                               (default is localhost)\n");
+  fprintf(stdout, "   --nailgun-port              to specify the port of the nailgun server\n");
+  fprintf(stdout, "                               (default is 2113)\n");
+  fprintf(stdout, "   --nailgun-help              print this message and exit\n");
 
   cleanUpAndExit(exitcode);
 }
@@ -557,7 +557,7 @@ int nailgunClientMain(int argc, char *argv[], char *env[]) {
   hostinfo = gethostbyname(nailgun_server);
 
   if (hostinfo == NULL) {
-    fprintf(stderr, "Unknown host: %s\n", nailgun_server);
+    fprintf(stdout, "Unknown host: %s\n", nailgun_server);
     cleanUpAndExit(NAILGUN_CONNECT_FAILED);
   }
 

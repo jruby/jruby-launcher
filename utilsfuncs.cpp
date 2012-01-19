@@ -202,7 +202,7 @@ void logV(bool appendSysError, bool showMsgBox, const char *format, va_list args
             ::MessageBox(NULL, msg, "JRuby Error", MB_OK | MB_ICONSTOP);
         }
 #endif
-        fprintf(stderr, "%s\n", msg);
+        fprintf(stdout, "%s\n", msg);
     }
 }
 
@@ -242,7 +242,7 @@ bool checkLoggingArg(int argc, char *argv[], bool delFile) {
 }
 
 bool printToConsole(const char *msg) {
-    fprintf(stderr, "%s", msg);
+    fprintf(stdout, "%s", msg);
     return false;
 }
 

@@ -210,7 +210,7 @@ bool PlatformLauncher::checkJDKHome() {
                 return false;
             }
         } else {
-            fprintf(stderr, "%s\n", errMsg.c_str());
+            fprintf(stdout, "%s\n", errMsg.c_str());
             return false;
         }
     }
@@ -233,7 +233,7 @@ bool PlatformLauncher::checkJDKHome() {
                         return false;
                     }
                 } else {
-                    fprintf(stderr, "%s\n", errMsg.c_str());
+                    fprintf(stdout, "%s\n", errMsg.c_str());
                     return false;
                 }
             } else {
