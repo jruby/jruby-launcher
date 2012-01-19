@@ -210,6 +210,32 @@ describe "JRuby native launcher" do
     end
   end
 
+  it "should honor JRUBY_HOME" do
+    with_environment "JRUBY_HOME" => "/tmp" do
+      jruby_launcher_args("").should include("-Djruby.home=/tmp")
+    end
+  end
+
+  context "JRUBY_HOME set and JRUBY_HOME/lib/jruby.jar exists" do
+    let(:jruby_home) do
+      require 'tempfile'
+      t = Tempfile.new("jruby_home")
+      t.path.tap { t.close! }
+    end
+
+    before do
+      FileUtils.mkdir_p(File.join(jruby_home, "lib"))
+      FileUtils.touch(File.join(jruby_home, "lib", "jruby.jar"))
+    end
+    after { FileUtils.rm_rf jruby_home }
+
+    it "should add jruby.jar to the bootclasspath" do
+      with_environment "JRUBY_HOME" => jruby_home do
+        jruby_launcher_args("").should include("-Xbootclasspath/a:#{jruby_home}/lib/jruby.jar")
+      end
+    end
+  end
+
   it "should place user-supplied options after default options" do
     args = jruby_launcher_args("-J-Djruby.home=/tmp")
     home_args = args.select {|x| x =~ /^-Djruby\.home/ }

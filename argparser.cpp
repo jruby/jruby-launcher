@@ -115,21 +115,42 @@ void ArgParser::addEnvVarToOptions(std::list<std::string> & optionsList, const c
 #include <mach-o/dyld.h>
 #endif
 
-bool ArgParser::initPlatformDir() {
-#ifdef WIN32
-    char path[MAX_PATH] = "";
-    getCurrentModulePath(path, MAX_PATH);
-#else
-    char path[PATH_MAX] = "";
-    bool found = false;
+#ifndef PATH_MAX
+#define PATH_MAX  MAX_PATH
+#endif
 
-    // first try via linux /proc/self/exe
-    logMsg("initPlatformDir: trying /proc/self/exe");
-    found = readlink("/proc/self/exe", path, PATH_MAX) != -1;
+bool ArgParser::initPlatformDir() {
+    bool found = false;
+    char path[PATH_MAX] = "";
+
+    if (getenv("JRUBY_HOME") != NULL) {
+        logMsg("initPlatformDir: using JRUBY_HOME environment variable");
+        char sep[2] = { FILE_SEP, NULL };
+        strncpy(path, getenv("JRUBY_HOME"), PATH_MAX - 11);
+        strncpy(path + strlen(path), sep, 1);
+        strncpy(path + strlen(path), "bin", 3);
+        strncpy(path + strlen(path), sep, 1);
+        strncpy(path + strlen(path), "jruby", 5);
+        found = true;
+    }
+
+#ifdef WIN32
+
+    if (!found) {
+        getCurrentModulePath(path, PATH_MAX);
+    }
+
+#else // !WIN32
+
+    if (!found) {
+        // first try via linux /proc/self/exe
+        logMsg("initPlatformDir: trying /proc/self/exe");
+        found = readlink("/proc/self/exe", path, PATH_MAX) != -1;
+    }
 
 #ifdef __MACH__
     uint32_t sz = PATH_MAX;
-    if (_NSGetExecutablePath(path, &sz) == 0) { // OSX-specific
+    if (!found && _NSGetExecutablePath(path, &sz) == 0) { // OSX-specific
         logMsg("initPlatformDir: using _NSGetExecutablePath");
         string tmpPath(path);
         realpath(tmpPath.c_str(), path);
@@ -139,7 +160,7 @@ bool ArgParser::initPlatformDir() {
 
 #ifdef __SUNOS__
     const char* execname = getexecname();
-    if (execname) {
+    if (!found && execname) {
         logMsg("initPlatformDir: using getexecname");
         char * dst = path;
         if (execname[0] != '/') {
@@ -165,6 +186,7 @@ bool ArgParser::initPlatformDir() {
         strncpy(path + strlen(path), platformDir.c_str(), platformDir.length());
         found = true;
     }
+#endif // WIN32
 
     if (!found) {               // try via PATH search
         logMsg("initPlatformDir: trying to find executable on PATH");
@@ -173,21 +195,8 @@ bool ArgParser::initPlatformDir() {
         found = true;
     }
 
-    if (!found) {               // try via JRUBY_HOME
-        if (getenv("JRUBY_HOME") != NULL) {
-            logMsg("initPlatformDir: trying JRUBY_HOME environment variable");
-            strncpy(path, getenv("JRUBY_HOME"), PATH_MAX - 11);
-            strncpy(path + strlen(path), "/bin/jruby", 10);
-            found = true;
-        }
-    }
-
-    if (!fileExists(path)) {
-        printToConsole("Could not figure out a proper location for JRuby.\n"
-                       "Try `jruby -Xtrace trace.log ...` and view trace.log for details.");
-        return false;
-    }
-#endif
+    // Check if bin/jruby file exists; this logs a message if not found
+    fileExists(path);
 
     logMsg("Module: %s", path);
     char *bslash = strrchr(path, FILE_SEP);
