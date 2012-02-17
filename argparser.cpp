@@ -465,8 +465,6 @@ void ArgParser::setupMaxHeapAndStack(list<string> userOptions) {
     if (!maxStack) {
         javaOptions.push_back("-Xss" + stackSize);
     }
-    javaOptions.push_back("-Djruby.memory.max=" + heapSize);
-    javaOptions.push_back("-Djruby.stack.max=" + stackSize);
 }
 
 void ArgParser::constructBootClassPath() {
