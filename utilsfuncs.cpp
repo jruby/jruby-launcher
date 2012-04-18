@@ -51,6 +51,7 @@
 #include <algorithm>
 #include <iterator>
 #include <iostream>
+#include <unistd.h>
 #include "utilsfuncs.h"
 #include "argnames.h"
 
