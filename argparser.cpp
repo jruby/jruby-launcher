@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <memory>
 #include <string>
+#include <unistd.h>
 #include "utilsfuncs.h"
 #include "argparser.h"
 #include "argnames.h"
