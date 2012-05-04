@@ -45,6 +45,12 @@ module JRubyLauncherHelper
     WINDOWS
   end
 
+  def classpath_arg(args)
+    index = args.index("-cp")
+    index.should > 0
+    args[index + 1]
+  end
+
   def with_environment(pairs = {})
     prev_env = {}
     pairs.each_pair do |k,v|

@@ -55,6 +55,7 @@ const char *ArgParser::OPT_JDK_HOME = "-Djdk.home=";
 const char *ArgParser::OPT_JRUBY_HOME = "-Djruby.home=";
 const char *ArgParser::OPT_JRUBY_COMMAND_NAME = "-Dsun.java.command=";
 
+const char *ArgParser::OPT_CMDLINE_CLASS_PATH = "-cp";
 const char *ArgParser::OPT_CLASS_PATH = "-Djava.class.path=";
 const char *ArgParser::OPT_BOOT_CLASS_PATH = "-Xbootclasspath/a:";
 
@@ -65,7 +66,7 @@ const char *ArgParser::MAIN_CLASS = "org/jruby/Main";
 const char *ArgParser::DEFAULT_EXECUTABLE = "jruby";
 
 ArgParser::ArgParser()
-    : separateProcess(false)
+    : separateProcess(true)
     , nailgunClient(false)
     , noBootClassPath(false)
     , printCommandLine(false)
@@ -433,9 +434,15 @@ void ArgParser::prepareOptions() {
     option += cmdName;
     javaOptions.push_back(option);
 
-    option = OPT_CLASS_PATH;
-    option += classPath;
-    javaOptions.push_back(option);
+    // When launching a separate process, use '-cp' which expands embedded wildcards
+    if (separateProcess) {
+        javaOptions.push_back(OPT_CMDLINE_CLASS_PATH);
+        javaOptions.push_back(classPath);
+    } else {
+        option = OPT_CLASS_PATH;
+        option += classPath;
+        javaOptions.push_back(option);
+    }
 
     if (!bootClassPath.empty()) {
         option = OPT_BOOT_CLASS_PATH;

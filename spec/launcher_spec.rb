@@ -102,16 +102,15 @@ describe "JRuby native launcher" do
 
   it "should add the contents of the CLASSPATH environment variable" do
     with_environment "CLASSPATH" => "some.jar" do
-      classpath_arg = jruby_launcher_args("").detect{|a| a =~ /java\.class\.path/}
-      classpath_arg.should =~ /-Djava.class.path=.*some.jar/
+      classpath_arg(jruby_launcher_args("")).should =~ /some.jar/
     end
   end
 
   it "should add the classpath elements in proper order" do
     s = File::PATH_SEPARATOR
     with_environment "CLASSPATH" => "some-env.jar" do
-      classpath_arg = jruby_launcher_args("-Xcp:a some-other.jar -Xcp:p some.jar").detect{|a| a =~ /java\.class\.path/}
-      classpath_arg.should =~ /-Djava.class.path=some.jar.*#{s}some-env.jar#{s}some-other.jar/
+      args = jruby_launcher_args("-Xcp:a some-other.jar -Xcp:p some.jar")
+      classpath_arg(args).should =~ /some.jar.*#{s}some-env.jar#{s}some-other.jar/
     end
   end
 
@@ -189,7 +188,7 @@ describe "JRuby native launcher" do
 
   # JRUBY-4709
   it "should include a bare : or ; at the end of the classpath, to include PWD in the path" do
-    jruby_launcher_args("-Xnobootclasspath -e true").grep(/java\.class\.path/).first.should =~
+    classpath_arg(jruby_launcher_args("-Xnobootclasspath -e true")).should =~
       if windows?
         /;$/
       else
