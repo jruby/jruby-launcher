@@ -9,10 +9,10 @@ end
 
 module JRubyLauncherHelper
   JRUBY_EXE = ''
-  WINDOWS = Config::CONFIG['target_os'] =~ /mswin/
+  WINDOWS = RbConfig::CONFIG['target_os'] =~ /mswin/
 
   def self.check_executable_built
-    exe = File.expand_path("../../jruby", __FILE__) + Config::CONFIG['EXEEXT']
+    exe = File.expand_path("../../jruby", __FILE__) + RbConfig::CONFIG['EXEEXT']
     unless File.executable?(exe)
       raise "Error: launcher executable not built; type `make' before continuing."
     end

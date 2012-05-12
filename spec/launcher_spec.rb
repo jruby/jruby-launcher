@@ -156,7 +156,7 @@ describe "JRuby native launcher" do
   end
 
   # JRUBY-4608
-  if Config::CONFIG['target_os'] =~ /darwin/i
+  if RbConfig::CONFIG['target_os'] =~ /darwin/i
     it "includes file.encoding=UTF-8 on Mac if JAVA_ENCODING is not set" do
       jruby_launcher_args("-e true").should include("-Dfile.encoding=UTF-8")
       with_environment "JAVA_ENCODING" => "MacRoman" do
