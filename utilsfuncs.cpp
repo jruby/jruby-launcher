@@ -269,3 +269,11 @@ void printListToConsole(list<string> values) {
         std::cout << *it << std::endl;
     }
 }
+
+string trimTrailingBackslashes(string orig) {
+    while (orig.size() > 0 &&
+        orig.at(orig.size() - 1) == '\\') {
+        orig.erase(orig.size() - 1);
+    }
+    return orig;
+}

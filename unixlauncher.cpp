@@ -52,7 +52,9 @@ int UnixLauncher::run(int argc, char* argv[], char* envp[]) {
         if (!jdkhome.empty()) {
             java = jdkhome + "/bin/java";
         } else if (getenv("JAVA_HOME") != NULL) {
-            java = string(getenv("JAVA_HOME")) + "/bin/java";
+            string java_home = string(getenv("JAVA_HOME"));
+            java_home = trimTrailingBackslashes(java_home);
+            java = java_home + "/bin/java";
         } else {
             java = findOnPath("java");
         }

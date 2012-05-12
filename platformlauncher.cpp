@@ -220,6 +220,7 @@ bool PlatformLauncher::checkJDKHome() {
         logMsg("-Xjdkhome is not set, checking for %%JAVA_HOME%%...");
         char *javaHome = getenv("JAVA_HOME");
         if (javaHome) {
+            javaHome = trimTrailingBackslashes(javaHome);
             logMsg("%%JAVA_HOME%% is set: %s", javaHome);
             if (!jvmLauncher.initialize(javaHome)) {
                 logMsg("ERROR: Cannot locate java installation, specified by JAVA_HOME: %s", javaHome);

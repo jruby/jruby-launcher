@@ -49,6 +49,16 @@ describe "JRuby native launcher" do
     end
   end
 
+  it "should drop the backslashes at the end of JAVA_HOME" do
+    with_environment "JAVA_HOME" => File.join("some", "java", "home\\\\") do
+      if windows?
+        jruby_launcher_args("").join.should =~ %r{some/java/home}
+      else
+        jruby_launcher_args("").first.should == File.join("some", "java", "home", "bin", "java")
+      end
+    end
+  end
+
   it "should complain about a missing log argument" do
     jruby_launcher("-Xtrace 2>&1").should =~ /Argument is missing for "-Xtrace"/
     jruby_launcher("-Xtrace -- 2>&1").should =~ /Argument is missing for "-Xtrace"/

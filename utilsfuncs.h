@@ -59,6 +59,7 @@ void addToArgList(std::list<std::string> & args, int argc, char ** argv);
 std::string findOnPath(const char* name);
 bool checkDirectory(const char* path);
 void printListToConsole(std::list<std::string> l);
+std::string trimTrailingBackslashes(std::string orig);
 
 #ifndef WIN32
 #define FILE_SEP '/'
