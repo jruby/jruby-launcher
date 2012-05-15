@@ -32,7 +32,7 @@ OBJECTFILES = ${OBJECTDIR}/argparser.o		\
 
 ifdef JAVA_HOME
 JAVA_INCLUDE = $(subst \,/,${JAVA_HOME})/include
-INCLUDES = -I${JAVA_INCLUDE}
+INCLUDES = "-I${JAVA_INCLUDE}"
 endif
 
 ifdef MINGW
@@ -40,7 +40,7 @@ OBJECTFILES += ${OBJECTDIR}/utilsfuncswin.o	\
 	       ${OBJECTDIR}/platformlauncher.o	\
 	       ${OBJECTDIR}/jvmlauncher.o	\
 	       ${OBJECTDIR}/jruby.o
-INCLUDES += -I${JAVA_INCLUDE}/win32
+INCLUDES += "-I${JAVA_INCLUDE}/win32"
 else
 OBJECTFILES += ${OBJECTDIR}/unixlauncher.o
 endif
