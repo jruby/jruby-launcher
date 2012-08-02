@@ -4,6 +4,7 @@
 
 #include <cstring>
 #include <cstdlib>
+#include <climits>
 #include <memory>
 #include <string>
 #include <unistd.h>
