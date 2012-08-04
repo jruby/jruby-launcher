@@ -144,7 +144,7 @@ string findOnPath(const char* name) {
 
 	start = sep + 1;
     }
-    return NULL;
+    return "";
 }
 
 const char* getSysError(char *str, int strSize) {

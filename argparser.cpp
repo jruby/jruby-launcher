@@ -194,8 +194,10 @@ bool ArgParser::initPlatformDir() {
     if (!found) {               // try via PATH search
         logMsg("initPlatformDir: trying to find executable on PATH");
         std::string location = findOnPath(platformDir.c_str());
-        strncpy(path, location.c_str(), PATH_MAX);
-        found = true;
+        if (location.size() > 0) {
+            strncpy(path, location.c_str(), PATH_MAX);
+            found = true;
+        }
     }
 
     // Check if bin/jruby file exists; this logs a message if not found
