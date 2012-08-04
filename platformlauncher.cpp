@@ -54,8 +54,8 @@ extern "C" int nailgunClientMain(int argc, char *argv[], char *env[]);
 PlatformLauncher::PlatformLauncher()
     : ArgParser()
     , suppressConsole(false)
-    , separateProcess(false)
 {
+    separateProcess = false;
 }
 
 PlatformLauncher::PlatformLauncher(const PlatformLauncher& orig)
