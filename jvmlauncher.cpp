@@ -81,31 +81,33 @@ void JvmLauncher::setJavaCmd(const string cmdPath) {
 bool JvmLauncher::checkJava(const char *path, const char *prefix) {
     assert(path);
     assert(prefix);
-    logMsg("checkJava(%s)", path);
-    javaPath = path;
-    if (*javaPath.rbegin() == '\\') {
-        javaPath.erase(javaPath.length() - 1, 1);
+    logMsg("checkJava('%s', '%s')", path, prefix);
+
+    std::string tmp(path);
+    
+    if (*tmp.rbegin() == '\\') {
+        tmp.erase(tmp.length() - 1, 1);
     }
-    javaExePath = javaPath + prefix + JAVA_EXE_FILE;
-    javawExePath = javaPath + prefix + JAVAW_EXE_FILE;
-    javaClientDllPath = javaPath + prefix + JAVA_CLIENT_DLL_FILE;
-    javaServerDllPath = javaPath + prefix + JAVA_SERVER_DLL_FILE;
+    javaExePath = tmp + prefix + JAVA_EXE_FILE;
+    javawExePath = tmp + prefix + JAVAW_EXE_FILE;
+    javaClientDllPath = tmp + prefix + JAVA_CLIENT_DLL_FILE;
+    javaServerDllPath = tmp + prefix + JAVA_SERVER_DLL_FILE;
     if (!fileExists(javaClientDllPath.c_str())) {
         javaClientDllPath = "";
     }
     if (!fileExists(javaServerDllPath.c_str())) {
         javaServerDllPath = "";
     }
-    javaBinPath = javaPath + prefix + JAVA_BIN_DIR;
+    javaBinPath = tmp + prefix + JAVA_BIN_DIR;
     if (fileExists(javaExePath.c_str()) || !javaClientDllPath.empty() || !javaServerDllPath.empty()) {
         if (!fileExists(javawExePath.c_str())) {
             logMsg("javaw.exe not exists, forcing java.exe");
             javawExePath = javaExePath;
         }
+        javaPath = tmp;
         return true;
     }
 
-    javaPath.clear();
     javaBinPath.clear();
     javaExePath.clear();
     javawExePath.clear();
