@@ -96,6 +96,9 @@
 #define CHUNKTYPE_EXIT 'X'
 #define CHUNKTYPE_STARTINPUT 'S'
 
+// jruby-launcher specific constant
+#define JRUBY_EXIT_EXCEPTION (1)
+
 /*
    the following is required to compile for hp-ux
    originally posted at http://jira.codehaus.org/browse/JRUBY-2346
@@ -324,6 +327,9 @@ void processExit(char *buf, unsigned long len) {
   buf[bytesRead] = 0;
 
   exitcode = atoi(buf);
+  if (exitcode != 0) {
+    exitcode = JRUBY_EXIT_EXCEPTION;
+  }
 
   cleanUpAndExit(exitcode);
 }
