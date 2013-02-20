@@ -496,6 +496,14 @@ void ArgParser::constructBootClassPath() {
         addToBootClassPath(jruby_complete_jar.c_str());
     }
 
+#ifdef DISTRO_BOOT_CLASS_PATH
+// hack converting macro to string
+#define STR_HACK2(x) #x
+#define STR_HACK(x) STR_HACK2(x)
+    addToBootClassPath(STR_HACK(DISTRO_BOOT_CLASS_PATH));
+#endif
+
+
     logMsg("BootclassPath: %s", bootClassPath.c_str());
 }
 
