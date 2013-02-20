@@ -64,7 +64,7 @@ WINDRES = windres
 LDLIBSOPTIONS = -lstdc++
 
 ifdef MINGW
-LDLIBSOPTIONS += -lws2_32 -static-libgcc -Wl,--enable-auto-import -Wl,-Bstatic -Wl,-Bdynamic
+LDLIBSOPTIONS += -lws2_32 -static-libgcc -Wl,--enable-auto-import -Wl,-Bstatic -Wl,-Bdynamic -static
 PROGRAM = jruby.dll
 else
 PROGRAM = jruby

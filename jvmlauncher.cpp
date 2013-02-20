@@ -78,33 +78,30 @@ void JvmLauncher::setJavaCmd(const string cmdPath) {
     javaServerDllPath = javaPath;
 }
 
-bool JvmLauncher::checkJava(const char *path, const char *prefix) {
-    assert(path);
+bool JvmLauncher::checkJava(std::string &path, const char *prefix) {
     assert(prefix);
-    logMsg("checkJava('%s', '%s')", path, prefix);
+    logMsg("checkJava('%s', '%s')", path.c_str(), prefix);
 
-    std::string tmp(path);
-    
-    if (*tmp.rbegin() == '\\') {
-        tmp.erase(tmp.length() - 1, 1);
+    if (*path.rbegin() == '\\') {
+        path.erase(path.length() - 1, 1);
     }
-    javaExePath = tmp + prefix + JAVA_EXE_FILE;
-    javawExePath = tmp + prefix + JAVAW_EXE_FILE;
-    javaClientDllPath = tmp + prefix + JAVA_CLIENT_DLL_FILE;
-    javaServerDllPath = tmp + prefix + JAVA_SERVER_DLL_FILE;
+    javaExePath = path + prefix + JAVA_EXE_FILE;
+    javawExePath = path + prefix + JAVAW_EXE_FILE;
+    javaClientDllPath = path + prefix + JAVA_CLIENT_DLL_FILE;
+    javaServerDllPath = path + prefix + JAVA_SERVER_DLL_FILE;
     if (!fileExists(javaClientDllPath.c_str())) {
         javaClientDllPath = "";
     }
     if (!fileExists(javaServerDllPath.c_str())) {
         javaServerDllPath = "";
     }
-    javaBinPath = tmp + prefix + JAVA_BIN_DIR;
+    javaBinPath = path + prefix + JAVA_BIN_DIR;
     if (fileExists(javaExePath.c_str()) || !javaClientDllPath.empty() || !javaServerDllPath.empty()) {
         if (!fileExists(javawExePath.c_str())) {
             logMsg("javaw.exe not exists, forcing java.exe");
             javawExePath = javaExePath;
         }
-        javaPath = tmp;
+        javaPath = path;
         return true;
     }
 
@@ -119,10 +116,13 @@ bool JvmLauncher::checkJava(const char *path, const char *prefix) {
 bool JvmLauncher::initialize(const char *javaPathOrMinVersion) {
     logMsg("JvmLauncher::initialize()\n\tjavaPathOrMinVersion: %s", javaPathOrMinVersion);
     assert(javaPathOrMinVersion);
+    
+    std::string pathOrVersion(javaPathOrMinVersion);
+    
     if (isVersionString(javaPathOrMinVersion)) {
         return findJava(javaPathOrMinVersion);
     } else {
-        return (checkJava(javaPathOrMinVersion, JAVA_JRE_PREFIX) || checkJava(javaPathOrMinVersion, ""));
+        return (checkJava(pathOrVersion, JAVA_JRE_PREFIX) || checkJava(pathOrVersion, ""));
     }
 }
 
@@ -446,7 +446,7 @@ bool JvmLauncher::findJava(const char *javaKey, const char *prefix, const char *
                 if (*path.rbegin() == '\\') {
                     path.erase(path.length() - 1, 1);
                 }
-                return checkJava(path.c_str(), prefix);
+                return checkJava(path, prefix);
             }
         }
     }
