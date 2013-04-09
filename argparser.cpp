@@ -391,12 +391,14 @@ void ArgParser::prepareOptions() {
 
     option = OPT_JFFI_PATH;
 #ifdef WIN32
-    option += (platformDir + "\\lib\\native\\i386-Windows;"
+    option += (platformDir + "\\lib\\native;"
+            + platformDir + "\\lib\\native\\i386-Windows;"
             + platformDir + "\\lib\\native\\x86_64-Windows");
 #else
     struct utsname name;
     if (uname(&name) == 0) {
-        string ffiPath, ffiBase(platformDir + "/lib/native");
+        string ffiBase(platformDir + "/lib/native");
+        string ffiPath = ffiBase;
         DIR* dir = opendir(ffiBase.c_str());
         struct dirent* ent;
         if (dir != NULL) {
