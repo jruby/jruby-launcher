@@ -82,7 +82,7 @@ public:
 private:
     JvmLauncher(const JvmLauncher& orig);
 
-    bool checkJava(const char *javaPath, const char *prefix);
+    bool checkJava(std::string &javaPath, const char *version);
     bool findJava(const char *minJavaVersion);
     bool findJava(const char *javaKey, const char *prefix, const char *minJavaVersion);
     bool startOutProcJvm(const char *mainClassName, std::list<std::string> args, std::list<std::string> options, DWORD *retCode);

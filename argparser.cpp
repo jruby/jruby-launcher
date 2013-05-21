@@ -391,12 +391,14 @@ void ArgParser::prepareOptions() {
 
     option = OPT_JFFI_PATH;
 #ifdef WIN32
-    option += (platformDir + "\\lib\\native\\i386-Windows;"
+    option += (platformDir + "\\lib\\native;"
+            + platformDir + "\\lib\\native\\i386-Windows;"
             + platformDir + "\\lib\\native\\x86_64-Windows");
 #else
     struct utsname name;
     if (uname(&name) == 0) {
-        string ffiPath, ffiBase(platformDir + "/lib/native");
+        string ffiBase(platformDir + "/lib/native");
+        string ffiPath = ffiBase;
         DIR* dir = opendir(ffiBase.c_str());
         struct dirent* ent;
         if (dir != NULL) {
@@ -495,6 +497,14 @@ void ArgParser::constructBootClassPath() {
     } else if (fileExists(jruby_complete_jar.c_str())) {
         addToBootClassPath(jruby_complete_jar.c_str());
     }
+
+#ifdef DISTRO_BOOT_CLASS_PATH
+// hack converting macro to string
+#define STR_HACK2(x) #x
+#define STR_HACK(x) STR_HACK2(x)
+    addToBootClassPath(STR_HACK(DISTRO_BOOT_CLASS_PATH));
+#endif
+
 
     logMsg("BootclassPath: %s", bootClassPath.c_str());
 }
