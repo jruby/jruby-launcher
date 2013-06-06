@@ -14,7 +14,7 @@ build: .build-post
 
 .build-pre:
 
-.build-post: .build-impl build-exe test
+.build-post: .build-impl build-exe
 
 build-exe:
 	@if [ "$(findstring mingw, $(CONF))" ]; then											\
