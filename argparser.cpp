@@ -325,7 +325,7 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
         } else if (it->compare(ARG_NAME_NG) == 0) {
             nailgunClient = true;
         } else if (it->compare(ARG_NAME_NG_SERVER) == 0) {
-            bootclass = "com/martiansoftware/nailgun/NGServer";
+            bootclass = "org/jruby/main/NailServerMain";
             javaOptions.push_back("-server");
             noBootClassPath = true;
         } else if (it->compare(0, 2, "-J", 2) == 0) {
