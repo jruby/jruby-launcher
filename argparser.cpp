@@ -362,6 +362,10 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
         }
     }
 
+    // prefer IPv4 to IPv6
+    // see https://github.com/jruby/jruby/issues/775
+    javaOptions.push_back("-Djava.net.preferIPv4Stack=true");
+
     return true;
 }
 
