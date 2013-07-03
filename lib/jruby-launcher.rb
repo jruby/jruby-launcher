@@ -1,3 +1,3 @@
 module JRubyLauncher
-  VERSION = "1.0.18.dev"
+  VERSION = "1.0.18.pre1"
 end
