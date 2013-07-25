@@ -12,6 +12,7 @@
 #include "argparser.h"
 #include "argnames.h"
 #include "version.h"
+#include "sys/stat.h"
 
 #ifndef WIN32
 #include <sys/types.h>
@@ -394,14 +395,31 @@ void ArgParser::prepareOptions() {
     javaOptions.push_back(option);
 
     option = OPT_JFFI_PATH;
+
+    string jniDir;
 #ifdef WIN32
-    option += (platformDir + "\\lib\\jni;"
-            + platformDir + "\\lib\\jni\\i386-Windows;"
-            + platformDir + "\\lib\\jni\\x86_64-Windows");
+    string newJniDir = platformDir + "\\lib\\jni";
+    string oldJniDir = platformDir + "\\lib\\native";
+#else
+    string newJniDir = platformDir + "/lib/jni";
+    string oldJniDir = platformDir + "/lib/native";
+#endif
+
+    struct stat jniDirStat;
+    if (stat(newJniDir.c_str(), &jniDirStat) == 0) {
+        jniDir = newJniDir;
+    } else {
+        jniDir = oldJniDir;
+    }
+
+#ifdef WIN32
+    option += (jniDir + ";"
+            + jniDir + "\\i386-Windows;"
+            + jniDir + "\\x86_64-Windows");
 #else
     struct utsname name;
     if (uname(&name) == 0) {
-        string ffiBase(platformDir + "/lib/jni");
+        string ffiBase(jniDir);
         string ffiPath = ffiBase;
         DIR* dir = opendir(ffiBase.c_str());
         struct dirent* ent;
