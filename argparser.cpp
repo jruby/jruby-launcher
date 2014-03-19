@@ -320,6 +320,7 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
             javaOptions.push_back("-XX:+TieredCompilation");
             javaOptions.push_back("-XX:TieredStopAtLevel=1");
             javaOptions.push_back("-Djruby.compile.mode=OFF");
+            javaOptions.push_back("-Djruby.compile.invokedynamic=false");
             progArgs.push_back(*it); // allow JRuby to process it too
         } else if (it->compare(ARG_NAME_SAMPLE) == 0) {
             javaOptions.push_back("-Xprof");
