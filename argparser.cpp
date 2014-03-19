@@ -316,6 +316,11 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
         } else if (it->compare(ARG_NAME_SERVER) == 0
                 || it->compare(ARG_NAME_CLIENT) == 0) {
             javaOptions.push_back(it->substr(1)); // to JVMLauncher, -server instead of --server
+        } else if (it->compare(ARG_NAME_DEV) == 0) {
+            javaOptions.push_back("-XX:+TieredCompilation");
+            javaOptions.push_back("-XX:TieredStopAtLevel=1");
+            javaOptions.push_back("-Djruby.compile.mode=OFF");
+            progArgs.push_back(*it); // allow JRuby to process it too
         } else if (it->compare(ARG_NAME_SAMPLE) == 0) {
             javaOptions.push_back("-Xprof");
         } else if (it->compare(ARG_NAME_MANAGE) == 0) {
