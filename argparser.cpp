@@ -127,6 +127,8 @@ bool ArgParser::initPlatformDir() {
     bool found = false;
     char path[PATH_MAX] = "";
 
+    logMsg("Version: " JRUBY_LAUNCHER_VERSION);
+
     if (getenv("JRUBY_HOME") != NULL) {
         logMsg("initPlatformDir: using JRUBY_HOME environment variable");
         char sep[2] = { FILE_SEP, NULL };
