@@ -7,6 +7,7 @@
 #include <climits>
 #include <memory>
 #include <string>
+#include <algorithm>
 #include <unistd.h>
 #include "utilsfuncs.h"
 #include "argparser.h"
@@ -360,6 +361,8 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
             return false;
         } else if (strcmp(it->c_str(), "-Xproperties") == 0) {
 			progArgs.push_back(std::string("--properties"));
+        } else if (endsWith(*it, "?") || endsWith(*it, "...")) {
+            progArgs.push_back(*it);
         } else if (it->compare(0, 2, "-X", 2) == 0 && islower(it->c_str()[2])) {
 	        // Any other /-X([a-z].*)/ get turned into a -Djruby.\1 property
 			std::string propPart = it->substr(2);
@@ -657,4 +660,8 @@ void ArgParser::addOptionsToCommandLine(list<string> & commandLine) {
     commandLine.insert(commandLine.end(), javaOptions.begin(), javaOptions.end());
     commandLine.insert(commandLine.end(), bootclass);
     commandLine.insert(commandLine.end(), progArgs.begin(), progArgs.end());
+}
+
+bool ArgParser::endsWith(const std::string &string, const std::string &end) {
+    return std::equal(string.begin() + string.size() - end.size(), string.end(), end.begin());
 }

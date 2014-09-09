@@ -51,6 +51,7 @@ protected:
     void addToBootClassPath(const char *path, bool onlyIfExists = false);
     void addJarsToClassPathFrom(const char *dir);
     void addOptionsToCommandLine(std::list<std::string> & commandLine);
+    bool endsWith(const std::string &string, const std::string &end);
 
 protected:
     bool separateProcess;
