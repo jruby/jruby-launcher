@@ -2,6 +2,7 @@
 PREFIX = notspecified
 BINDIR = $(PREFIX)/bin
 INSTALLDIR = $(PREFIX)/lib/ruby/shared/rubygems/defaults
+INSTALLDIR9000 = $(PREFIX)/lib/ruby/stdlib/rubygems/defaults
 OLDINSTALLDIR = $(PREFIX)/lib/ruby/site_ruby/1.8/rubygems/defaults
 
 ifeq (true,$(shell test -x $(BINDIR)/jruby && echo true))
@@ -41,7 +42,12 @@ install:
 	@if [ x$(PREFIX) = xnotspecified ]; then echo "Please define where to install by passing PREFIX=<jruby-home>."; exit 1; fi
 	@if [ ! -w $(INSTALLDIR) ]; then \
 		if [ ! -w $(OLDINSTALLDIR) ]; then \
-			echo "Neither '$(INSTALLDIR)' nor '$(OLDINSTALLDIR)' exist and are writable"; exit 1; \
+			if [ ! -w $(INSTALLDIR9000) ]; then \
+				echo "Neither '$(INSTALLDIR9000)' nor '$(INSTALLDIR)' nor '$(OLDINSTALLDIR)' exist and are writable"; exit 1; \
+			else \
+				echo "cp ./lib/rubygems/defaults/jruby_native.rb $(INSTALLDIR9000)"; \
+				cp ./lib/rubygems/defaults/jruby_native.rb $(INSTALLDIR9000); \
+			fi; \
 		else \
 			echo "cp ./lib/rubygems/defaults/jruby_native.rb $(OLDINSTALLDIR)"; \
 			cp ./lib/rubygems/defaults/jruby_native.rb $(OLDINSTALLDIR); \
