@@ -9,6 +9,7 @@
 #include <string>
 #include <algorithm>
 #include <unistd.h>
+#include <limits>
 #include "utilsfuncs.h"
 #include "argparser.h"
 #include "argnames.h"
