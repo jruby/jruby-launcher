@@ -255,4 +255,8 @@ describe "JRuby native launcher" do
   it "should print the version" do
     jruby_launcher("-Xversion 2>&1").should =~ /Launcher Version #{JRubyLauncher::VERSION}/
   end
+
+  it "should not crash on format-strings" do
+    jruby_launcher_args("-e %s%s%s%s%s 2>&1").should include('-e', '%s%s%s%s%s')
+  end
 end

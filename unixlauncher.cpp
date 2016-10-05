@@ -71,7 +71,7 @@ int UnixLauncher::run(int argc, char* argv[], char* envp[]) {
 
     logMsg("Command line:");
     for (list<string>::iterator it = commandLine.begin(); it != commandLine.end(); ++it) {
-        logMsg(it->c_str());
+        logMsg("\t%s", it->c_str());
     }
 
     char** newArgv = convertToArgvArray(commandLine);
