@@ -412,7 +412,7 @@ bool JvmLauncher::startOutProcJvm(const char *mainClassName, std::list<std::stri
 
     // disable Ctrl-C handling in the parent process
     if (!SetConsoleCtrlHandler(NULL, TRUE)) {
-	logErr(true, true, "Failed to disable Ctrl-C handling; Ctrl-C may behave oddly: %d", GetLastError());
+        logErr(true, true, "Failed to disable Ctrl-C handling; Ctrl-C may behave oddly: %d", GetLastError());
     }
 
     disableFolderVirtualization(pi.hProcess);
