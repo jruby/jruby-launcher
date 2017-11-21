@@ -248,10 +248,12 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
     // Force OpenJDK-based JVMs to use /dev/urandom for random number generation
     // See https://github.com/jruby/jruby/issues/4685 among others.
     struct stat buffer;
-    if (stat("/dev/urandom", &buffer) == 0) {
+    if (access("/dev/urandom", R_OK) == 0) {
         // OpenJDK tries really hard to prevent you from using urandom.
         // See https://bugs.openjdk.java.net/browse/JDK-6202721
-        javaOptions.push_back("-Djava.security.egd=/dev/./urandom");
+        // Non-file URL causes fallback to slow threaded SeedGenerator.
+        // See https://bz.apache.org/bugzilla/show_bug.cgi?id=56139
+        javaOptions.push_back("-Djava.security.egd=file:/dev/urandom");
     }
 
     if (getenv("VERIFY_JRUBY") != NULL) {
