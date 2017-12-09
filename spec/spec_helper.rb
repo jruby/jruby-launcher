@@ -47,7 +47,7 @@ module JRubyLauncherHelper
 
   def classpath_arg(args)
     index = args.index("-cp")
-    index.should > 0
+    expect(index).to be > 0
     args[index + 1]
   end
 
