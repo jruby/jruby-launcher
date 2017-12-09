@@ -7,7 +7,7 @@ describe "JRuby native launcher" do
   end
 
   it "should pass unrecognized arguments to JRuby" do
-    expect(jruby_launcher_args("-J-Dsome.option -v --help")[-3..-1]).to contain_exactly("org/jruby/Main", "-v", "--help")
+    expect(jruby_launcher_args("-J-Dsome.option -v --help")[-3..-1]).to eq ["org/jruby/Main", "-v", "--help"]
   end
 
   it "should print help message" do
