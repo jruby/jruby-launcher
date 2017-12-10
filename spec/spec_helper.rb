@@ -47,7 +47,7 @@ module JRubyLauncherHelper
 
   def classpath_arg(args)
     index = args.index("-cp")
-    index.should > 0
+    expect(index).to be > 0
     args[index + 1]
   end
 
@@ -70,6 +70,7 @@ RSpec.configure do |config|
   config.before(:all) do
     JRubyLauncherHelper.check_executable_built
     # clear environment for better control
+    ENV.delete("JAVACMD")
     ENV.delete("JAVA_HOME")
     ENV.delete("JRUBY_HOME")
     ENV.delete("JAVA_OPTS")
