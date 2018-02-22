@@ -4,8 +4,8 @@ CP=cp
 CCADMIN=CCadmin
 RANLIB=ranlib
 CC=gcc
-CCC=g++
-CXX=g++
+CCC=g++ --std=c++98
+CXX=g++ --std=c++98
 
 # Windows (mingw)?
 ifneq (,$(findstring mingw, $(CONF)))
