@@ -502,20 +502,13 @@ void ArgParser::prepareOptions() {
 
 void ArgParser::setupMaxHeapAndStack(list<string> userOptions) {
     // Hard-coded 500m, 2048k is for consistency with jruby shell script.
-    string heapSize("500m"), stackSize("2048k");
-    bool maxHeap = false, maxStack = false;
+    string stackSize("2048k");
+    bool maxStack = false;
     for (list<string>::iterator it = userOptions.begin(); it != userOptions.end(); it++) {
-        if (!maxHeap && strncmp("-Xmx", it->c_str(), 4) == 0) {
-            heapSize = it->substr(4, it->size() - 4);
-            maxHeap = true;
-        }
         if (!maxStack && strncmp("-Xss", it->c_str(), 4) == 0) {
             stackSize = it->substr(4, it->size() - 4);
             maxStack = true;
         }
-    }
-    if (!maxHeap) {
-        javaOptions.push_back("-Xmx" + heapSize);
     }
     if (!maxStack) {
         javaOptions.push_back("-Xss" + stackSize);
