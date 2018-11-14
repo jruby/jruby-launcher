@@ -94,10 +94,6 @@ describe "JRuby native launcher" do
     jruby_launcher_args("-Xproperties").should include("--properties")
   end
 
-  it "should default to 500m max heap" do
-    jruby_launcher_args("").should include("-Xmx500m")
-  end
-
   it "should allow max heap to be overridden" do
     jruby_launcher_args("-J-Xmx256m").should include("-Xmx256m")
   end
