@@ -138,8 +138,6 @@ bool PlatformLauncher::start(char* argv[], int argc, DWORD *retCode, const char*
         }
     }
 
-    prepareOptions();
-
     string java("");
 
     if (getenv("JAVACMD") != NULL) {
@@ -158,6 +156,8 @@ bool PlatformLauncher::start(char* argv[], int argc, DWORD *retCode, const char*
         jvmLauncher.getJavaPath(jdkhome);
         java = jdkhome + "\\bin\\java";
     }
+
+    prepareOptions();
 
     if (printCommandLine) {
         list<string> commandLine;

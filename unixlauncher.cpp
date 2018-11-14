@@ -42,8 +42,6 @@ int UnixLauncher::run(int argc, char* argv[], char* envp[]) {
         return nailgunClientMain(progArgs.size(), (char**)nailArgv, envp);
     }
 
-    prepareOptions();
-
     string java("");
 
     if (getenv("JAVACMD") != NULL) {
@@ -53,6 +51,7 @@ int UnixLauncher::run(int argc, char* argv[], char* envp[]) {
             java = jdkhome + "/bin/java";
         } else if (getenv("JAVA_HOME") != NULL) {
             string java_home = string(getenv("JAVA_HOME"));
+            jdkhome = java_home;
             java_home = trimTrailingBackslashes(java_home);
             java = java_home + "/bin/java";
         } else {
@@ -64,6 +63,8 @@ int UnixLauncher::run(int argc, char* argv[], char* envp[]) {
         printToConsole("No `java' executable found on PATH.");
         return 255;
     }
+
+    prepareOptions();
 
     list<string> commandLine;
     commandLine.push_back(java);

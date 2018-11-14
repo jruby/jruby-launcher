@@ -20,6 +20,7 @@ protected:
     static const char *OPT_JRUBY_COMMAND_NAME;
 
     static const char *OPT_CMDLINE_CLASS_PATH;
+    static const char *OPT_CMDLINE_MODULE_PATH;
     static const char *OPT_CLASS_PATH;
     static const char *OPT_BOOT_CLASS_PATH;
 
@@ -52,12 +53,14 @@ protected:
     void addJarsToClassPathFrom(const char *dir);
     void addOptionsToCommandLine(std::list<std::string> & commandLine);
     bool endsWith(const std::string &string, const std::string &end);
+    void useModulesIfPresent();
 
 protected:
     bool separateProcess;
     bool nailgunClient;
     bool noBootClassPath;
     bool printCommandLine;
+    bool useModulePath;
     std::string platformDir;
     std::string bootclass;
     std::string jdkhome;

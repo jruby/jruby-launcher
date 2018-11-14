@@ -60,6 +60,7 @@ const char *ArgParser::OPT_JRUBY_HOME = "-Djruby.home=";
 const char *ArgParser::OPT_JRUBY_COMMAND_NAME = "-Dsun.java.command=";
 
 const char *ArgParser::OPT_CMDLINE_CLASS_PATH = "-cp";
+const char *ArgParser::OPT_CMDLINE_MODULE_PATH = "--module-path";
 const char *ArgParser::OPT_CLASS_PATH = "-Djava.class.path=";
 const char *ArgParser::OPT_BOOT_CLASS_PATH = "-Xbootclasspath/a:";
 
@@ -462,6 +463,8 @@ void ArgParser::prepareOptions() {
 
     setupMaxHeapAndStack(userOptions);
 
+    useModulesIfPresent();
+
     constructBootClassPath();
     constructClassPath();
 
@@ -481,8 +484,12 @@ void ArgParser::prepareOptions() {
     option += cmdName;
     javaOptions.push_back(option);
 
-    // When launching a separate process, use '-cp' which expands embedded wildcards
-    if (separateProcess) {
+    if (useModulePath) {
+        // When modules are present, use module path
+        javaOptions.push_back(OPT_CMDLINE_MODULE_PATH);
+        javaOptions.push_back(classPath);
+    } else if (separateProcess) {
+        // When launching a separate process, use '-cp' which expands embedded wildcards
         javaOptions.push_back(OPT_CMDLINE_CLASS_PATH);
         javaOptions.push_back(classPath);
     } else {
@@ -512,6 +519,18 @@ void ArgParser::setupMaxHeapAndStack(list<string> userOptions) {
     }
     if (!maxStack) {
         javaOptions.push_back("-Xss" + stackSize);
+    }
+}
+
+void ArgParser::useModulesIfPresent() {
+    logMsg("useModulesIfPresent()");
+
+    if (jdkhome.empty()) {
+        logMsg("Unable to detect JPMS modules as JAVA_HOME is not specified");
+    } else if (access((jdkhome + "/jmods").c_str(), R_OK) == 0) {
+        logMsg("JPMS jmods dir detected, using module flags");
+        noBootClassPath = 1;
+        useModulePath = 1;
     }
 }
 
