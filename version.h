@@ -6,6 +6,6 @@
 #ifndef _VERSION_H_
 #define _VERSION_H_
 
-#define JRUBY_LAUNCHER_VERSION "1.1.8"
+#define JRUBY_LAUNCHER_VERSION "1.1.9-pre"
 
 #endif // ! _VERSION_H_
