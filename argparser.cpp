@@ -75,6 +75,7 @@ ArgParser::ArgParser()
     , nailgunClient(false)
     , noBootClassPath(false)
     , printCommandLine(false)
+    , useModulePath(false)
 {
 }
 
