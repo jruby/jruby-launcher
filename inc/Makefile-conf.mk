@@ -3,9 +3,6 @@ MKDIR=mkdir
 CP=cp
 CCADMIN=CCadmin
 RANLIB=ranlib
-CC=gcc
-CCC=g++
-CXX=g++
 
 # Windows (mingw)?
 ifneq (,$(findstring mingw, $(CONF)))

@@ -28,10 +28,10 @@ jruby.res: resources/jruby.rc
 	windres $^ -O coff -o $@
 
 jruby.exe: jrubyexe.cpp nbexecloader.h utilsfuncs.cpp utilsfuncswin.cpp jruby.res
-	g++ $(CXXFLAGS) $^ -s -o $@ $(LDLIBSOPTIONS) -static
+	$(CXX) $(CXXFLAGS) $^ -s -o $@ $(LDLIBSOPTIONS) -static
 
 jrubyw.exe: jrubyexe.cpp nbexecloader.h utilsfuncs.cpp utilsfuncswin.cpp jruby.res
-	g++ $(CXXFLAGS) -DJRUBYW -mwindows $^ -s -o $@ $(LDLIBSOPTIONS) -static
+	$(CXX) $(CXXFLAGS) -DJRUBYW -mwindows $^ -s -o $@ $(LDLIBSOPTIONS) -static
 
 install:
 	@if [ ! -f ./jruby ]; then echo "Please run 'make' first."; exit 1; fi
