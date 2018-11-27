@@ -135,7 +135,7 @@ bool ArgParser::initPlatformDir() {
 
     if (getenv("JRUBY_HOME") != NULL) {
         logMsg("initPlatformDir: using JRUBY_HOME environment variable");
-        char sep[2] = { FILE_SEP, NULL };
+        char sep[2] = { FILE_SEP, '\0' };
         strncpy(path, getenv("JRUBY_HOME"), PATH_MAX - 11);
         strncpy(path + strlen(path), sep, 1);
         strncpy(path + strlen(path), "bin", 3);
