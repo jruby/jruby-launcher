@@ -60,7 +60,7 @@ const char *ArgParser::OPT_JRUBY_HOME = "-Djruby.home=";
 const char *ArgParser::OPT_JRUBY_COMMAND_NAME = "-Dsun.java.command=";
 
 const char *ArgParser::OPT_CMDLINE_CLASS_PATH = "-cp";
-const char *ArgParser::OPT_CMDLINE_MODULE_PATH = "--module-path";
+const char *ArgParser::OPT_CMDLINE_MODULE_PATH = "--module-path=";
 const char *ArgParser::OPT_CLASS_PATH = "-Djava.class.path=";
 const char *ArgParser::OPT_BOOT_CLASS_PATH = "-Xbootclasspath/a:";
 
@@ -487,8 +487,9 @@ void ArgParser::prepareOptions() {
 
     if (useModulePath) {
         // When modules are present, use module path
-        javaOptions.push_back(OPT_CMDLINE_MODULE_PATH);
-        javaOptions.push_back(classPath);
+        option = OPT_CMDLINE_MODULE_PATH;
+        option += classPath;
+        javaOptions.push_back(option);
     } else if (separateProcess) {
         // When launching a separate process, use '-cp' which expands embedded wildcards
         javaOptions.push_back(OPT_CMDLINE_CLASS_PATH);
