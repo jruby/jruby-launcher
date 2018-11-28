@@ -1,0 +1,21 @@
+#!/bin/bash
+[[ "$DEBUG" ]] && set -x
+set -e 
+
+rm -rf build/unix
+docker build -t jruby/build -f Dockerfile.build .
+docker run --rm --volume=$PWD:/build -it jruby/build make
+docker image rm jruby/build
+
+# If the user is on MacOS, go ahead and build MacOS too.
+if which uname 1>/dev/null 2>&1 && [[ "$(uname -s)" == "Darwin" ]]; then
+  printf "\n\n\n\n\n"
+  
+  if ! which make 1>/dev/null 2>&1; then
+    echo "Unable to find dev tools"
+    echo "Try running \`xcode-select --install\`"
+    exit 1
+  fi
+  
+  make
+fi

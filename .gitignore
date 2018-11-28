@@ -2,7 +2,7 @@
 *.dll
 *.exe
 *~
-build
+/build
 nbproject/private/private.xml
 jruby.res
 /jruby
