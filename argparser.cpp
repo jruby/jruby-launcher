@@ -247,12 +247,6 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
     }
 #endif
 
-    javaOptions.push_back("--add-opens");
-    javaOptions.push_back("java.base/java.io=org.jruby.dist");
-    javaOptions.push_back("--add-opens");
-    javaOptions.push_back("java.base/java.nio.channels=org.jruby.dist");
-    javaOptions.push_back("--add-opens");
-    javaOptions.push_back("java.base/sun.nio.ch=org.jruby.dist");
 
     // Force OpenJDK-based JVMs to use /dev/urandom for random number generation
     // See https://github.com/jruby/jruby/issues/4685 among others.
@@ -497,6 +491,13 @@ void ArgParser::prepareOptions() {
         option = OPT_CMDLINE_MODULE_PATH;
         option += classPath;
         javaOptions.push_back(option);
+
+        javaOptions.push_back("--add-opens");
+        javaOptions.push_back("java.base/java.io=org.jruby.dist");
+        javaOptions.push_back("--add-opens");
+        javaOptions.push_back("java.base/java.nio.channels=org.jruby.dist");
+        javaOptions.push_back("--add-opens");
+        javaOptions.push_back("java.base/sun.nio.ch=org.jruby.dist");
     } else if (separateProcess) {
         // When launching a separate process, use '-cp' which expands embedded wildcards
         javaOptions.push_back(OPT_CMDLINE_CLASS_PATH);
