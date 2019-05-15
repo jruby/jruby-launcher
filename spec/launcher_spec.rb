@@ -1,3 +1,4 @@
+require 'tmpdir'
 require File.expand_path('../spec_helper.rb', __FILE__)
 load File.expand_path('../../lib/jruby-launcher.rb', __FILE__)
 
@@ -254,5 +255,24 @@ describe "JRuby native launcher" do
 
   it "should not crash on format-strings" do
     jruby_launcher_args("-e %s%s%s%s%s 2>&1").should include('-e', '%s%s%s%s%s')
+  end
+
+  it "should use --module-path on java9+" do
+    Dir.mktmpdir do |java_home|
+      Dir.mkdir(File.join(java_home, 'jmods'))
+      with_environment 'JAVA_HOME' => java_home do
+        jruby_launcher_args('').grep(/^--module-path=.*jruby.jar/).should_not be_empty
+      end
+    end
+  end
+
+  it "should not treat CLASSPATH entries as modules on java9+" do
+    Dir.mktmpdir do |java_home|
+      Dir.mkdir(File.join(java_home, 'jmods'))
+      with_environment 'JAVA_HOME' => java_home, 'CLASSPATH' => '/some/lib.jar' do
+        jruby_launcher_args('').grep(/^--module-path=.*\/some\/lib.jar/).should be_empty
+        classpath_arg(jruby_launcher_args('')).should =~ /\/some\/lib.jar/
+      end
+    end
   end
 end
