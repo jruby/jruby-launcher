@@ -486,31 +486,33 @@ void ArgParser::prepareOptions() {
     option += cmdName;
     javaOptions.push_back(option);
 
-    if (useModulePath) {
-        // When modules are present, use module path
-        option = OPT_CMDLINE_MODULE_PATH;
-        option += classPath;
+    if (!bootClassPath.empty()) {
+        if (useModulePath) {
+            // When modules are present, use module path for the jruby libs (aka bootClassPath)
+            option = OPT_CMDLINE_MODULE_PATH;
+        } else {
+            option = OPT_BOOT_CLASS_PATH;
+        }
+        option += bootClassPath;
         javaOptions.push_back(option);
+    }
 
+    if (useModulePath) {
         javaOptions.push_back("--add-opens");
         javaOptions.push_back("java.base/java.io=org.jruby.dist");
         javaOptions.push_back("--add-opens");
         javaOptions.push_back("java.base/java.nio.channels=org.jruby.dist");
         javaOptions.push_back("--add-opens");
         javaOptions.push_back("java.base/sun.nio.ch=org.jruby.dist");
-    } else if (separateProcess) {
+    }
+
+    if (separateProcess) {
         // When launching a separate process, use '-cp' which expands embedded wildcards
         javaOptions.push_back(OPT_CMDLINE_CLASS_PATH);
         javaOptions.push_back(classPath);
     } else {
         option = OPT_CLASS_PATH;
         option += classPath;
-        javaOptions.push_back(option);
-    }
-
-    if (!bootClassPath.empty()) {
-        option = OPT_BOOT_CLASS_PATH;
-        option += bootClassPath;
         javaOptions.push_back(option);
     }
 
@@ -539,7 +541,6 @@ void ArgParser::useModulesIfPresent() {
         logMsg("Unable to detect JPMS modules as JAVA_HOME is not specified");
     } else if (access((jdkhome + "/jmods").c_str(), R_OK) == 0) {
         logMsg("JPMS jmods dir detected, using module flags");
-        noBootClassPath = 1;
         useModulePath = 1;
     }
 }
