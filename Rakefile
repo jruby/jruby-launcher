@@ -28,7 +28,6 @@ task :gemspec => './lib/jruby-launcher.rb' do
     s.extensions = ["extconf.rb"]
     s.files = FileList["COPYING", "README.md", "Makefile", "Rakefile", "*.c", "*.cpp", "*.h", "inc/*.*", "**/*.rb", "resources/*.*"]
     s.homepage = %q{http://jruby.org}
-    s.rubyforge_project = %q{jruby-extras}
   end
 end
 
