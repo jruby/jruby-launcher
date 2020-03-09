@@ -16,7 +16,7 @@ jobs:
     - name: Set up JRuby versions
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: jruby-9.2.11.0
+        ruby-version: [jruby-9.2.9.0, jruby-9.2.11.0, jruby-head]
     - name: Build and test with rake
       run: |
         ruby extconf.rb
