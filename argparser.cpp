@@ -498,12 +498,25 @@ void ArgParser::prepareOptions() {
     }
 
     if (useModulePath) {
-        javaOptions.push_back("--add-opens");
-        javaOptions.push_back("java.base/java.io=org.jruby.dist");
-        javaOptions.push_back("--add-opens");
-        javaOptions.push_back("java.base/java.nio.channels=org.jruby.dist");
-        javaOptions.push_back("--add-opens");
-        javaOptions.push_back("java.base/sun.nio.ch=org.jruby.dist");
+        string moduleOptsFile = platformDir + "/bin/.jruby.module_opts";
+        if (access(moduleOptsFile.c_str(), R_OK) == 0) {
+            logMsg("using @arguments file for Java module options");
+            javaOptions.push_back(string("@") + platformDir + "/bin/.jruby.module_opts");
+        } else {
+            // If .module_opts file is not detected, only add options if JRUBY_MODULE is defined.
+            // See extconf.rb for rules on which JRuby versions get JRUBY_MODULE.
+#ifdef JRUBY_MODULE
+            logMsg("using hardcoded module options");
+            javaOptions.push_back("--add-opens");
+            javaOptions.push_back("java.base/java.io=org.jruby.dist");
+            javaOptions.push_back("--add-opens");
+            javaOptions.push_back("java.base/java.nio.channels=org.jruby.dist");
+            javaOptions.push_back("--add-opens");
+            javaOptions.push_back("java.base/sun.nio.ch=org.jruby.dist");
+#else
+            logMsg("no JRuby module support detected, skipping module flags")
+#endif
+        }
     }
 
     if (separateProcess) {
