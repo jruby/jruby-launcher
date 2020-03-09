@@ -71,3 +71,6 @@ ifneq (,$(findstring SunOS,$(CND_PLATFORM)))
 CFLAGS += -D__SUNOS__
 LDLIBSOPTIONS += -lsocket -lnsl
 endif
+
+# define JRUBY_MODULE appropriately for target JRuby
+CFLAGS += -DJRUBY_MODULE=${JRUBY_MODULE}
