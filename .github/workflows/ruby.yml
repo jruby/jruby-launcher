@@ -19,4 +19,7 @@ jobs:
         ruby-version: jruby-9.2.11.0
     - name: Build and test with rake
       run: |
-        rake test
+        ruby extconf.rb
+        make
+        gem install rspec
+        rake spec
