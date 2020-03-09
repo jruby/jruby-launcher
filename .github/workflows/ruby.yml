@@ -1,0 +1,21 @@
+name: Ruby
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build and test with Rake
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: jruby-9.2.11.0
+      run: |
+        rake test
