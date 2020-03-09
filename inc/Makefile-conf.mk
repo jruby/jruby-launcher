@@ -73,4 +73,6 @@ LDLIBSOPTIONS += -lsocket -lnsl
 endif
 
 # define JRUBY_MODULE appropriately for target JRuby
+ifeq (1,$(JRUBY_MODULE))
 CFLAGS += -DJRUBY_MODULE=${JRUBY_MODULE}
+endif

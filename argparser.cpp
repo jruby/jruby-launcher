@@ -514,7 +514,7 @@ void ArgParser::prepareOptions() {
             javaOptions.push_back("--add-opens");
             javaOptions.push_back("java.base/sun.nio.ch=org.jruby.dist");
 #else
-            logMsg("no JRuby module support detected, skipping module flags")
+            logMsg("no JRuby module support detected, skipping module flags");
 #endif
         }
     }
