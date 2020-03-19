@@ -153,8 +153,25 @@ bool PlatformLauncher::start(char* argv[], int argc, DWORD *retCode, const char*
             }
         }
 
-        jvmLauncher.getJavaPath(jdkhome);
-        java = jdkhome + "\\bin\\java";
+        if (!jdkhome.empty()) {
+            java = jdkhome + "\\bin\\java";
+        } else if (getenv("JAVA_HOME") != NULL) {
+            string java_home = string(getenv("JAVA_HOME"));
+            jdkhome = java_home;
+            java_home = trimTrailingBackslashes(java_home);
+            java = java_home + "\\bin\\java";
+        } else {
+            java = findOnPath("java");
+            if (!java.empty()) {
+                int home_index = java.find_last_of('\\', java.find_last_of('\\') - 1);
+                jdkhome = java.substr(0, home_index);
+            }
+        }
+    }
+
+    if (java.empty()) {
+        printToConsole("No `java' executable found on PATH.");
+        return 255;
     }
 
     prepareOptions();
