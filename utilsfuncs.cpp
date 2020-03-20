@@ -123,7 +123,6 @@ string findOnPath(const char* name) {
     string path(getenv("PATH"));
     size_t start = 0;
     size_t sep;
-    char * found;
 
     while (start < path.length()) {
 	sep = path.find(PATH_SEP, start);
