@@ -2,7 +2,7 @@
 PREFIX = notspecified
 BINDIR = $(PREFIX)/bin
 JRUBY_VERSION = notspecified
-JRUBY_MODULE =
+JRUBY_MODULE = 1
 INSTALLDIR = $(PREFIX)/lib/ruby/shared/rubygems/defaults
 INSTALLDIR9000 = $(PREFIX)/lib/ruby/stdlib/rubygems/defaults
 OLDINSTALLDIR = $(PREFIX)/lib/ruby/site_ruby/1.8/rubygems/defaults
