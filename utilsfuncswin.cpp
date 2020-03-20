@@ -39,10 +39,27 @@ bool disableFolderVirtualization(HANDLE hProcess) {
     return true;
 }
 
+typedef BOOL (WINAPI *LPFN_ISWOW64PROCESS) (HANDLE, PBOOL);
+
+LPFN_ISWOW64PROCESS IsWow64Process;
+
+BOOL is64bits() {
+    BOOL is64Bits = FALSE;
+    IsWow64Process = (LPFN_ISWOW64PROCESS) GetProcAddress(GetModuleHandle(TEXT("kernel32")),"IsWow64Process");
+
+    if (IsWow64Process && !IsWow64Process(GetCurrentProcess(),&is64Bits)) {}
+
+    return is64Bits;
+}
+
+#define KEY_WOW64_64KEY 0x0100
+#define KEY_WOW64_32KEY 0x0200
+
 bool getStringFromRegistry(HKEY rootKey, const char *keyName, const char *valueName, string &value) {
     logMsg("getStringFromRegistry()\n\tkeyName: %s\n\tvalueName: %s", keyName, valueName);
+    DWORD openFlags = KEY_READ | (is64bits() ? KEY_WOW64_64KEY : KEY_WOW64_32KEY);
     HKEY hKey = 0;
-    if (RegOpenKeyEx(rootKey, keyName, 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
+    if (RegOpenKeyEx(rootKey, keyName, 0, openFlags, &hKey) == ERROR_SUCCESS) {
         DWORD valSize = 4096;
         DWORD type = 0;
         char val[4096] = "";
@@ -64,8 +81,9 @@ bool getStringFromRegistry(HKEY rootKey, const char *keyName, const char *valueN
 
 bool getDwordFromRegistry(HKEY rootKey, const char *keyName, const char *valueName, DWORD &value) {
     logMsg("getDwordFromRegistry()\n\tkeyName: %s\n\tvalueName: %s", keyName, valueName);
+    DWORD openFlags = KEY_READ | (is64bits() ? KEY_WOW64_64KEY : KEY_WOW64_32KEY);
     HKEY hKey = 0;
-    if (RegOpenKeyEx(rootKey, keyName, 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
+    if (RegOpenKeyEx(rootKey, keyName, 0, openFlags, &hKey) == ERROR_SUCCESS) {
         DWORD valSize = sizeof(DWORD);
         DWORD type = 0;
         if (RegQueryValueEx(hKey, valueName, 0, &type, (BYTE *) &value, &valSize) == ERROR_SUCCESS

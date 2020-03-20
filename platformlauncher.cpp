@@ -147,21 +147,19 @@ bool PlatformLauncher::start(char* argv[], int argc, DWORD *retCode, const char*
         suppressConsole = false;
     } else {
         if (jdkhome.empty()) {
-            if (!jvmLauncher.initialize(REQ_JAVA_VERSION)) {
-                logErr(false, true, "Cannot find Java %s or higher.", REQ_JAVA_VERSION);
-                return false;
-            }
+            // attempt to get JDK home from registry
+            jvmLauncher.initialize(REQ_JAVA_VERSION);
         }
 
         if (!jdkhome.empty()) {
-            java = jdkhome + "\\bin\\java";
+            java = jdkhome + "\\bin\\java.exe";
         } else if (getenv("JAVA_HOME") != NULL) {
             string java_home = string(getenv("JAVA_HOME"));
             jdkhome = java_home;
             java_home = trimTrailingBackslashes(java_home);
-            java = java_home + "\\bin\\java";
+            java = java_home + "\\bin\\java.exe";
         } else {
-            java = findOnPath("java");
+            java = findOnPath("java.exe");
             if (!java.empty()) {
                 int home_index = java.find_last_of('\\', java.find_last_of('\\') - 1);
                 jdkhome = java.substr(0, home_index);
@@ -170,7 +168,7 @@ bool PlatformLauncher::start(char* argv[], int argc, DWORD *retCode, const char*
     }
 
     if (java.empty()) {
-        printToConsole("No `java' executable found on PATH.");
+        printToConsole("No `java.exe' executable found on PATH.");
         return 255;
     }
 
