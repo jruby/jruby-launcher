@@ -52,7 +52,7 @@ int rb_w32_cmdvector(const char *cmd, char ***vec) {
     char *ptr, *base, *buffer, *cmdline;
     char **vptr;
     char quote;
-    NtCmdLineElement *curr, **tail;
+    NtCmdLineElement *curr;
     NtCmdLineElement *cmdhead = NULL, **cmdtail = &cmdhead;
 
     //
@@ -237,7 +237,7 @@ int rb_w32_cmdvector(const char *cmd, char ***vec) {
     buffer = (char *)malloc(len);
     if (!buffer) {
       do_nothing:
-	while (curr = cmdhead) {
+	while ((curr = cmdhead)) {
 	    cmdhead = curr->next;
 	    if (curr->flags & NTMALLOC) free(curr->str);
 	    free(curr);
@@ -263,7 +263,7 @@ int rb_w32_cmdvector(const char *cmd, char ***vec) {
 
     ptr = buffer + (elements+1) * sizeof(char *);
 
-    while (curr = cmdhead) {
+    while ((curr = cmdhead)) {
 	strlcpy(ptr, curr->str, curr->len + 1);
 	*vptr++ = ptr;
 	ptr += curr->len + 1;
