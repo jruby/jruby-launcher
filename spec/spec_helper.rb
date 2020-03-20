@@ -2,11 +2,6 @@ require 'rspec'
 require 'rbconfig'
 require 'fileutils'
 
-if defined?(JRUBY_VERSION)
-  require 'jruby'
-  JRuby.runtime.instance_config.run_ruby_in_process = false
-end
-
 module JRubyLauncherHelper
   JRUBY_EXE = ''
   WINDOWS = RbConfig::CONFIG['target_os'] =~ /mswin/
