@@ -487,8 +487,12 @@ void ArgParser::prepareOptions() {
 
     if (!bootClassPath.empty()) {
         if (useModulePath) {
+#ifdef JRUBY_MODULE
             // When modules are present, use module path for the jruby libs (aka bootClassPath)
             option = OPT_CMDLINE_MODULE_PATH;
+#else
+            option = OPT_BOOT_CLASS_PATH;
+#endif
         } else {
             option = OPT_BOOT_CLASS_PATH;
         }
