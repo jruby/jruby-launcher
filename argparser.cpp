@@ -250,7 +250,6 @@ bool ArgParser::parseArgs(int argc, char *argv[]) {
 
     // Force OpenJDK-based JVMs to use /dev/urandom for random number generation
     // See https://github.com/jruby/jruby/issues/4685 among others.
-    struct stat buffer;
     if (access("/dev/urandom", R_OK) == 0) {
         // OpenJDK tries really hard to prevent you from using urandom.
         // See https://bugs.openjdk.java.net/browse/JDK-6202721
