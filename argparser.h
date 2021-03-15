@@ -54,6 +54,7 @@ protected:
     void addOptionsToCommandLine(std::list<std::string> & commandLine);
     bool endsWith(const std::string &string, const std::string &end);
     void useModulesIfPresent();
+    bool releaseFileHasModules();
 
 protected:
     bool separateProcess;

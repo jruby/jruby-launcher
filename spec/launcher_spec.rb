@@ -259,7 +259,7 @@ describe "JRuby native launcher" do
 
   it "should use --module-path on java9+" do
     Dir.mktmpdir do |java_home|
-      Dir.mkdir(File.join(java_home, 'jmods'))
+      FileUtils.mkdir_p(File.join(java_home, 'lib/modules'))
       with_environment 'JAVA_HOME' => java_home do
         jruby_launcher_args('').grep(/^--module-path=.*jruby.jar/).should_not be_empty
       end

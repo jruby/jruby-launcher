@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <unistd.h>
 #include <limits>
+#include <fstream>
 #include "utilsfuncs.h"
 #include "argparser.h"
 #include "argnames.h"
@@ -557,10 +558,23 @@ void ArgParser::useModulesIfPresent() {
 
     if (jdkhome.empty()) {
         logMsg("Unable to detect JPMS modules as JAVA_HOME is not specified");
-    } else if (access((jdkhome + "/jmods").c_str(), R_OK) == 0) {
+    } else if (access((jdkhome + "/lib/modules").c_str(), R_OK) == 0 ||
+            releaseFileHasModules()) {
         logMsg("JPMS jmods dir detected, using module flags");
         useModulePath = 1;
     }
+}
+
+bool ArgParser::releaseFileHasModules() {
+    string releaseFile = jdkhome + "/release";
+    std::string line;
+    ifstream in(releaseFile.c_str());
+    if (in.is_open()) {
+        while (getline(in,line)) {
+            if (line.find("MODULES") == 0) return true;
+        }
+    }
+    return false;
 }
 
 void ArgParser::constructBootClassPath() {
