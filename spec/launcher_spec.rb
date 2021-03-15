@@ -257,7 +257,10 @@ describe "JRuby native launcher" do
     jruby_launcher_args("-e %s%s%s%s%s 2>&1").should include('-e', '%s%s%s%s%s')
   end
 
-  it "should use --module-path on java9+" do
+  it "should use --module-path on java9+ jruby 9.2.1+" do
+    # versions prior to 9.2.1 do not set a predictable module name
+    skip unless (JRUBY_VERSION.split('.') <=> ['9', '2', '1']) >= 0
+    
     Dir.mktmpdir do |java_home|
       FileUtils.mkdir_p(File.join(java_home, 'lib/modules'))
       with_environment 'JAVA_HOME' => java_home do
