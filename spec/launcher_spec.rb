@@ -21,11 +21,12 @@ describe "JRuby native launcher" do
   end
 
   it "should use $JAVACMD when JAVACMD is specified" do
-    with_environment "JAVACMD" => File.join("jato") do
+    javacmd_path = File.join("path", "to", "jato")
+    with_environment "JAVACMD" => javacmd_path do
       if windows?
-        jruby_launcher_args("-v 2>&1").join.should =~ %r{jato}
+        jruby_launcher_args("-v 2>&1").join.should =~ /#{javacmd_path}/
       else
-        jruby_launcher_args("-v").first.should == File.join("jato")
+        jruby_launcher_args("-v").first.should == javacmd_path
       end
     end
   end
