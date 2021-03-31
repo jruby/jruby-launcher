@@ -181,6 +181,9 @@ describe "JRuby native launcher" do
 
   # JRUBY-4706
   it "should put JRuby on regular classpath when -Xnobootclasspath is used" do
+    # Java 9+ do not like bootclasspath so we do not use it
+    skip if ENV_JAVA['java.specification.version'].to_i >= 9
+
     args = jruby_launcher_args("-e true")
     args.grep(/Xbootclasspath/).should_not be_empty
     args = jruby_launcher_args("-Xnobootclasspath -e true")
@@ -237,6 +240,9 @@ describe "JRuby native launcher" do
     after { FileUtils.rm_rf jruby_home }
 
     it "should add jruby.jar to the bootclasspath" do
+      # Java 9+ do not like bootclasspath so we do not use it
+      skip if ENV_JAVA['java.specification.version'].to_i >= 9
+
       with_environment "JRUBY_HOME" => jruby_home do
         jruby_launcher_args("").should include("-Xbootclasspath/a:#{jruby_home}/lib/jruby.jar")
       end
