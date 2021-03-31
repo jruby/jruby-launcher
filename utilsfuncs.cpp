@@ -54,6 +54,7 @@
 #include <unistd.h>
 #include "utilsfuncs.h"
 #include "argnames.h"
+#include <limits.h>
 
 #ifndef WIN32
 #include <sys/stat.h>
