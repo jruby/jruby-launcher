@@ -146,6 +146,20 @@ string findOnPath(const char* name) {
     return "";
 }
 
+string resolveSymlinks(string path) {
+    struct stat st;
+    char tmp[PATH_MAX + 1];
+
+    lstat(path.c_str(), &st);
+    if (st.st_mode & S_IFLNK) {
+        realpath(path.c_str(), tmp);
+    }
+
+    path = tmp;
+
+    return path;
+}
+
 const char* getSysError(char *str, int strSize) {
 #ifdef WIN32
     int err = GetLastError();

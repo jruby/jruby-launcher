@@ -57,6 +57,7 @@ int UnixLauncher::run(int argc, char* argv[], char* envp[]) {
         } else {
             java = findOnPath("java");
             if (!java.empty()) {
+                java = resolveSymlinks(java);
                 int home_index = java.find_last_of('/', java.find_last_of('/') - 1);
                 jdkhome = java.substr(0, home_index);
             }
