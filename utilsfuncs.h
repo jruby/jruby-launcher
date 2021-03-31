@@ -57,6 +57,7 @@ bool printToConsole(const char *msg);
 char** convertToArgvArray(std::list<std::string> args);
 void addToArgList(std::list<std::string> & args, int argc, char ** argv);
 std::string findOnPath(const char* name);
+std::string resolveSymlinks(std::string name);
 bool checkDirectory(const char* path);
 void printListToConsole(std::list<std::string> l);
 std::string trimTrailingBackslashes(std::string orig);

@@ -46,6 +46,9 @@ int UnixLauncher::run(int argc, char* argv[], char* envp[]) {
 
     if (getenv("JAVACMD") != NULL) {
         java = getenv("JAVACMD");
+        if (java.find_last_of('/') == -1) {
+            java = findOnPath(java.c_str());
+        }
     } else {
         if (!jdkhome.empty()) {
             java = jdkhome + "/bin/java";
@@ -56,16 +59,19 @@ int UnixLauncher::run(int argc, char* argv[], char* envp[]) {
             java = java_home + "/bin/java";
         } else {
             java = findOnPath("java");
-            if (!java.empty()) {
-                int home_index = java.find_last_of('/', java.find_last_of('/') - 1);
-                jdkhome = java.substr(0, home_index);
-            }
         }
     }
 
     if (java.empty()) {
         printToConsole("No `java' executable found on PATH.");
         return 255;
+    }
+
+    // still no jdk home, use java command to resolve it
+    if (jdkhome.empty()) {
+        java = resolveSymlinks(java);
+        int home_index = java.find_last_of('/', java.find_last_of('/') - 1);
+        jdkhome = java.substr(0, home_index);
     }
 
     prepareOptions();

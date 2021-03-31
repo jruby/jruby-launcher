@@ -54,6 +54,7 @@
 #include <unistd.h>
 #include "utilsfuncs.h"
 #include "argnames.h"
+#include <limits.h>
 
 #ifndef WIN32
 #include <sys/stat.h>
@@ -144,6 +145,18 @@ string findOnPath(const char* name) {
 	start = sep + 1;
     }
     return "";
+}
+
+string resolveSymlinks(string path) {
+    struct stat st;
+    char tmp[PATH_MAX + 1];
+
+    if (lstat(path.c_str(), &st) && st.st_mode & S_IFLNK) {
+        realpath(path.c_str(), tmp);
+        path = tmp;
+    }
+
+    return path;
 }
 
 const char* getSysError(char *str, int strSize) {

@@ -21,11 +21,12 @@ describe "JRuby native launcher" do
   end
 
   it "should use $JAVACMD when JAVACMD is specified" do
-    with_environment "JAVACMD" => File.join("jato") do
+    javacmd_path = File.join("path", "to", "jato")
+    with_environment "JAVACMD" => javacmd_path do
       if windows?
-        jruby_launcher_args("-v 2>&1").join.should =~ %r{jato}
+        jruby_launcher_args("-v 2>&1").join.should =~ /#{javacmd_path}/
       else
-        jruby_launcher_args("-v").first.should == File.join("jato")
+        jruby_launcher_args("-v").first.should == javacmd_path
       end
     end
   end
@@ -180,6 +181,9 @@ describe "JRuby native launcher" do
 
   # JRUBY-4706
   it "should put JRuby on regular classpath when -Xnobootclasspath is used" do
+    # Java 9+ do not like bootclasspath so we do not use it
+    skip if ENV_JAVA['java.specification.version'].to_i >= 9
+
     args = jruby_launcher_args("-e true")
     args.grep(/Xbootclasspath/).should_not be_empty
     args = jruby_launcher_args("-Xnobootclasspath -e true")
@@ -236,6 +240,9 @@ describe "JRuby native launcher" do
     after { FileUtils.rm_rf jruby_home }
 
     it "should add jruby.jar to the bootclasspath" do
+      # Java 9+ do not like bootclasspath so we do not use it
+      skip if ENV_JAVA['java.specification.version'].to_i >= 9
+
       with_environment "JRUBY_HOME" => jruby_home do
         jruby_launcher_args("").should include("-Xbootclasspath/a:#{jruby_home}/lib/jruby.jar")
       end
