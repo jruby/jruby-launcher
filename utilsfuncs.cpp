@@ -151,7 +151,7 @@ string resolveSymlinks(string path) {
     struct stat st;
     char tmp[PATH_MAX + 1];
 
-    if (lstat(path.c_str(), &st) && st.st_mode & S_IFLNK) {
+    if (lstat(path.c_str(), &st) == 0 && (st.st_mode & S_IFMT) == S_IFLNK) {
         realpath(path.c_str(), tmp);
         path = tmp;
     }
