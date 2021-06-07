@@ -148,6 +148,7 @@ string findOnPath(const char* name) {
 }
 
 string resolveSymlinks(string path) {
+#ifndef WIN32
     struct stat st;
     char tmp[PATH_MAX + 1];
 
@@ -155,7 +156,7 @@ string resolveSymlinks(string path) {
         realpath(path.c_str(), tmp);
         path = tmp;
     }
-
+#endif
     return path;
 }
 
