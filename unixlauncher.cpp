@@ -1,5 +1,7 @@
 #include <stdlib.h>
 #include <unistd.h>
+#include <limits.h>
+#include <string.h>
 #include "unixlauncher.h"
 #include "utilsfuncs.h"
 
@@ -67,11 +69,27 @@ int UnixLauncher::run(int argc, char* argv[], char* envp[]) {
         return 255;
     }
 
-    // still no jdk home, use java command to resolve it
+    // still no jdk home, use other means to resolve it
     if (jdkhome.empty()) {
-        java = resolveSymlinks(java);
-        int home_index = java.find_last_of('/', java.find_last_of('/') - 1);
-        jdkhome = java.substr(0, home_index);
+        if (access("/usr/libexec/java_home", X_OK) != -1) {
+            // try java_home command when not set (on MacOS)
+            FILE *fp;
+            char tmp[PATH_MAX + 1];
+
+            fp = popen("/usr/libexec/java_home", "r");
+            if (fp != NULL) {
+                fgets(tmp, sizeof(tmp), fp);
+                tmp[strcspn(tmp, "\n")] = 0;
+                jdkhome = tmp;
+                pclose(fp);
+            } else {
+                logErr(true, false, "failed to run /usr/libexec/java_home");
+            }
+        } else {
+            java = resolveSymlinks(java);
+            int home_index = java.find_last_of('/', java.find_last_of('/') - 1);
+            jdkhome = java.substr(0, home_index);
+        }
     }
 
     prepareOptions();
