@@ -73,7 +73,7 @@ int UnixLauncher::run(int argc, char* argv[], char* envp[]) {
     // still no jdk home, use other means to resolve it
     if (jdkhome.empty()) {
         char javaHomeCommand[] = "/usr/libexec/java_home";
-        if (access(javaHomeCommand, X_OK) != -1 && !checkDirectory(javaHomeCommand)) {
+        if (access(javaHomeCommand, R_OK | X_OK) != -1 && !checkDirectory(javaHomeCommand)) {
             // try java_home command when not set (on MacOS)
             FILE *fp;
             char tmp[PATH_MAX + 1];
