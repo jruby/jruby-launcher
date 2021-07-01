@@ -71,19 +71,20 @@ int UnixLauncher::run(int argc, char* argv[], char* envp[]) {
 
     // still no jdk home, use other means to resolve it
     if (jdkhome.empty()) {
-        if (access("/usr/libexec/java_home", X_OK) != -1) {
+        char javaHomeCommand[] = "/usr/libexec/java_home";
+        if (access(javaHomeCommand, X_OK) != -1 && !checkDirectory(javaHomeCommand)) {
             // try java_home command when not set (on MacOS)
             FILE *fp;
             char tmp[PATH_MAX + 1];
 
-            fp = popen("/usr/libexec/java_home", "r");
+            fp = popen(javaHomeCommand, "r");
             if (fp != NULL) {
                 fgets(tmp, sizeof(tmp), fp);
                 tmp[strcspn(tmp, "\n")] = 0;
                 jdkhome = tmp;
                 pclose(fp);
             } else {
-                logErr(true, false, "failed to run /usr/libexec/java_home");
+                logErr(true, false, "failed to run %s", javaHomeCommand);
             }
         } else {
             java = resolveSymlinks(java);
