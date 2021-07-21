@@ -1,5 +1,72 @@
+---
+dist: focal
+
+env:
+  global:
+    - JRUBY_HOME=/opt/jruby
+    - JRUBY_VERSION=9.2.19.0
+    - LAUNCHER_PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    - WORKDIR=/usr/local/src/jruby-launcher
+
 language: ruby
-rvm:
-  - jruby-19mode
-script: make && bundle exec rake package && gem install pkg/jruby-launcher-*-java.gem
-after_script: jruby -Xversion
+
+services:
+  - docker
+
+jobs:
+  - include:
+    - env:
+      - DOCKER_IMAGE=debian:9
+      - JDK_PKG=openjdk-8-jdk
+      - PKG_MGR=apt-get
+    - env:
+      - DOCKER_IMAGE=debian:10
+      - JDK_PKG=openjdk-11-jdk
+      - PKG_MGR=apt-get
+    - env:
+      - DOCKER_IMAGE=ubuntu:16.04
+      - JDK_PKG=openjdk-8-jdk
+      - PKG_MGR=apt-get
+    - env:
+      - DOCKER_IMAGE=ubuntu:20.04
+      - JDK_PKG=openjdk-11-jdk
+      - PKG_MGR=apt-get
+    - env:
+      - DOCKER_IMAGE=centos:7
+      - JDK_PKG=java-11-openjdk
+      - PKG_MGR=yum
+    - env:
+      - DOCKER_IMAGE=centos:8
+      - JDK_PKG=java-11-openjdk
+      - PKG_MGR=yum
+    - env:
+      - DOCKER_IMAGE=oraclelinux:7
+      - JDK_PKG=java-11-openjdk
+      - PKG_MGR=yum
+    - env:
+      - DOCKER_IMAGE=oraclelinux:8
+      - JDK_PKG=java-11-openjdk
+      - PKG_MGR=yum
+
+before_install:
+  - docker pull ${DOCKER_IMAGE}
+  - docker run --detach --interactive --tty --name launcher --volume ${PWD}:${WORKDIR} ${DOCKER_IMAGE}
+  - if [ "${PKG_MGR}" == "apt-get" ]; then docker exec launcher apt-get update; fi
+  - if [ "${PKG_MGR}" == "apt-get" ]; then docker exec --env DEBIAN_FRONTEND=noninteractive launcher apt-get -yqq install build-essential curl ${JDK_PKG}; fi
+  - if [ "${PKG_MGR}" == "yum" ]; then docker exec launcher yum -yq groups install "Development Tools"; fi
+  - if [ "${PKG_MGR}" == "yum" ]; then docker exec launcher yum -yq install ${JDK_PKG}; fi
+install:
+  - docker exec launcher bash -c "curl https://s3.amazonaws.com/jruby.org/downloads/${JRUBY_VERSION}/jruby-bin-${JRUBY_VERSION}.tar.gz | tar -zxC /opt"
+  - docker exec launcher ln -s jruby-${JRUBY_VERSION} ${JRUBY_HOME}
+  - docker exec --env PATH=${LAUNCHER_PATH}:${JRUBY_HOME}/bin --env JRUBY_HOME=${JRUBY_HOME} launcher jruby -S gem install bundler
+  - docker exec --env PATH=${LAUNCHER_PATH}:${JRUBY_HOME}/bin --env JRUBY_HOME=${JRUBY_HOME} --workdir ${WORKDIR} launcher bundle install
+before_script:
+  - docker exec --env PATH=${LAUNCHER_PATH}:${JRUBY_HOME}/bin --env JRUBY_HOME=${JRUBY_HOME} --workdir ${WORKDIR} launcher make
+script:
+  - docker exec --env PATH=${LAUNCHER_PATH}:${JRUBY_HOME}/bin --env JRUBY_HOME=${JRUBY_HOME} --workdir ${WORKDIR} launcher make test
+  - docker exec --env PATH=${LAUNCHER_PATH}:${JRUBY_HOME}/bin --env JRUBY_HOME=${JRUBY_HOME} --workdir ${WORKDIR} launcher bundle exec rake package
+  - docker exec --env PATH=${LAUNCHER_PATH}:${JRUBY_HOME}/bin --env JRUBY_HOME=${JRUBY_HOME} --workdir ${WORKDIR} launcher gem install pkg/jruby-launcher-*-java.gem
+after_script:
+  - docker exec --env PATH=${LAUNCHER_PATH}:${JRUBY_HOME}/bin --env JRUBY_HOME=${JRUBY_HOME} launcher jruby -Xversion
+  - docker stop launcher
+  - docker rm launcher
