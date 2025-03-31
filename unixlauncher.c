@@ -1,5 +1,6 @@
 #include <errno.h>
 #include <libgen.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -81,9 +82,20 @@ int unixlauncher_run(int argc, char *argv[], char *envp[]) {
 
     // Find ourselves
     char *original_self = argv[0];
-    char *self_path = realpath(original_self, NULL);
+    char *self_path;
 
-    if (self_path == NULL) {
+    // Detect whether argv[0] contains forward slashes
+    bool self_is_path = false;
+    for (size_t i = 0; original_self[i]; i++) {
+        if (original_self[i] == '/') {
+            self_is_path = true;
+            break;
+        }
+    }
+
+    if (self_is_path) {  // argv[0] is a path to an executable
+        self_path = realpath(original_self, NULL);
+    } else {  // argv[0] is basename of executable
         // Iterate through PATH to find script
         self_path = which(argv[0]);
 
