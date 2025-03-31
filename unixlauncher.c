@@ -13,7 +13,7 @@
 static const char script_name[] = "jruby.sh";
 
 
-char *which(const char *const executable) {
+static char *which(const char *const executable) {
     const size_t exe_length = strlen(executable);
     char *exe_path = NULL;
     size_t exe_path_size = 0;
@@ -71,7 +71,7 @@ success:
 }
 
 
-int main(int argc, char *argv[]) {
+int unixlauncher_run(int argc, char *argv[], char *envp[]) {
     if (argc == 0 || argv[0][0] == '\0') {
         fputs("Error: No executable provided!", stderr);
         return 2;
