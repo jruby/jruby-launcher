@@ -6,6 +6,8 @@
 #include <unistd.h>
 
 /*
+ * Copyright 2009-2025 JRuby Team (www.jruby.org).
+ *
  * This program finds JRUBY_HOME and executes the JRuby launcher script
  * contained within it.
  */
