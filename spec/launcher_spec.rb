@@ -2,7 +2,7 @@ require 'tmpdir'
 require File.expand_path('../spec_helper.rb', __FILE__)
 load File.expand_path('../../lib/jruby-launcher.rb', __FILE__)
 
-describe "JRuby native launcher" do
+describe "JRuby native launcher", if: /Windows/.match?(ENV_JAVA['os.name']) do
   it "should run org.jruby.Main" do
     jruby_launcher_args("").last.should == "org/jruby/Main"
   end
