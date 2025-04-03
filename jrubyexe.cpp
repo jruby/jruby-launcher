@@ -50,18 +50,18 @@ const char *CON_ATTACH_MSG =
     "*WARNING*: The non-console JRubyW launcher is forced to attach to console.\n"
     "This may cause unexpected behavior of CMD console. Use:\n"
     "    start /wait jrubyw.exe -Xconsole attach [args]\n";
+
+#include "utilsfuncs.h"
 #endif  // JRUBYW
 #else
 #include "unixlauncher.h"
 #endif  // WIN32
 
-#include "utilsfuncs.h"
-
 
 int main(int argc, char *argv[], char* envp[]) {
+#ifdef WIN32
     checkLoggingArg(argc, argv, true);
 
-#ifdef WIN32
 #ifdef JRUBYW
     if (!isConsoleAttached()) {
         logMsg("Console is not attached, assume WINDOW mode");
@@ -78,7 +78,6 @@ int main(int argc, char *argv[], char* envp[]) {
     return loader.start("jruby.dll", argc - 1, argv + 1, argv[0]);
 
 #else  // !WIN32
-    UnixLauncher launcher;
-    return launcher.run(argc, argv, envp);
+    return unixlauncher_run(argc, argv, envp);
 #endif  // WIN32
 }
