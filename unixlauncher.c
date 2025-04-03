@@ -137,7 +137,6 @@ int unixlauncher_run(int argc, char *argv[], char *envp[]) {
         fprintf(stderr, "%s: %s: %s\n", original_self, strerror(errno), script_path);
     }
 
-    free(self_path);
     free(script_path);
     return EXIT_FAILURE;
 }
