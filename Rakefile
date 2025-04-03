@@ -26,7 +26,7 @@ task :gemspec => './lib/jruby-launcher.rb' do
     s.summary = %q{Native launcher for JRuby}
     s.email = ["nick@nicksieger.com", "vsizikov@gmail.com"]
     s.extensions = ["extconf.rb"]
-    s.files = FileList["COPYING", "README.md", "Makefile", "Rakefile", "*.c", "*.cpp", "*.h", "inc/*.*", "**/*.rb", "resources/*.*"]
+    s.files = FileList["COPYING", "README.md", "Makefile", "Rakefile", "*.c", "*.cpp", "*.h", "inc/*.*", "**/*.rb", "resources/*.*", "exe/jruby.sh"]
     s.homepage = %q{http://jruby.org}
   end
 end
