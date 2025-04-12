@@ -13,8 +13,10 @@
  * contained within it.
  */
 
-static const char script_name[] = "jruby.sh";
+#define LENGTH(a) (sizeof(a) / sizeof(0[a]))
 
+static const char *script_names[] = { "jruby.sh", "jruby.sh.bak" };
+static const char *no_scripts_error = "jruby.sh or jruby.sh.bak";
 
 static char *which(const char *const executable) {
     const size_t exe_length = strlen(executable);
@@ -100,7 +102,7 @@ int unixlauncher_run(int argc, char *argv[], char *envp[]) {
         self_path = which(argv[0]);
 
         if (self_path == NULL) {
-            fprintf(stderr, "Error: Could not find %s executable\n", script_name);
+            fprintf(stderr, "Error: Could not find %s executable\n", argv[0]);
             return 1;
         }
 
@@ -118,25 +120,30 @@ int unixlauncher_run(int argc, char *argv[], char *envp[]) {
     }
     size_t script_dir_length = strlen(script_dir);
 
-    // Allocate space for complete script path
-    size_t script_path_length = strlen(script_name) + script_dir_length + 1;
-    // Leave space for null terminator
-    char *script_path = malloc(script_path_length + 1);
+    // Try main script and backup script before giving up
+    for (int i = 0; i < LENGTH(script_names); i++) {
+        const char *script_name = script_names[i];
 
-    // Concatenate script dir and script name
-    memcpy(script_path, script_dir, script_dir_length);
-    script_path[script_dir_length] = '/';
-    memcpy(script_path + script_dir_length + 1, script_name, strlen(script_name));
-    script_path[script_path_length] = '\0';
+        // Allocate space for complete script path
+        size_t script_path_length = strlen(script_name) + script_dir_length + 1;
+        // Leave space for null terminator
+        char *script_path = malloc(script_path_length + 1);
 
-    // Reuse argv for script command line
-    argv[0] = script_path;
-    int ret = execv(argv[0], argv);
+        // Concatenate script dir and script name
+        memcpy(script_path, script_dir, script_dir_length);
+        script_path[script_dir_length] = '/';
+        memcpy(script_path + script_dir_length + 1, script_name, strlen(script_name));
+        script_path[script_path_length] = '\0';
 
-    if (ret < 0) {
-        fprintf(stderr, "%s: %s: %s\n", original_self, strerror(errno), script_path);
+        // Reuse argv for script command line
+        argv[0] = script_path;
+        execv(argv[0], argv);
+
+        free(script_path);
     }
 
-    free(script_path);
+    // If we get here neither script was available, so we error
+    fprintf(stderr, "%s: No executable %s found in %s\n", original_self, no_scripts_error, script_dir);
+
     return EXIT_FAILURE;
 }
