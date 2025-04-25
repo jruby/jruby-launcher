@@ -33,8 +33,7 @@ static char *which(const char *const executable) {
     dirs[dirs_length] = ':';
 
     size_t dir_head = 0;
-    size_t i = 0;
-    do {
+    for (size_t i = 0; i <= dirs_length; i++) {
         if (dirs[i] == ':') {
             // Declare convenient path variables
             char *const dir = dirs + dir_head;
@@ -61,7 +60,7 @@ static char *which(const char *const executable) {
 
             dir_head = i + 1;
         }
-    } while (dirs[i++]);
+    };
 
     // Lookup has failed, free if necessary and return NULL
     if (exe_path != NULL) {
