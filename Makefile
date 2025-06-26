@@ -38,6 +38,8 @@ install:
 	@if [ ! -w $(BINDIR) ]; then echo "'$(BINDIR)' does not exist or cannot write to '$(BINDIR)'."; exit 1; fi
 	@if [ -f $(BINDIR)/jruby -a ! -w $(BINDIR)/jruby ]; then echo "Cannot write to '$(BINDIR)/jruby'."; exit 1; fi
 	cp -a ./jruby $(BINDIR)/jruby
+	@if [ -f $(BINDIR)/ruby -a ! -w $(BINDIR)/ruby ]; then echo "Cannot write to '$(BINDIR)/ruby'."; exit 1; fi
+	cp -a ./jruby $(BINDIR)/ruby
 	@if [ x$(PREFIX) = xnotspecified ]; then echo "Please define where to install by passing PREFIX=<jruby-home>."; exit 1; fi
 	# Restore jruby.sh if it has been deleted
 	@if [ ! -f $(BINDIR)/jruby.sh ]; then cp -a ./exe/jruby.sh $(BINDIR)/jruby.sh; fi
