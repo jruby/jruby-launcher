@@ -100,7 +100,7 @@ include $(SUB_IMPLMK)
 # Pick conf based on OS. for mingw64, must manually override for now.
 ifeq ($(OS),Windows_NT)
 CC=gcc
-CONF=mingw
+CONF=mingw64
 else
 CONF=unix
 endif
